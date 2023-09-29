@@ -1,8 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "menus.h"
 
 int main(int argc, char** argv)
 {
-    printf("Hello, from DoomdepthsC!\n");
+    clear_screen();
+    unsigned char is_running = 1;
+    while (is_running) main_menu(&is_running);
     return EXIT_SUCCESS;
 }
