@@ -83,10 +83,12 @@ void main_menu(unsigned char *is_running)
         switch (input[0])
         {
             case '1':
+                // TODO: Implement New Game
                 printf("New Game\n");
                 break;
 
             case '2':
+                // TODO: Implement Continue Game
                 printf("Continue Game\n");
                 break;
 
