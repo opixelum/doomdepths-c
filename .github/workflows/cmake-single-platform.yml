@@ -3,10 +3,10 @@ name: CMake on a single platform
 on:
   push:
     branches:
-      - feature/6-add-ci
+      - develop
   pull_request:
     branches:
-      - feature/6-add-ci
+      - develop
 
 env:
   BUILD_TYPE: Debug

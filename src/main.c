@@ -3,6 +3,6 @@
 
 int main(int argc, char** argv)
 {
-    printf();
+    printf("Hello, from DoomdepthsC!\n");
     return EXIT_SUCCESS;
 }
