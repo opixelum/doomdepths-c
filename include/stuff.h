@@ -9,7 +9,8 @@ typedef enum ItemType
     ARMOR,
     HEALTH_POTION,
     MANA_POTION
-} ItemType;
+}
+ItemType;
 
 typedef struct Item
 {
@@ -18,12 +19,14 @@ typedef struct Item
     char *description;
     unsigned short value; // Dealing damage if weapon, reducing damage if armor, healing if health potion, etc.
     unsigned short price; // In gold
-} Item;
+}
+Item;
 
 typedef struct Inventory
 {
     Item *item;
     struct Inventory *next;
-} Inventory;
+}
+Inventory;
 
 #endif // STUFF_H

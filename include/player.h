@@ -16,6 +16,7 @@ typedef struct Player
     Item *armor;
     Spells *spells; // Head of the linked list
     Inventory *inventory; // Head of the linked list
-} Player;
+}
+Player;
 
 #endif // PLAYER_H

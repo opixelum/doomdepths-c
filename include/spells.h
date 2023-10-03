@@ -7,11 +7,14 @@ typedef struct Spell
     char *description;
     unsigned short value; // Dealing damage if attack spell, reducing damage if defense spell, etc.
     unsigned short mana_cost;
-} Spell;
+}
+Spell;
 
-typedef struct Spells {
+typedef struct Spells
+{
     Spell *spell;
     struct Spells *next;
-} Spells;
+}
+Spells;
 
 #endif // SPELLS_H
