@@ -34,13 +34,13 @@ Character *create_character
     return character;
 }
 
-void free_character(Character *player)
+void free_character(Character *character)
 {
-    if (!player) return;
-    free(player->name);
-    free_item(player->weapon);
-    free_item(player->armor);
-    free_inventory(player->spells);
-    free_inventory(player->inventory);
-    free(player);
+    if (!character) return;
+    free(character->name);
+    free_item(character->weapon);
+    free_item(character->armor);
+    free_inventory(character->spells);
+    free_inventory(character->inventory);
+    free(character);
 }
