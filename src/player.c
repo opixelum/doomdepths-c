@@ -13,25 +13,25 @@ Character *create_character
     Inventory *spells,
     Inventory *inventory
 ) {
-    Character *player = malloc(sizeof *player);
-    if (!player)
+    Character *character = malloc(sizeof *character);
+    if (!character)
     {
-        fprintf(stderr, "ERROR: player.c: create_character: player: malloc failed\n");
+        fprintf(stderr, "ERROR: character.c: create_character: character: malloc failed\n");
         exit(EXIT_FAILURE);
     }
 
-    player->name = name;
-    player->health = health;
-    player->max_health = max_health;
-    player->mana = mana;
-    player->max_mana = max_mana;
-    player->gold = gold;
-    player->weapon = weapon;
-    player->armor = armor;
-    player->spells = spells;
-    player->inventory = inventory;
+    character->name = name;
+    character->health = health;
+    character->max_health = max_health;
+    character->mana = mana;
+    character->max_mana = max_mana;
+    character->gold = gold;
+    character->weapon = weapon;
+    character->armor = armor;
+    character->spells = spells;
+    character->inventory = inventory;
 
-    return player;
+    return character;
 }
 
 void free_character(Character *player)
