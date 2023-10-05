@@ -1,8 +1,10 @@
-#include "player.h"
+#include "character.h"
 
 Character *create_character
 (
     char *name,
+    unsigned char level,
+    unsigned int xp,
     unsigned short health,
     unsigned short max_health,
     unsigned short mana,
@@ -21,6 +23,8 @@ Character *create_character
     }
 
     character->name = name;
+    character->level = level;
+    character->xp = xp;
     character->health = health;
     character->max_health = max_health;
     character->mana = mana;

@@ -7,6 +7,8 @@
 typedef struct Character
 {
     char *name;
+    unsigned char level;
+    unsigned int xp;
     unsigned short health;
     unsigned short max_health;
     unsigned short mana;
@@ -37,6 +39,8 @@ Character;
 Character *create_character
 (
     char *name,
+    unsigned char level,
+    unsigned int xp,
     unsigned short health,
     unsigned short max_health,
     unsigned short mana,
