@@ -11,7 +11,9 @@ typedef enum ItemType
     WEAPON,
     ARMOR,
     HEALTH_POTION,
-    MANA_POTION
+    MANA_POTION,
+    ATTACK_SPELL,
+    HEAL_SPELL
 }
 ItemType;
 
@@ -21,7 +23,7 @@ typedef struct Item
     char *name;
     char *description;
     unsigned short value; // Dealing damage if weapon, reducing damage if armor, healing if health potion, etc.
-    unsigned short price; // In gold
+    unsigned short price; // In gold, or mana if spell
 }
 Item;
 
