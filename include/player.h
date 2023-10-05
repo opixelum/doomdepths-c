@@ -4,7 +4,7 @@
 #include "spells.h"
 #include "stuff.h"
 
-typedef struct Player
+typedef struct Character
 {
     char *name;
     unsigned short health;
@@ -17,20 +17,20 @@ typedef struct Player
     Inventory *spells; // Head of the linked list
     Inventory *inventory; // Head of the linked list
 }
-Player;
+Character;
 
 /**
  * @brief Initialize a new player
  * @param name Pointer to the name of the player
  * @return Pointer to the new player
- * @warning The player must be freed with free_player() when it is no longer needed
+ * @warning The player must be freed with free_character() when it is no longer needed
  */
-Player *create_player(char *name);
+Character *create_character(char *name);
 
 /**
  * @brief Free a player from memory
  * @param player Pointer to the player to be freed
  */
-void free_player(Player *player);
+void free_character1(Character *player);
 
 #endif // PLAYER_H

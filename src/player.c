@@ -1,11 +1,11 @@
 #include "player.h"
 
-Player *create_player(char *name)
+Character *create_character(char *name)
 {
-    Player *player = malloc(sizeof *player);
+    Character *player = malloc(sizeof *player);
     if (!player)
     {
-        fprintf(stderr, "ERROR: player.c: create_player: player: malloc failed\n");
+        fprintf(stderr, "ERROR: player.c: create_character: player: malloc failed\n");
         exit(EXIT_FAILURE);
     }
 
@@ -23,7 +23,7 @@ Player *create_player(char *name)
     return player;
 }
 
-void free_player(Player *player)
+void free_character(Character *player)
 {
     if (!player) return;
     free(player->name);
