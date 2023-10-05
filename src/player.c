@@ -1,7 +1,18 @@
 #include "player.h"
 
-Character *create_character(char *name)
-{
+Character *create_character
+(
+    char *name,
+    unsigned short health,
+    unsigned short max_health,
+    unsigned short mana,
+    unsigned short max_mana,
+    unsigned long gold,
+    Item *weapon,
+    Item *armor,
+    Inventory *spells,
+    Inventory *inventory
+) {
     Character *player = malloc(sizeof *player);
     if (!player)
     {
@@ -10,15 +21,15 @@ Character *create_character(char *name)
     }
 
     player->name = name;
-    player->health = 100;
-    player->max_health = 100;
-    player->mana = 100;
-    player->max_mana = 100;
-    player->gold = 0;
-    player->weapon = NULL;
-    player->armor = NULL;
-    player->spells = NULL;
-    player->inventory = NULL;
+    player->health = health;
+    player->max_health = max_health;
+    player->mana = mana;
+    player->max_mana = max_mana;
+    player->gold = gold;
+    player->weapon = weapon;
+    player->armor = armor;
+    player->spells = spells;
+    player->inventory = inventory;
 
     return player;
 }

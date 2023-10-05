@@ -22,10 +22,31 @@ Character;
 /**
  * @brief Initialize a new player
  * @param name Pointer to the name of the player
+ * @param health The health of the player
+ * @param max_health The maximum health of the player
+ * @param mana The mana of the player
+ * @param max_mana The maximum mana of the player
+ * @param gold The gold of the player
+ * @param weapon Pointer to the weapon of the player
+ * @param armor Pointer to the armor of the player
+ * @param spells Pointer to the head of the spells linked list of the player
+ * @param inventory Pointer to the head of the inventory linked list of the player
  * @return Pointer to the new player
  * @warning The player must be freed with free_character() when it is no longer needed
  */
-Character *create_character(char *name);
+Character *create_character
+(
+    char *name,
+    unsigned short health,
+    unsigned short max_health,
+    unsigned short mana,
+    unsigned short max_mana,
+    unsigned long gold,
+    Item *weapon,
+    Item *armor,
+    Inventory *spells,
+    Inventory *inventory
+);
 
 /**
  * @brief Free a player from memory
