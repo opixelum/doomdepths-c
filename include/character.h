@@ -58,6 +58,6 @@ Character *create_character
  * @brief Free a player from memory
  * @param player Pointer to the player to be freed
  */
-void free_character1(Character *player);
+void free_character(Character *player);
 
 #endif // PLAYER_H
