@@ -25,7 +25,7 @@ Character *generate_random_monster()
     if (random_monster_type < 25) // 25% chance
     {
         strcpy(name, "Goblin");
-        health = 50.0 + 50.0 * (level / 100.0);
+        health = (unsigned short) (50.0 + 50.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
@@ -33,7 +33,7 @@ Character *generate_random_monster()
     else if (random_monster_type < 45) // 20% chance
     {
         strcpy(name, "Orc");
-        health = 80.0 + 80.0 * (level / 100.0);
+        health = (unsigned short) (80.0 + 80.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
@@ -41,7 +41,7 @@ Character *generate_random_monster()
     else if (random_monster_type < 65) // 20% chance
     {
         strcpy(name, "Troll");
-        health = 90.0 + 90.0 * (level / 100.0);
+        health = (unsigned short) (90.0 + 90.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
@@ -49,7 +49,7 @@ Character *generate_random_monster()
     else if (random_monster_type < 80) // 15% chance
     {
         strcpy(name, "Ogre");
-        health = 120.0 + 120.0 * (level / 100.0);
+        health = (unsigned short) (120.0 + 120.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
@@ -57,7 +57,7 @@ Character *generate_random_monster()
     else if (random_monster_type < 95) // 15% chance
     {
         strcpy(name, "Giant");
-        health = 130.0 + 130.0 * (level / 100.0);
+        health = (unsigned short) (130.0 + 130.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
@@ -65,7 +65,7 @@ Character *generate_random_monster()
     else // %5 chance
     {
         strcpy(name, "Dragon");
-        health = 200.0 + 200.0 * (level / 100.0);
+        health = (unsigned short) (200.0 + 200.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
