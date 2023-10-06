@@ -5,6 +5,7 @@ Character *create_character
     char *name,
     unsigned char level,
     unsigned int xp,
+    unsigned int xp_to_next_level,
     unsigned short health,
     unsigned short max_health,
     unsigned short mana,
@@ -25,6 +26,7 @@ Character *create_character
     character->name = name;
     character->level = level;
     character->xp = xp;
+    character->xp_to_next_level = xp_to_next_level;
     character->health = health;
     character->max_health = max_health;
     character->mana = mana;
