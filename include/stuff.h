@@ -60,12 +60,22 @@ Item *create_item
 void free_item(Item *item);
 
 /**
- * @brief Add an item to the end of an inventory
- * @param head Pointer to a node of the inventory
- * @param item Pointer to the item to be added
- * @return Pointer to the given inventory node or the new inventory node if the given inventory node was NULL
+ * @brief Get the size of an inventory
+ * @param head Pointer to the head of the inventory
+ * @return The size of the inventory
+ * @warning In case you're not passing the head of the inventory, the size check will may not work properly
  */
-Inventory *add_item_to_inventory(Inventory *node, Item *item);
+unsigned char inventory_size(Inventory *head);
+
+/**
+ * @brief Add an item to the end of an inventory. If inventory is full, the item is not added
+ * @param head Pointer to the head of the inventory
+ * @param item Pointer to the item to be added
+ * @return Pointer to the given inventory head or the new inventory head if the given inventory head was NULL
+ * or NULL if the inventory is full
+ * @warning In case you're not passing the head of the inventory, the size check will may not work properly
+ */
+Inventory *add_item_to_inventory(Inventory *head, Item *item);
 
 /**
  * @brief Remove an item from an inventory
