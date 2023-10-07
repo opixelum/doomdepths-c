@@ -7,6 +7,16 @@
 #include "character.h"
 
 /**
+ * @brief Linked list of all alive monsters
+ */
+typedef struct Monsters
+{
+    Character *monster;
+    struct Monsters *next;
+}
+Monsters;
+
+/**
  * @brief Generate a monster with random stats.
  *
  * - 25% chance to be a Goblin;
