@@ -41,7 +41,7 @@ Character *remove_monster_from_list(Monsters *head, Character *monster);
  * @warning Every monster in the linked list will be freed from memory
  * @warning In case you're not passing the head of the monsters list, only the following nodes will be freed
  */
-void free_monsters(Monsters *head);
+void free_monsters_list(Monsters *head);
 
 /**
  * @brief Generate a monster with random stats.
@@ -60,9 +60,17 @@ void free_monsters(Monsters *head);
  * health = base_health + base_health * (level / 100)
  * Mana is equal to health.
  *
+ * @param seed Seed for the random number generator
  * @return Pointer to the new monster
  * @warning The monster must be freed with free_character() when it is no longer needed
  */
-Character *generate_random_monster();
+Character *generate_random_monster(unsigned int seed);
+
+/**
+ * @brief Generate a linked list of 20 random monsters.
+ * @return Pointer to the head of the linked list of monsters
+ * @warning The monsters list must be freed with free_monsters_list() when it is no longer needed
+ */
+Monsters *generate_random_monsters_list();
 
 #endif // MONSTERS_H

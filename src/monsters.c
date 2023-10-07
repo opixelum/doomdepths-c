@@ -65,9 +65,9 @@ void free_monsters_list(Monsters *head)
     }
 }
 
-Character *generate_random_monster()
+Character *generate_random_monster(unsigned int seed)
 {
-    srand(time(NULL));
+    srand(time(NULL) + seed);
 
     char *name = calloc(7, sizeof *name);
     unsigned char level = 0;
@@ -154,4 +154,19 @@ Character *generate_random_monster()
         NULL,
         NULL
     );
+}
+
+Monsters *generate_random_monsters_list()
+{
+    srand(time(NULL));
+
+    Monsters *head = NULL;
+
+    for (unsigned char i = 0; i < 20; i++)
+    {
+        Character *monster = generate_random_monster(i);
+        head = add_monster_to_inventory(head, monster);
+    }
+
+    return head;
 }
