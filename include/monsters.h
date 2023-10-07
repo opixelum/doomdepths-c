@@ -65,6 +65,7 @@ void free_monsters_list(Monsters *head);
  * @warning The monster must be freed with free_character() when it is no longer needed
  */
 Character *generate_random_monster(unsigned int seed);
+// TODO: Improve randomness for omitting seed parameter
 
 /**
  * @brief Generate a linked list of 20 random monsters.
