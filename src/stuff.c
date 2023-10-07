@@ -30,8 +30,22 @@ void free_item(Item *item)
     free(item);
 }
 
-Inventory *add_item_to_inventory(Inventory *node, Item *item_to_add)
+unsigned char inventory_size(Inventory *head)
 {
+    unsigned char size = 0;
+    Inventory *current = head;
+    while (current)
+    {
+        size++;
+        current = current->next;
+    }
+    return size;
+}
+
+Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
+{
+    if (inventory_size(head) >= MAX_INVENTORY_SIZE) return NULL;
+
     Inventory *new_item_entry = malloc(sizeof *new_item_entry);
     if (!new_item_entry)
     {
@@ -43,14 +57,14 @@ Inventory *add_item_to_inventory(Inventory *node, Item *item_to_add)
     new_item_entry->next = NULL;
 
     // If the inventory is empty, the new item becomes the first item
-    if (!node) return new_item_entry;
+    if (!head) return new_item_entry;
 
     // Otherwise, add the new item to the end of the inventory
-    Inventory *current = node;
+    Inventory *current = head;
     while (current->next) current = current->next;
     current->next = new_item_entry;
 
-    return node;
+    return head;
 }
 
 Item *remove_item_from_inventory(Inventory *head, Item *item_to_remove)
