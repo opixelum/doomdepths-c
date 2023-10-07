@@ -17,6 +17,33 @@ typedef struct Monsters
 Monsters;
 
 /**
+ * @brief Add an monster to the end of an monsters list
+ * @param head Pointer to a node of the monsters list
+ * @param monster Pointer to the monster to be added
+ * @return Pointer to the given monsters list node or the new monsters list node if the given monsters list node was NULL
+ */
+Monsters *add_monster_to_list(Monsters *node, Character *monster);
+
+/**
+ * @brief Remove an monster from an monsters list
+ * @param head Pointer to the head of the monsters list
+ * @param monster Pointer to the monster to be removed
+ * @return Pointer to the removed monster, or NULL if the monster was not found
+ * @warning This function does not free the monster from memory, it only removes it from the monsters list
+ * @warning In case you're not passing the head of the monsters list, the monster to remove can be skipped if it is before the
+ * given monsters list node
+ */
+Character *remove_monster_from_list(Monsters *head, Character *monster);
+
+/**
+ * @brief Free a linked list of monsters from memory
+ * @param head A pointer to the head of the linked list of monsters to be freed
+ * @warning Every monster in the linked list will be freed from memory
+ * @warning In case you're not passing the head of the monsters list, only the following nodes will be freed
+ */
+void free_monsters(Monsters *head);
+
+/**
  * @brief Generate a monster with random stats.
  *
  * - 25% chance to be a Goblin;

@@ -1,5 +1,70 @@
 #include "monsters.h"
 
+Monsters *add_monster_to_inventory(Monsters *node, Character *monster_to_add)
+{
+    Monsters *new_monster_entry = malloc(sizeof *new_monster_entry);
+    if (!new_monster_entry)
+    {
+        fprintf(stderr, "ERROR: stuff.c: add_monster_to_inventory: new_monster_entry: malloc failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    new_monster_entry->monster = monster_to_add;
+    new_monster_entry->next = NULL;
+
+    // If the inventory is empty, the new monster becomes the first monster
+    if (!node) return new_monster_entry;
+
+    // Otherwise, add the new monster to the end of the inventory
+    Monsters *current = node;
+    while (current->next) current = current->next;
+    current->next = new_monster_entry;
+
+    return node;
+}
+
+Character *remove_monster_from_inventory(Monsters *head, Character *monster_to_remove)
+{
+    Monsters *prev = NULL;
+    Monsters *current = head;
+
+    while (current)
+    {
+        if (current->monster == monster_to_remove)
+        {
+            // If the monster to remove is at the head of the inventory.
+            if (!prev)
+            {
+                Character *removedCharacter = current->monster;
+                free(current);
+                return removedCharacter;
+            }
+
+            // Character found in the middle or end of the inventory.
+            Character *removed_monster = current->monster;
+            prev->next = current->next;
+            free(current);
+            return removed_monster;
+        }
+
+        prev = current;
+        current = current->next;
+    }
+
+    return NULL; // Character not found in the inventory.
+}
+
+void free_monsters_list(Monsters *head)
+{
+    while (head)
+    {
+        Monsters *next = head->next;
+        if (head->monster) free_character(head->monster);
+        free(head);
+        head = next;
+    }
+}
+
 Character *generate_random_monster()
 {
     srand(time(NULL));
@@ -85,7 +150,7 @@ Character *generate_random_monster()
         gold,
         NULL,
         NULL,
-        // TODO: Give random items to monsters for player to loot
+        // TODO: Give random item to monsters for player to loot
         NULL,
         NULL
     );
