@@ -65,16 +65,16 @@ Item *remove_item_from_inventory(Inventory *head, Item *item_to_remove)
             // If the item to remove is at the head of the inventory.
             if (!prev)
             {
-                Item *removedItem = current->item;
+                Item *removed_item = current->item;
                 free(current);
-                return removedItem;
+                return removed_item;
             }
 
             // Item found in the middle or end of the inventory.
-            Item *removedItem = current->item;
+            Item *removed_item = current->item;
             prev->next = current->next;
             free(current);
-            return removedItem;
+            return removed_item;
         }
 
         prev = current;
