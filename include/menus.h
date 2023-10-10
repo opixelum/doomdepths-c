@@ -15,7 +15,7 @@
 void clear_screen();
 
 /**
- * @brief Cross-platform functino to clear a given number of console lines.
+ * @brief Cross-platform function to clear a given number of console lines.
  *
  * Prints a regex where:
  * - "\x1b[1F" moves cursor to beginning of previous line;
