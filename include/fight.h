@@ -1,6 +1,8 @@
 #ifndef FIGHT_H
 #define FIGHT_H
 
+#include "string.h"
+
 #include "character.h"
 
 /**
@@ -20,7 +22,8 @@
  *
  * @param attacker Pointer to the attacker
  * @param defender Pointer to the defender
+ * @return The damage dealt to the defender
  */
-void attack(Character *attacker, Character *defender);
+unsigned short attack(Character *attacker, Character *defender);
 
 #endif // FIGHT_H
