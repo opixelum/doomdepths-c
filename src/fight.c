@@ -2,6 +2,9 @@
 
 unsigned short attack(Character *attacker, Character *defender)
 {
+    if (!attacker || !defender) return 0;
+    if (defender->health == 0) return 0;
+
     unsigned short damage = 0;
 
     if (!attacker->weapon)
