@@ -16,8 +16,11 @@ unsigned short attack(Character *attacker, Character *defender)
     else damage = attacker->weapon->value;
 
     if (defender->armor) damage -= defender->armor->value;
-    if (damage > 0) defender->health -= damage;
-    if (defender->health < 0) defender->health = 0;
+    if (damage > 0)
+    {
+        if (defender->health < damage) defender->health = 0;
+        else defender->health -= damage;
+    }
 
     return damage;
 }
