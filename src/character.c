@@ -2,7 +2,7 @@
 
 Character *create_character
 (
-    char *name,
+    const char *name,
     unsigned char level,
     unsigned int xp,
     unsigned int xp_to_next_level,
@@ -43,7 +43,6 @@ Character *create_character
 void free_character(Character *character)
 {
     if (!character) return;
-    free(character->name);
     free_item(character->weapon);
     free_item(character->armor);
     free_inventory(character->spells);
