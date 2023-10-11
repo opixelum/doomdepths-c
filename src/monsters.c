@@ -1,11 +1,11 @@
 #include "monsters.h"
 
-Monsters *add_monster_to_inventory(Monsters *node, Character *monster_to_add)
+Monsters *add_monster_to_list(Monsters *node, Character *monster_to_add)
 {
     Monsters *new_monster_entry = malloc(sizeof *new_monster_entry);
     if (!new_monster_entry)
     {
-        fprintf(stderr, "ERROR: stuff.c: add_monster_to_inventory: new_monster_entry: malloc failed\n");
+        fprintf(stderr, "ERROR: stuff.c: add_monster_to_list: new_monster_entry: malloc failed\n");
         exit(EXIT_FAILURE);
     }
 
@@ -23,7 +23,7 @@ Monsters *add_monster_to_inventory(Monsters *node, Character *monster_to_add)
     return node;
 }
 
-Character *remove_monster_from_inventory(Monsters *head, Character *monster_to_remove)
+Character *remove_monster_from_list(Monsters *head, Character *monster_to_remove)
 {
     Monsters *prev = NULL;
     Monsters *current = head;
@@ -161,11 +161,12 @@ Monsters *generate_random_monsters_list()
     srand(time(NULL));
 
     Monsters *head = NULL;
+    int monster_count = rand() % 4 + 1;
 
-    for (unsigned char i = 0; i < 20; i++)
+    for (int i = 0; i < monster_count; i++)
     {
         Character *monster = generate_random_monster(i);
-        head = add_monster_to_inventory(head, monster);
+        head = add_monster_to_list(head, monster);
     }
 
     return head;

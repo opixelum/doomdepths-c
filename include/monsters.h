@@ -68,7 +68,8 @@ Character *generate_random_monster(unsigned int seed);
 // TODO: Improve randomness for omitting seed parameter
 
 /**
- * @brief Generate a linked list of 20 random monsters.
+ * @brief Generate a linked list of a random number of random monsters, with a
+ * maximum of 4 monsters.
  * @return Pointer to the head of the linked list of monsters
  * @warning The monsters list must be freed with free_monsters_list() when it is no longer needed
  */
