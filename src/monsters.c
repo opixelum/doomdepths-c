@@ -69,15 +69,15 @@ Character *generate_random_monster(unsigned int seed)
 {
     srand(time(NULL) + seed);
 
-    char *name = calloc(7, sizeof *name);
-    unsigned char level = 0;
-    unsigned int xp = 0;
-    unsigned int xp_to_next_level = 0;
-    unsigned short health = 0;
-    unsigned short max_health = 0;
-    unsigned short mana = 0;
-    unsigned short max_mana = 0;
-    unsigned long gold = 0;
+    char *name;
+    unsigned char level;
+    unsigned int xp;
+    unsigned int xp_to_next_level;
+    unsigned short health;
+    unsigned short max_health;
+    unsigned short mana;
+    unsigned short max_mana;
+    unsigned long gold;
 
     // Assign monster stats based on monster type
     unsigned char random_monster_type = rand() % 100;
@@ -89,7 +89,7 @@ Character *generate_random_monster(unsigned int seed)
 
     if (random_monster_type < 25) // 25% chance
     {
-        strcpy(name, "Goblin");
+        name = "Goblin";
         health = (unsigned short) (50.0 + 50.0 * (level / 100.0));
         max_health = health;
         mana = health;
@@ -97,7 +97,7 @@ Character *generate_random_monster(unsigned int seed)
     }
     else if (random_monster_type < 45) // 20% chance
     {
-        strcpy(name, "Orc");
+        name = "Orc";
         health = (unsigned short) (80.0 + 80.0 * (level / 100.0));
         max_health = health;
         mana = health;
@@ -105,7 +105,7 @@ Character *generate_random_monster(unsigned int seed)
     }
     else if (random_monster_type < 65) // 20% chance
     {
-        strcpy(name, "Troll");
+        name = "Troll";
         health = (unsigned short) (90.0 + 90.0 * (level / 100.0));
         max_health = health;
         mana = health;
@@ -113,7 +113,7 @@ Character *generate_random_monster(unsigned int seed)
     }
     else if (random_monster_type < 80) // 15% chance
     {
-        strcpy(name, "Ogre");
+        name = "Ogre";
         health = (unsigned short) (120.0 + 120.0 * (level / 100.0));
         max_health = health;
         mana = health;
@@ -121,7 +121,7 @@ Character *generate_random_monster(unsigned int seed)
     }
     else if (random_monster_type < 95) // 15% chance
     {
-        strcpy(name, "Giant");
+        name = "Giant";
         health = (unsigned short) (130.0 + 130.0 * (level / 100.0));
         max_health = health;
         mana = health;
@@ -129,13 +129,12 @@ Character *generate_random_monster(unsigned int seed)
     }
     else // %5 chance
     {
-        strcpy(name, "Dragon");
+        name = "Dragon";
         health = (unsigned short) (200.0 + 200.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
     }
-    name = realloc(name, (strlen(name) + 1) * sizeof *name);
 
     return create_character
     (
