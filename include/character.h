@@ -39,7 +39,7 @@ Character;
  */
 Character *create_character
 (
-    char *name,
+    const char *name,
     unsigned char level,
     unsigned int xp,
     unsigned int xp_to_next_level,
@@ -55,9 +55,9 @@ Character *create_character
 );
 
 /**
- * @brief Free a player from memory
- * @param player Pointer to the player to be freed
+ * @brief Free a character from memory
+ * @param character Pointer to the character to be freed
  */
-void free_character(Character *player);
+void free_character(Character *character);
 
 #endif // PLAYER_H
