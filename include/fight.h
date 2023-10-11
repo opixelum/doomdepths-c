@@ -3,7 +3,7 @@
 
 #include "string.h"
 
-#include "character.h"
+#include "monsters.h"
 
 /**
  * @brief Attack a defender with an attacker
@@ -25,5 +25,12 @@
  * @return The damage dealt to the defender
  */
 unsigned short attack(Character *attacker, Character *defender);
+
+/**
+ * @brief Update monsters list if a monster is dead
+ * @param head Pointer to the head of the monsters list
+ * @return Pointer to the head of the monsters list
+ */
+Monsters *update_monsters_list(Monsters *head);
 
 #endif // FIGHT_H
