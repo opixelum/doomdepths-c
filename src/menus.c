@@ -107,3 +107,48 @@ void main_menu(unsigned char *is_running)
         wait_for_enter();
     } while (1);
 }
+
+unsigned char battle_actions_menu(Character *player, Monsters *head)
+{
+    if (!player || !head) return 0;
+
+    // First loop for repeating the menu if user enters an invalid choice
+    do
+    {
+        char *input = NULL;
+        clear_lines(12); // Main menu is at most 10 lines long
+        printf
+        (
+            "DoomdepthsC - Battle\n\n"
+            "    1. Attack\n"
+            "    2. Drink potion\n"
+            "    3. Flee\n\n"
+        );
+
+        // Second loop for repeating the menu if user enters an empty string
+        do
+        {
+            if (input) // Re-print the last line if user entered an empty string
+            {
+                clear_lines(1);
+                free(input);
+            }
+            printf("Enter your choice (1, 2 or 3): ");
+            input = get_user_input();
+        }
+        while (!strlen(input)); // While length of input is 0
+
+        // Convert input to integer for direct return
+        long choice = strtol(input, NULL, 10);
+        free(input);
+
+        if (choice < 1 || choice > 3)
+        {
+            printf("\nInvalid choice!\n");
+            wait_for_enter();
+            continue;
+        }
+
+        return choice;
+    } while (1);
+}
