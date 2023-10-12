@@ -1,8 +1,9 @@
 #ifndef FIGHT_H
 #define FIGHT_H
 
-#include "string.h"
+#include <string.h>
 
+#include "menus.h"
 #include "monsters.h"
 
 /**
