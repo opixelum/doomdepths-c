@@ -34,11 +34,11 @@ unsigned short attack(Character *attacker, Character *defender);
 Monsters *update_monsters_list(Monsters *head);
 
 /**
- * @brief Battle between the player and the monsters
+ * @brief Battle between the player and the head
  * @param player Pointer to the player
- * @param monsters Pointer to the monsters list head (will be updated)
+ * @param head Pointer to the head list head (will be updated)
  * @return 0 if the player is dead, 1 otherwise
  */
-unsigned char battle(Character *player, Monsters *monsters);
+unsigned char battle(Character *player, Monsters *head);
 
 #endif // FIGHT_H
