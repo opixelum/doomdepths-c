@@ -56,3 +56,37 @@ Monsters *update_monsters_list(Monsters *head)
 
     return head;
 }
+
+unsigned char battle(Character *player)
+{
+    if (!player)
+    {
+        fprintf(stderr, "Error: battle(): player: NULL pointer\n");
+        exit(EXIT_FAILURE);
+    }
+
+    unsigned char result = 1;
+    Monsters *head = generate_random_monsters_list();
+    Character *monster = head->monster;
+
+    while (monster)
+    {
+        attack(player, monster);
+        if (monster->health > 0) attack(monster, player);
+        else
+        {
+            // Free dead monster & target next monster if any
+            head = update_monsters_list(head);
+            monster = head ? head->monster : NULL;
+        }
+
+        if (player->health == 0)
+        {
+            result = 0;
+            free_monsters_list(head);
+            break;
+        }
+    }
+
+    return result;
+}
