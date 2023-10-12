@@ -82,8 +82,8 @@ unsigned char battle(Character *player)
 
         if (player->health == 0)
         {
-            result = 0;
             free_monsters_list(head);
+            result = 0;
             break;
         }
     }
