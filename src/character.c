@@ -43,8 +43,8 @@ Character *create_character
 void free_character(Character *character)
 {
     if (!character) return;
-    free_item(character->weapon);
-    free_item(character->armor);
+    free(character->weapon);
+    free(character->armor);
     free_inventory(character->spells);
     free_inventory(character->inventory);
     free(character);
