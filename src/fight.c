@@ -65,16 +65,42 @@ unsigned char battle(Character *player)
         exit(EXIT_FAILURE);
     }
 
-    unsigned char result = 1;
     Monsters *head = generate_random_monsters_list();
     Character *monster = head->monster;
 
     while (monster)
     {
-        attack(player, monster);
-        if (monster->health > 0) attack(monster, player);
+        switch (battle_actions_menu(player, head))
+        {
+            case 1:
+                printf
+                (
+                    "\nYou delt %d damage to %s.\n",
+                    attack(player, monster),
+                    monster->name
+                );
+                break;
+
+            case 2:
+                // TODO: Implement drink potion
+                printf("\nDrink potion\n");
+                break;
+
+            case 3:
+                free_monsters_list(head);
+                printf("\nYou fled!\n");
+                return 0;
+        }
+
+        if (monster->health > 0) printf
+        (
+            "%s delt %d damage on you.\n",
+            monster->name,
+            attack(monster, player)
+        );
         else
         {
+            printf("You killed %s!\n", monster->name);
             // Free dead monster & target next monster if any
             head = update_monsters_list(head);
             monster = head ? head->monster : NULL;
@@ -83,10 +109,11 @@ unsigned char battle(Character *player)
         if (player->health == 0)
         {
             free_monsters_list(head);
-            result = 0;
-            break;
+            return 0;
         }
+
+        wait_for_enter();
     }
 
-    return result;
+    return 1;
 }
