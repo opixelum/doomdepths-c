@@ -22,14 +22,6 @@ Item *create_item
     return item;
 }
 
-void free_item(Item *item)
-{
-    if (!item) return;
-    free(item->name);
-    free(item->description);
-    free(item);
-}
-
 unsigned char inventory_size(Inventory *head)
 {
     unsigned char size = 0;
@@ -103,7 +95,7 @@ void free_inventory(Inventory *head)
     while (head)
     {
         Inventory *next = head->next;
-        if (head->item) free_item(head->item);
+        if (head->item) free(head->item);
         free(head);
         head = next;
     }

@@ -6,7 +6,7 @@
 
 typedef struct Character
 {
-    char *name;
+    const char *name;
     unsigned char level;
     unsigned int xp;
     unsigned int xp_to_next_level;

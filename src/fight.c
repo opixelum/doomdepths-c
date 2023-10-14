@@ -56,3 +56,64 @@ Monsters *update_monsters_list(Monsters *head)
 
     return head;
 }
+
+unsigned char battle(Character *player)
+{
+    if (!player)
+    {
+        fprintf(stderr, "Error: battle(): player: NULL pointer\n");
+        exit(EXIT_FAILURE);
+    }
+
+    Monsters *head = generate_random_monsters_list();
+    Character *monster = head->monster;
+
+    while (monster)
+    {
+        switch (battle_actions_menu(player, head))
+        {
+            case 1:
+                printf
+                (
+                    "\nYou delt %d damage to %s.\n",
+                    attack(player, monster),
+                    monster->name
+                );
+                break;
+
+            case 2:
+                // TODO: Implement drink potion
+                printf("\nDrink potion\n");
+                break;
+
+            case 3:
+                free_monsters_list(head);
+                printf("\nYou fled!\n");
+                return 0;
+        }
+
+        if (monster->health > 0) printf
+        (
+            "%s delt %d damage on you.\n",
+            monster->name,
+            attack(monster, player)
+        );
+        else
+        {
+            printf("You killed %s!\n", monster->name);
+            // Free dead monster & target next monster if any
+            head = update_monsters_list(head);
+            monster = head ? head->monster : NULL;
+        }
+
+        if (player->health == 0)
+        {
+            free_monsters_list(head);
+            return 0;
+        }
+
+        wait_for_enter();
+    }
+
+    return 1;
+}

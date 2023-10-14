@@ -54,12 +54,6 @@ Item *create_item
 );
 
 /**
- * @brief Free an item from memory
- * @param item A pointer to the item to be freed
- */
-void free_item(Item *item);
-
-/**
  * @brief Get the size of an inventory
  * @param head Pointer to the head of the inventory
  * @return The size of the inventory

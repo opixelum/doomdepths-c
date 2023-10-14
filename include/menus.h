@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "monsters.h"
+
 /**
  * @brief Cross-platform function to clear console screen.
  *
@@ -59,5 +61,16 @@ char *get_user_input();
  * @param is_running Pointer to the variable that controls the main loop
  */
 void main_menu(unsigned char *is_running);
+
+/**
+ * @brief In battle, ask user to choose between:
+ *     1. Attack;
+ *     2. Drink potion;
+ *     3. Flee.
+ * @param player Pointer to the player
+ * @param head Pointer to the head of the monsters list
+ * @return Selected action, 0 on error
+ */
+unsigned char battle_actions_menu(Character *player, Monsters *head);
 
 #endif // MENUS_H

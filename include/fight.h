@@ -1,8 +1,9 @@
 #ifndef FIGHT_H
 #define FIGHT_H
 
-#include "string.h"
+#include <string.h>
 
+#include "menus.h"
 #include "monsters.h"
 
 /**
@@ -29,8 +30,16 @@ unsigned short attack(Character *attacker, Character *defender);
 /**
  * @brief Update monsters list if a monster is dead
  * @param head Pointer to the head of the monsters list
- * @return Pointer to the head of the monsters list
+ * @return Pointer to the head of the monsters list, NULL if all monsters died
  */
 Monsters *update_monsters_list(Monsters *head);
+
+/**
+ * @brief Battle between the player and the head. Monsters are generated
+ * randomly & free after the battle.
+ * @param player Pointer to the player
+ * @return 1 if the player won, 0 otherwise
+ */
+unsigned char battle(Character *player);
 
 #endif // FIGHT_H
