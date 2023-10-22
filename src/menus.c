@@ -179,7 +179,7 @@ Character *monster_selection_menu(Monsters *head)
         {
             if (input) // Re-print the last line if user entered an empty string
             {
-                clear_lines(1);
+                clear_lines(2);
                 free(input);
             }
             printf("\nEnter your choice (");
