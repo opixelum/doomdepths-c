@@ -152,3 +152,100 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         return choice;
     } while (1);
 }
+
+Character *monster_selection_menu(Monsters *head)
+{
+    if (!head) return NULL;
+
+    // First loop for repeating the menu if user enters an invalid choice
+    do
+    {
+        char *input = NULL;
+        clear_lines(12); // Main menu is at most 10 lines long
+        printf("DoomdepthsC - Battle - Monsters\n\n");
+
+        Character *monsters[5];
+        unsigned char number_of_monsters = 0;
+        while (head)
+        {
+            number_of_monsters++;
+            printf("    %d. %s\n", number_of_monsters, head->monster->name);
+            monsters[number_of_monsters - 1] = head->monster;
+            head = head->next;
+        }
+
+        // Second loop for repeating the menu if user enters an empty string
+        do
+        {
+            if (input) // Re-print the last line if user entered an empty string
+            {
+                clear_lines(2);
+                free(input);
+            }
+            printf("\nEnter your choice (");
+            for (unsigned char i = 1; i < number_of_monsters; ++i)
+            {
+                if (i < number_of_monsters - 1) printf("%d, ", i);
+                else printf("%d or %d): ", i, i + 1);
+            }
+
+            input = get_user_input();
+        }
+        while (!strlen(input)); // While length of input is 0
+
+        // Convert input to integer for direct return
+        long choice = strtol(input, NULL, 10);
+        free(input);
+
+        if (choice < 1 || choice > number_of_monsters)
+        {
+            printf("\nInvalid choice!\n");
+            wait_for_enter();
+            continue;
+        }
+
+        return monsters[choice - 1];
+    } while (1);
+}
+
+unsigned char attack_selection_menu()
+{
+    // First loop for repeating the menu if user enters an invalid choice
+    do
+    {
+        char *input = NULL;
+        clear_lines(10); // Main menu is at most 10 lines long
+        printf
+        (
+            "DoomdepthsC - Select an attack\n\n"
+            "    1. Weapon attack\n"
+            "    2. Spell attack\n\n"
+        );
+
+        // Second loop for repeating the menu if user enters an empty string
+        do
+        {
+            if (input) // Re-print the last line if user entered an empty string
+            {
+                clear_lines(1);
+                free(input);
+            }
+            printf("Enter your choice (1 or 2): ");
+            input = get_user_input();
+        }
+        while (!strlen(input)); // While length of input is 0
+
+        // Convert input to integer for direct return
+        long choice = strtol(input, NULL, 10);
+        free(input);
+
+        if (choice < 1 || choice > 3)
+        {
+            printf("\nInvalid choice!\n");
+            wait_for_enter();
+            continue;
+        }
+
+        return choice;
+    } while (1);
+}
