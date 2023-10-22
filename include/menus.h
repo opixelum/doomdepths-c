@@ -73,4 +73,11 @@ void main_menu(unsigned char *is_running);
  */
 unsigned char battle_actions_menu(Character *player, Monsters *head);
 
+/**
+ * @brief Prompts user to choose a monster to attack among the monsters list.
+ * @param head Pointer to the head of the monsters list
+ * @return Pointer to the node containing the selected monster, NULL on error
+ */
+Monsters *monster_selection_menu(Monsters *head);
+
 #endif // MENUS_H
