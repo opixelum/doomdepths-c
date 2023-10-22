@@ -66,19 +66,25 @@ unsigned char battle(Character *player)
     }
 
     Monsters *head = generate_random_monsters_list();
-    Character *monster = head->monster;
+    Character *monster;
 
-    while (monster)
+    while (head)
     {
         switch (battle_actions_menu(player, head))
         {
             case 1:
-                printf
-                (
-                    "\nYou delt %d damage to %s.\n",
-                    attack(player, monster),
-                    monster->name
-                );
+                monster = monster_selection_menu(head);
+                switch (attack_selection_menu())
+                {
+                    case 1:
+                        attack(player, monster);
+                        break;
+
+                    case 2:
+                        // TODO: Implement spell attack
+                        printf("\nSpell attack\n");
+                        break;
+                }
                 break;
 
             case 2:
