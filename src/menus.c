@@ -300,10 +300,37 @@ void print_stat_bar
         (
             color,
             "%s",
-            i < percentage ? "█" : "-"
+            i <= percentage ? "█" : "-"
         );
     }
 
     // Print stat in number
     printf(" %d / %d\n", current, max);
+}
+
+void print_character_stats(Character *character)
+{
+    if (!character) return;
+
+    // Print health bar
+    print_stat_bar
+    (
+        "Health",
+        character->health,
+        character->max_health,
+        -1
+    );
+
+    // Print mana bar
+    print_stat_bar
+    (
+        "  Mana",
+        character->mana,
+        character->max_mana,
+        0x2596be // Eastern Blue
+    );
+
+    // Print gold
+    printf("  Gold ");
+    color_printf(0xFFD700, "%d\n", character->gold);
 }

@@ -111,4 +111,10 @@ void print_stat_bar
     int color
 );
 
+/**
+ * @brief Prints health & mana bars & their gold
+ * @param character Pointer to the character
+ */
+void print_character_stats(Character *character);
+
 #endif // MENUS_H
