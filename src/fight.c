@@ -68,12 +68,24 @@ unsigned char battle(Character *player)
     Monsters *head = generate_random_monsters_list();
     Character *monster;
 
+    // Get number of monsters in the list
+    unsigned char number_of_monsters = 0;
+    Monsters *current = head;
+    while (current)
+    {
+        number_of_monsters++;
+        current = current->next;
+    }
+
     while (head)
     {
         switch (battle_actions_menu(player, head))
         {
             case 1:
-                monster = monster_selection_menu(head);
+                // If there is only one monster, select it automatically
+                if (number_of_monsters == 1) monster = head->monster;
+                else monster = monster_selection_menu(head);
+
                 switch (attack_selection_menu())
                 {
                     case 1:
@@ -110,6 +122,7 @@ unsigned char battle(Character *player)
             // Free dead monster & target next monster if any
             head = update_monsters_list(head);
             monster = head ? head->monster : NULL;
+            number_of_monsters--;
         }
 
         if (player->health == 0)
