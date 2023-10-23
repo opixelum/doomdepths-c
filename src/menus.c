@@ -249,3 +249,23 @@ unsigned char attack_selection_menu()
         return choice;
     } while (1);
 }
+
+void color_printf(unsigned int hexcolor, const char *format, ...)
+{
+    // Extract RGB components from the hexadecimal color
+    unsigned int r = (hexcolor >> 16) & 0xFF;
+    unsigned int g = (hexcolor >> 8) & 0xFF;
+    unsigned int b = hexcolor & 0xFF;
+
+    // Print the beginning of the 24-bit ANSI color escape sequence
+    printf("\033[38;2;%d;%d;%dm", r, g, b);
+
+    // Print the formatted string
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+
+    // Reset the color
+    printf("\033[0m");
+}

@@ -1,6 +1,7 @@
 #ifndef MENUS_H
 #define MENUS_H
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -85,5 +86,13 @@ Character *monster_selection_menu(Monsters *head);
  * @return 1 if weapon, 2 if spell, 0 on error
  */
 unsigned char attack_selection_menu();
+
+/**
+ * @brief `printf()`, but in color
+ * @param hexcolor Color to print in hexadecimal format
+ * @param format Format string
+ * @param ... Arguments to format string
+ */
+void color_printf(unsigned int hexcolor, const char *format, ...);
 
 #endif // MENUS_H
