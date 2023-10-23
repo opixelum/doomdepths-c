@@ -269,3 +269,41 @@ void color_printf(unsigned int hexcolor, const char *format, ...)
     // Reset the color
     printf("\033[0m");
 }
+
+void print_stat_bar
+(
+    const char *label,
+    unsigned int current,
+    unsigned int max,
+    int color
+) {
+    printf("%s ", label);
+
+    // Convert stat to a percentage
+    unsigned char percentage = (unsigned char)
+    (
+        (float) current / (float) max * 100.0f
+    );
+
+    // Set color if adaptive
+    if (color == -1)
+    {
+        if (percentage < 10) color = 0xFF0000; // Red if current < 10%
+        else if (percentage < 30) color = 0xFFFF00; // Yellow if current < 30%
+        else color = 0x00FF00; // Green otherwise
+    }
+
+    // Print stat percentage in color
+    for (unsigned char i = 0; i < 100; ++i)
+    {
+        color_printf
+        (
+            color,
+            "%s",
+            i < percentage ? "█" : "-"
+        );
+    }
+
+    // Print stat in number
+    printf(" %d / %d\n", current, max);
+}
