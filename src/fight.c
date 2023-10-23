@@ -89,7 +89,12 @@ unsigned char battle(Character *player)
                 switch (attack_selection_menu())
                 {
                     case 1:
-                        attack(player, monster);
+                        printf
+                        (
+                            "\nYou dealt %d damage on %s\n",
+                            attack(player,monster),
+                            monster->name
+                        );
                         break;
 
                     case 2:
