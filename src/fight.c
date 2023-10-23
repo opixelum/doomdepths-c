@@ -117,7 +117,7 @@ unsigned char battle(Character *player)
 
         if (monster->health > 0) printf
         (
-            "%s delt %d damage on you.\n",
+            "%s dealt %d damage on you.\n",
             monster->name,
             attack(monster, player)
         );
