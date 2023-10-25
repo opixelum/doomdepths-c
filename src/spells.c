@@ -1,6 +1,6 @@
 #include "spells.h"
 
-unsigned char number_of_attack_spell(Character *character)
+unsigned char number_of_attack_spells(Character *character)
 {
     if (!character) return 0;
     if (!character->spells) return 0;
