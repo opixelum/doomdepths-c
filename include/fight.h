@@ -7,7 +7,7 @@
 #include "monsters.h"
 
 /**
- * @brief Attack a defender with an attacker
+ * @brief Attack a defender with an attacker.
  *
  * Damage is calculated with the following formula:
  * damage = attacker_weapon_damage - defender_armor_value
@@ -21,11 +21,13 @@
  *  - Giant: 50;
  *  - Dragon: 70.
  *
- * @param attacker Pointer to the attacker
- * @param defender Pointer to the defender
- * @return The damage dealt to the defender
+ * @param attacker A pointer to the attacker.
+ * @param defender A pointer to the defender.
+ * @param spell A pointer to the spell used by the attacker or NULL if the
+ * attacker uses his weapon or his fists.
+ * @return The damage dealt to the defender.
  */
-unsigned short attack(Character *attacker, Character *defender);
+unsigned short attack(Character *attacker, Character *defender, Item *spell);
 
 /**
  * @brief Update monsters list if a monster is dead
