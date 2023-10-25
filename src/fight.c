@@ -85,56 +85,70 @@ unsigned char battle(Character *player)
     {
         switch (battle_actions_menu(player, head))
         {
-            case 1:
-                // If there is only one monster, select it automatically
-                if (number_of_monsters == 1) monster = head->monster;
-                else monster = monster_selection_menu(head);
+        case 1:
+            // If there is only one monster, select it automatically
+            if (number_of_monsters == 1) monster = head->monster;
+            else monster = monster_selection_menu(head);
 
-                // If player has no attack spell, don't ask him to choose
-                if (!number_of_attack_spells(player))
+            // If player has no attack spell, don't ask him to choose
+            if (!number_of_attack_spells(player))
+                printf
+                (
+                    "\nYou dealt %d damage on %s\n",
+                    attack(player, monster, NULL),
+                    monster->name
+                );
+            else
+                switch (attack_selection_menu())
+                {
+                case 1:
                     printf
                     (
                         "\nYou dealt %d damage on %s\n",
                         attack(player, monster, NULL),
                         monster->name
                     );
-                else
-                    switch (attack_selection_menu())
-                    {
-                        case 1:
-                            printf
+                    break;
+
+                case 2:
+                    // If there's only one attack spell, select it automatically
+                    if (number_of_attack_spells(player) == 1)
+                        printf
+                        (
+                            "\nYou dealt %d damage on %s\n",
+                            attack
                             (
-                                "\nYou dealt %d damage on %s\n",
-                                attack(player, monster, NULL),
-                                monster->name
-                            );
-                            break;
-
-                        case 2:
-                            printf
+                                player,
+                                monster,
+                                get_attack_spell(player)
+                            ),
+                            monster->name
+                        );
+                    else
+                        printf
+                        (
+                            "\nYou dealt %d damage on %s\n",
+                            attack
                             (
-                                "\nYou dealt %d damage on %s\n",
-                                attack
-                                (
-                                    player,
-                                    monster,
-                                    spell_selection_menu(player)
-                                ),
-                                monster->name
-                            );
-                            break;
-                    }
-                break;
+                                player,
+                                monster,
+                                spell_selection_menu(player)
+                            ),
+                            monster->name
+                        );
+                    break;
+                }
+            break;
 
-            case 2:
-                // TODO: Implement drink potion
-                printf("\nDrink potion\n");
-                break;
+        case 2:
+            // TODO: Implement drink potion
+            printf("\nDrink potion\n");
+            break;
 
-            case 3:
-                free_monsters_list(head);
-                printf("\nYou fled!\n");
-                return 0;
+        case 3:
+            free_monsters_list(head);
+            printf("\nYou fled!\n");
+            return 0;
         }
 
         if (monster->health > 0) printf
