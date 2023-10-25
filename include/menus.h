@@ -117,4 +117,11 @@ void print_stat_bar
  */
 void print_character_stats(Character *character);
 
+/**
+ * @brief Prompts user to choose a spell among a character's spells list.
+ * @param character A pointer to the character who has the spells list
+ * @return A pointer to the selected spell, NULL on error.
+ */
+Item *spell_selection_menu(Character *character);
+
 #endif // MENUS_H

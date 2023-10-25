@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "spells.h"
 #include "stuff.h"
 
 typedef struct Character
