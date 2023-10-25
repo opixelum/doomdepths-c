@@ -5,6 +5,7 @@
 
 #include "menus.h"
 #include "monsters.h"
+#include "spells.h"
 
 /**
  * @brief Attack a defender with an attacker.
