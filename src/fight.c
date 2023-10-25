@@ -94,9 +94,10 @@ unsigned char battle(Character *player)
             if (!number_of_attack_spells(player))
                 printf
                 (
-                    "\nYou dealt %d damage on %s\n",
+                    "\nYou dealt %d damage to %s using your %s.\n",
                     attack(player, monster, NULL),
-                    monster->name
+                    monster->name,
+                    player->weapon ? player->weapon->name : "fists"
                 );
             else
                 switch (attack_selection_menu())
@@ -104,38 +105,47 @@ unsigned char battle(Character *player)
                 case 1:
                     printf
                     (
-                        "\nYou dealt %d damage on %s\n",
+                        "\nYou dealt %d damage to %s using your %s.\n",
                         attack(player, monster, NULL),
-                        monster->name
+                        monster->name,
+                        player->weapon ? player->weapon->name : "fists"
                     );
                     break;
 
                 case 2:
                     // If there's only one attack spell, select it automatically
                     if (number_of_attack_spells(player) == 1)
+                    {
+                        Item *spell = get_attack_spell(player);
                         printf
                         (
-                            "\nYou dealt %d damage on %s\n",
+                            "\nYou dealt %d damage to %s by casting %s spell.\n",
                             attack
                             (
                                 player,
                                 monster,
-                                get_attack_spell(player)
+                                spell
                             ),
-                            monster->name
+                            monster->name,
+                            spell->name
                         );
+                    }
                     else
+                    {
+                        Item *spell = spell_selection_menu(player);
                         printf
                         (
-                            "\nYou dealt %d damage on %s\n",
+                            "\nYou dealt %d damage to %s by casting %s spell.\n",
                             attack
                             (
                                 player,
                                 monster,
-                                spell_selection_menu(player)
+                                spell
                             ),
-                            monster->name
+                            monster->name,
+                            spell->name
                         );
+                    }
                     break;
                 }
             break;
@@ -153,7 +163,7 @@ unsigned char battle(Character *player)
 
         if (monster->health > 0) printf
         (
-            "%s dealt %d damage on you.\n",
+            "%s dealt %d damage to you.\n",
             monster->name,
             attack(monster, player, NULL)
         );
