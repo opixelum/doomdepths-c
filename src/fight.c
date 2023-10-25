@@ -5,9 +5,9 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
     if (!attacker || !defender) return 0;
     if (defender->health == 0) return 0;
 
-    unsigned short damage = 0;
+    unsigned short damage;
 
-    if (spell->type == ATTACK_SPELL) damage = spell->value;
+    if (spell && spell->type == ATTACK_SPELL) damage = spell->value;
     else
     {
         if (!attacker->weapon)
@@ -102,8 +102,17 @@ unsigned char battle(Character *player)
                         break;
 
                     case 2:
-                        // TODO: Implement spell attack
-                        printf("\nSpell attack\n");
+                        printf
+                        (
+                            "\nYou dealt %d damage on %s\n",
+                            attack
+                            (
+                                player,
+                                monster,
+                                spell_selection_menu(player)
+                            ),
+                            monster->name
+                        );
                         break;
                 }
                 break;
