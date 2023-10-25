@@ -90,31 +90,40 @@ unsigned char battle(Character *player)
                 if (number_of_monsters == 1) monster = head->monster;
                 else monster = monster_selection_menu(head);
 
-                switch (attack_selection_menu())
-                {
-                    case 1:
-                        printf
-                        (
-                            "\nYou dealt %d damage on %s\n",
-                            attack(player, monster, NULL),
-                            monster->name
-                        );
-                        break;
-
-                    case 2:
-                        printf
-                        (
-                            "\nYou dealt %d damage on %s\n",
-                            attack
+                // If player has no attack spell, don't ask him to choose
+                if (!number_of_attack_spells(player))
+                    printf
+                    (
+                        "\nYou dealt %d damage on %s\n",
+                        attack(player, monster, NULL),
+                        monster->name
+                    );
+                else
+                    switch (attack_selection_menu())
+                    {
+                        case 1:
+                            printf
                             (
-                                player,
-                                monster,
-                                spell_selection_menu(player)
-                            ),
-                            monster->name
-                        );
-                        break;
-                }
+                                "\nYou dealt %d damage on %s\n",
+                                attack(player, monster, NULL),
+                                monster->name
+                            );
+                            break;
+
+                        case 2:
+                            printf
+                            (
+                                "\nYou dealt %d damage on %s\n",
+                                attack
+                                (
+                                    player,
+                                    monster,
+                                    spell_selection_menu(player)
+                                ),
+                                monster->name
+                            );
+                            break;
+                    }
                 break;
 
             case 2:
