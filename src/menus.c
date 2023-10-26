@@ -83,52 +83,33 @@ unsigned char no_enter_getchar(void)
 
 void main_menu(unsigned char *is_running)
 {
-    // First loop for repeating the menu if user enters an invalid choice
-    do
+    clear_screen();
+    printf
+    (
+        "Welcome to Doomdepths C! What do you want to do?\n\n"
+        "    1. Start a new game\n"
+        "    2. Continue my last game\n"
+        "    3. Quit\n"
+        "\nPress the number of your choice on your keyboard."
+    );
+
+    switch (no_enter_get_valid_digit(1, 3))
     {
-        char *input = NULL;
-        clear_lines(10); // Main menu is at most 10 lines long
-        printf("DoomdepthsC\n\n    1. New Game\n    2. Continue Game\n    3. Quit\n\n");
+        case 1:
+            // TODO: Implement New Game
+            printf("New Game\n");
+            break;
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(1);
-                free(input);
-            }
-            printf("Enter your choice (1, 2 or 3): ");
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
+        case 2:
+            // TODO: Implement Continue Game
+            printf("Continue Game\n");
+            break;
 
-        switch (input[0])
-        {
-            case '1':
-                // TODO: Implement New Game
-                printf("New Game\n");
-                break;
-
-            case '2':
-                // TODO: Implement Continue Game
-                printf("Continue Game\n");
-                break;
-
-            case '3':
-                clear_screen();
-                *is_running = 0;
-                free(input);
-                return;
-
-            default:
-                printf("Invalid choice!\n");
-                break;
-        }
-
-        free(input);
-        wait_for_enter();
-    } while (1);
+        case 3:
+            clear_screen();
+            *is_running = 0;
+            return;
+    }
 }
 
 unsigned char battle_actions_menu(Character *player, Monsters *head)
