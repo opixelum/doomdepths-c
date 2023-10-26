@@ -135,45 +135,18 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
 {
     if (!player || !head) return 0;
 
-    // First loop for repeating the menu if user enters an invalid choice
-    do
-    {
-        char *input = NULL;
-        clear_lines(12); // Main menu is at most 10 lines long
-        printf
-        (
-            "DoomdepthsC - Battle\n\n"
-            "    1. Attack\n"
-            "    2. Drink potion\n"
-            "    3. Flee\n\n"
-        );
+    clear_screen();
+    print_character_stats(player);
+    printf
+    (
+        "\nWhat do you want to do now?\n\n"
+        "    1. Attack\n"
+        "    2. Drink potion\n"
+        "    3. Flee\n"
+        "\nPress the number of your choice on your keyboard."
+    );
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(1);
-                free(input);
-            }
-            printf("Enter your choice (1, 2 or 3): ");
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
-
-        // Convert input to integer for returning directly
-        long choice = strtol(input, NULL, 10);
-        free(input);
-
-        if (choice < 1 || choice > 3)
-        {
-            printf("\nInvalid choice!\n");
-            wait_for_enter();
-            continue;
-        }
-
-        return choice;
-    } while (1);
+    return no_enter_get_valid_digit(1, 3);
 }
 
 Character *monster_selection_menu(Character *character, Monsters *head)
@@ -304,7 +277,6 @@ Item *spell_selection_menu(Character *character)
 {
     if (!character) return NULL;
 
-    // Spell selection menu is at most 12 lines long
     clear_screen();
     print_character_stats(character);
     printf("\nWhich attack spell do you want to cast?\n\n");
