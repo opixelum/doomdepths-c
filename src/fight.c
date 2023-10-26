@@ -88,7 +88,7 @@ unsigned char battle(Character *player)
         case 1:
             // If there is only one monster, select it automatically
             if (number_of_monsters == 1) monster = head->monster;
-            else monster = monster_selection_menu(head);
+            else monster = monster_selection_menu(player, head);
 
             // If player has no attack spell, don't ask him to choose
             if (!number_of_attack_spells(player))
@@ -100,7 +100,7 @@ unsigned char battle(Character *player)
                     player->weapon ? player->weapon->name : "fists"
                 );
             else
-                switch (attack_selection_menu())
+                switch (attack_selection_menu(player))
                 {
                 case 1:
                     printf

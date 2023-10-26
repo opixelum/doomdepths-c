@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "monsters.h"
 
@@ -52,6 +54,15 @@ void wait_for_enter();
 char *get_user_input();
 
 /**
+ * @brief Get a single character from stdin (like `getchar()`) without waiting
+ * for [ENTER] key, by temporary setting the terminal to unbuffered mode.
+ * @return The character.
+ * @warning This function is not cross-platform because it uses termios.h, which
+ * is only available on Unix systems.
+ */
+unsigned char no_enter_getchar(void);
+
+/**
  * @brief Prints main menu.
  *
  * 3 options:
@@ -76,16 +87,18 @@ unsigned char battle_actions_menu(Character *player, Monsters *head);
 
 /**
  * @brief Prompts user to choose a monster to attack among the monsters list.
- * @param head Pointer to the head of the monsters list
- * @return Pointer to the selected monster, NULL on error
+ * @param character A pointer to the character for printing his stats.
+ * @param head A pointer to the head of the monsters list.
+ * @return A pointer to the selected monster, NULL on error.
  */
-Character *monster_selection_menu(Monsters *head);
+Character *monster_selection_menu(Character *character, Monsters *head);
 
 /**
- * @brief Prompts user to choose between an weapon or a spell
- * @return 1 if weapon, 2 if spell, 0 on error
+ * @brief Prompts user to choose between an weapon or a spell.
+ * @param character A pointer to the character for printing his stats.
+ * @return 1 if weapon, 2 if spell, 0 on error.
  */
-unsigned char attack_selection_menu();
+unsigned char attack_selection_menu(Character *character);
 
 /**
  * @brief `printf()`, but in color
@@ -123,5 +136,17 @@ void print_character_stats(Character *character);
  * @return A pointer to the selected spell, NULL on error.
  */
 Item *spell_selection_menu(Character *character);
+
+/**
+ * @brief Gets a digit between min and max from user input without waiting for
+ * [ENTER] key. It will keep reading input until a valid digit is entered.
+ * @param min The minimum valid number (included).
+ * @param max The maximum valid number (included).
+ * @return The number read from user input.
+ * @warning This function is not cross-platform because it uses termios.h, which
+ * is only available on Unix systems. It can only read one character, so only
+ * positive digits between 0 and 9 included are valid.
+ */
+unsigned char no_enter_get_valid_digit(unsigned char min, unsigned char max);
 
 #endif // MENUS_H
