@@ -1,6 +1,6 @@
 #include "menus.h"
 
-void clear_screen()
+void clear_screen(void)
 {
     printf("\e[1;1H\e[2J");
 }
@@ -10,19 +10,19 @@ void clear_lines(unsigned int number_of_lines)
     for (int i = 0; i < number_of_lines; ++i) printf("\x1b[1F\x1b[2K");
 }
 
-void clear_stdin()
+void clear_stdin(void)
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
 }
 
-void wait_for_enter()
+void wait_for_enter(void)
 {
     printf("\nPress [ENTER] to continue...");
     clear_stdin();
 }
 
-char *get_user_input()
+char *get_user_input(void)
 {
     // Allocate memory for the string with the maximum size for 255 characters
     char *input = malloc(256 * sizeof input);
