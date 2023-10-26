@@ -58,6 +58,29 @@ char *get_user_input()
     return input;
 }
 
+unsigned char direct_getchar(void)
+{
+    struct termios old_terminal_settings, new_terminal_settings;
+    unsigned char character;
+
+    // Get the current terminal settings
+    tcgetattr(STDIN_FILENO, &old_terminal_settings);
+    new_terminal_settings = old_terminal_settings;
+
+    // Set the terminal to unbuffered mode, so that characters are available
+    // to be read immediately instead of waiting for the user to press [ENTER]
+    new_terminal_settings.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_terminal_settings);
+
+    // Read a character
+    character = getchar();
+
+    // Restore the original terminal settings
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_terminal_settings);
+
+    return character;
+}
+
 void main_menu(unsigned char *is_running)
 {
     // First loop for repeating the menu if user enters an invalid choice

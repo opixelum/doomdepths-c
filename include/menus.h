@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "monsters.h"
 
@@ -50,6 +52,15 @@ void wait_for_enter();
  * @return Pointer to the string or character containing user input
  */
 char *get_user_input();
+
+/**
+ * @brief Get a single character from stdin (like `getchar()`) without waiting
+ * for [ENTER] key, by temporary setting the terminal to unbuffered mode.
+ * @return The character.
+ * @warning This function is not cross-platform because it uses termios.h, which
+ * is only available on Unix systems.
+ */
+unsigned char direct_getchar(void);
 
 /**
  * @brief Prints main menu.
