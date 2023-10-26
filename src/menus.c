@@ -58,7 +58,7 @@ char *get_user_input()
     return input;
 }
 
-unsigned char direct_getchar(void)
+unsigned char noenter_getchar(void)
 {
     struct termios old_terminal_settings, new_terminal_settings;
     unsigned char character;
@@ -161,7 +161,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         }
         while (!strlen(input)); // While length of input is 0
 
-        // Convert input to integer for direct return
+        // Convert input to integer for returning directly
         long choice = strtol(input, NULL, 10);
         free(input);
 
@@ -216,7 +216,7 @@ Character *monster_selection_menu(Monsters *head)
         }
         while (!strlen(input)); // While length of input is 0
 
-        // Convert input to integer for direct return
+        // Convert input to integer for returning directly
         long choice = strtol(input, NULL, 10);
         free(input);
 
@@ -245,7 +245,7 @@ unsigned char attack_selection_menu(Character *character)
         "\nPress the number of your choice on your keyboard."
     );
 
-    return get_valid_digit(1, 2);
+    return no_enter_get_valid_digit(1, 2);
 }
 
 void color_printf(unsigned int hexcolor, const char *format, ...)
@@ -357,13 +357,13 @@ Item *spell_selection_menu(Character *character)
     printf("\nPress the number of your choice on your keyboard.");
 
     // -1 because array starts at 0
-    return spells[get_valid_digit(1, number_of_spells) - 1];
+    return spells[no_enter_get_valid_digit(1, number_of_spells) - 1];
 }
 
-unsigned char get_valid_digit(unsigned char min, unsigned char max)
+unsigned char no_enter_get_valid_digit(unsigned char min, unsigned char max)
 {
     unsigned char input;
-    do input = direct_getchar() - '0'; // Convert ASCII to integer
+    do input = no_enter_getchar() - '0'; // Convert ASCII to integer
     while (input < min || input > max);
     return input;
 }
