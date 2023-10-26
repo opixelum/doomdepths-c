@@ -17,7 +17,7 @@
  * - "\e[1;1H" moves cursor to top left corner of terminal screen;
  * - "\e[2J" replaces all characters of the terminal screen with spaces.
  */
-void clear_screen();
+void clear_screen(void);
 
 /**
  * @brief Cross-platform function to clear a given number of console lines.
@@ -36,7 +36,7 @@ void clear_lines(unsigned int number_of_lines);
  * When calling getchar(), it clears a character from stdin buffer.
  * While it's not a newline character, or EOF, it keeps clearing characters.
  */
-void clear_stdin();
+void clear_stdin(void);
 
 /**
  * @brief Waits for user to press [ENTER] key.
@@ -44,14 +44,14 @@ void clear_stdin();
  * Uses getchar() in clearStdin() to wait for [ENTER] key.
  * Then, it clears the stdin buffer (in case user pressed more than one key).
  */
-void wait_for_enter();
+void wait_for_enter(void);
 
 /**
  * @brief Get the user input from stdin
  *
  * @return Pointer to the string or character containing user input
  */
-char *get_user_input();
+char *get_user_input(void);
 
 /**
  * @brief Get a single character from stdin (like `getchar()`) without waiting
