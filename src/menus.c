@@ -35,7 +35,7 @@ char *get_user_input()
     // Get user input from stdin buffer
     fgets(input, 256, stdin);
 
-    // Remove trailing newline & retrun carriage characters
+    // Remove trailing newline & return carriage characters
     input[strcspn(input, "\n\r")] = '\0';
 
     // Check if input is a string or a character
@@ -95,20 +95,20 @@ void main_menu(unsigned char *is_running)
 
     switch (no_enter_get_valid_digit(1, 3))
     {
-        case 1:
-            // TODO: Implement New Game
-            printf("New Game\n");
-            break;
+    case 1:
+        // TODO: Implement New Game
+        printf("New Game\n");
+        break;
 
-        case 2:
-            // TODO: Implement Continue Game
-            printf("Continue Game\n");
-            break;
+    case 2:
+        // TODO: Implement Continue Game
+        printf("Continue Game\n");
+        break;
 
-        case 3:
-            clear_screen();
-            *is_running = 0;
-            return;
+    case 3:
+        clear_screen();
+        *is_running = 0;
+        return;
     }
 }
 
@@ -132,7 +132,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
 
 Character *monster_selection_menu(Character *character, Monsters *head)
 {
-    if (!head) return NULL;
+    if (!character || !head) return NULL;
 
     clear_screen();
     print_character_stats(character);
@@ -149,6 +149,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 
     printf("\nPress the number of your choice on your keyboard.");
 
+    // -1 because array starts at 0
     return monsters[no_enter_get_valid_digit(1, number_of_monsters) - 1];
 }
 
