@@ -188,8 +188,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     unsigned char number_of_monsters = 0;
     while (head)
     {
-        number_of_monsters++;
-        printf("    %d. %s\n", number_of_monsters, head->monster->name);
+        printf("    %d. %s\n", ++number_of_monsters, head->monster->name);
         monsters[number_of_monsters - 1] = head->monster;
         head = head->next;
     }
@@ -316,8 +315,7 @@ Item *spell_selection_menu(Character *character)
     unsigned char number_of_spells = 0;
     while (spells_list)
     {
-        number_of_spells++;
-        printf("    %d. %s\n", number_of_spells, spells_list->item->name);
+        printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
         spells[number_of_spells - 1] = spells_list->item;
         spells_list = spells_list->next;
     }
