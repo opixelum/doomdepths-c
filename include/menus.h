@@ -136,4 +136,16 @@ void print_character_stats(Character *character);
  */
 Item *spell_selection_menu(Character *character);
 
+/**
+ * @brief Gets a digit between min and max from user input without waiting for
+ * [ENTER] key. It will keep reading input until a valid digit is entered.
+ * @param min The minimum valid number (included).
+ * @param max The maximum valid number (included).
+ * @return The number read from user input.
+ * @warning This function is not cross-platform because it uses termios.h, which
+ * is only available on Unix systems. It can only read one character, so only
+ * positive digits between 0 and 9 included are valid.
+ */
+unsigned char get_valid_digit(unsigned char min, unsigned char max);
+
 #endif // MENUS_H

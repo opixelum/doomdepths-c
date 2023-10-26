@@ -245,12 +245,7 @@ unsigned char attack_selection_menu(Character *character)
         "\nPress the number of your choice on your keyboard."
     );
 
-    // Keep reading input until it's a valid number
-    unsigned char input;
-    do input = direct_getchar() - '0'; // Convert ASCII to integer
-    while (input < 1 || input > 2);
-
-    return input;
+    return get_valid_digit(1, 2);
 }
 
 void color_printf(unsigned int hexcolor, const char *format, ...)
@@ -359,11 +354,16 @@ Item *spell_selection_menu(Character *character)
         spells_list = spells_list->next;
     }
 
-    // Keep reading input until it's a valid number
     printf("\nPress the number of your choice on your keyboard.");
+
+    // -1 because array starts at 0
+    return spells[get_valid_digit(1, number_of_spells) - 1];
+}
+
+unsigned char get_valid_digit(unsigned char min, unsigned char max)
+{
     unsigned char input;
     do input = direct_getchar() - '0'; // Convert ASCII to integer
-    while (input < 1 || input > number_of_spells);
-
-    return spells[input - 1]; // -1 because array starts at 0
+    while (input < min || input > max);
+    return input;
 }
