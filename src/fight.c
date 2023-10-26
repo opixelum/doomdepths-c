@@ -100,7 +100,7 @@ unsigned char battle(Character *player)
                     player->weapon ? player->weapon->name : "fists"
                 );
             else
-                switch (attack_selection_menu())
+                switch (attack_selection_menu(player))
                 {
                 case 1:
                     printf

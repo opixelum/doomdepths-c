@@ -231,46 +231,26 @@ Character *monster_selection_menu(Monsters *head)
     } while (1);
 }
 
-unsigned char attack_selection_menu()
+unsigned char attack_selection_menu(Character *character)
 {
-    // First loop for repeating the menu if user enters an invalid choice
-    do
-    {
-        char *input = NULL;
-        clear_lines(10); // Main menu is at most 10 lines long
-        printf
-        (
-            "DoomdepthsC - Select an attack\n\n"
-            "    1. Weapon attack\n"
-            "    2. Spell attack\n\n"
-        );
+    if (!character) return 0;
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(1);
-                free(input);
-            }
-            printf("Enter your choice (1 or 2): ");
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
+    clear_screen();
+    print_character_stats(character);
+    printf
+    (
+        "\nWould you rather use your weapon or cast a spell?\n\n"
+        "    1. Weapon attack\n"
+        "    2. Spell attack\n"
+        "\nPress the number of your choice on your keyboard."
+    );
 
-        // Convert input to integer for direct return
-        long choice = strtol(input, NULL, 10);
-        free(input);
+    // Keep reading input until it's a valid number
+    unsigned char input;
+    do input = direct_getchar() - '0'; // Convert ASCII to integer
+    while (input < 1 || input > 2);
 
-        if (choice < 1 || choice > 3)
-        {
-            printf("\nInvalid choice!\n");
-            wait_for_enter();
-            continue;
-        }
-
-        return choice;
-    } while (1);
+    return input;
 }
 
 void color_printf(unsigned int hexcolor, const char *format, ...)

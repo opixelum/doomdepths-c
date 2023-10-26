@@ -93,10 +93,11 @@ unsigned char battle_actions_menu(Character *player, Monsters *head);
 Character *monster_selection_menu(Monsters *head);
 
 /**
- * @brief Prompts user to choose between an weapon or a spell
- * @return 1 if weapon, 2 if spell, 0 on error
+ * @brief Prompts user to choose between an weapon or a spell.
+ * @param character A pointer to the character for printing his stats.
+ * @return 1 if weapon, 2 if spell, 0 on error.
  */
-unsigned char attack_selection_menu();
+unsigned char attack_selection_menu(Character *character);
 
 /**
  * @brief `printf()`, but in color
