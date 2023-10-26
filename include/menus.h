@@ -87,10 +87,11 @@ unsigned char battle_actions_menu(Character *player, Monsters *head);
 
 /**
  * @brief Prompts user to choose a monster to attack among the monsters list.
- * @param head Pointer to the head of the monsters list
- * @return Pointer to the selected monster, NULL on error
+ * @param character A pointer to the character for printing his stats.
+ * @param head A pointer to the head of the monsters list.
+ * @return A pointer to the selected monster, NULL on error.
  */
-Character *monster_selection_menu(Monsters *head);
+Character *monster_selection_menu(Character *character, Monsters *head);
 
 /**
  * @brief Prompts user to choose between an weapon or a spell.

@@ -58,7 +58,7 @@ char *get_user_input()
     return input;
 }
 
-unsigned char noenter_getchar(void)
+unsigned char no_enter_getchar(void)
 {
     struct termios old_terminal_settings, new_terminal_settings;
     unsigned char character;
@@ -176,59 +176,27 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
     } while (1);
 }
 
-Character *monster_selection_menu(Monsters *head)
+Character *monster_selection_menu(Character *character, Monsters *head)
 {
     if (!head) return NULL;
 
-    // First loop for repeating the menu if user enters an invalid choice
-    do
+    clear_screen();
+    print_character_stats(character);
+    printf("\nWhich monster do you want to attack now?\n\n");
+
+    Character *monsters[5];
+    unsigned char number_of_monsters = 0;
+    while (head)
     {
-        char *input = NULL;
-        clear_lines(12); // Main menu is at most 10 lines long
-        printf("DoomdepthsC - Battle - Monsters\n\n");
+        number_of_monsters++;
+        printf("    %d. %s\n", number_of_monsters, head->monster->name);
+        monsters[number_of_monsters - 1] = head->monster;
+        head = head->next;
+    }
 
-        Character *monsters[5];
-        unsigned char number_of_monsters = 0;
-        while (head)
-        {
-            number_of_monsters++;
-            printf("    %d. %s\n", number_of_monsters, head->monster->name);
-            monsters[number_of_monsters - 1] = head->monster;
-            head = head->next;
-        }
+    printf("\nPress the number of your choice on your keyboard.");
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(2);
-                free(input);
-            }
-            printf("\nEnter your choice (");
-            for (unsigned char i = 1; i < number_of_monsters; ++i)
-            {
-                if (i < number_of_monsters - 1) printf("%d, ", i);
-                else printf("%d or %d): ", i, i + 1);
-            }
-
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
-
-        // Convert input to integer for returning directly
-        long choice = strtol(input, NULL, 10);
-        free(input);
-
-        if (choice < 1 || choice > number_of_monsters)
-        {
-            printf("\nInvalid choice!\n");
-            wait_for_enter();
-            continue;
-        }
-
-        return monsters[choice - 1];
-    } while (1);
+    return monsters[no_enter_get_valid_digit(1, number_of_monsters) - 1];
 }
 
 unsigned char attack_selection_menu(Character *character)
