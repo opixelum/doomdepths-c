@@ -125,10 +125,16 @@ void print_stat_bar
 );
 
 /**
- * @brief Prints health & mana bars & their gold
+ * @brief Prints health & mana bars
  * @param character Pointer to the character
  */
 void print_character_stats(Character *character);
+
+/**
+ * @brief Prints character's amount of gold.
+ * @param character A pointer to the character.
+ */
+void print_character_gold(Character *character);
 
 /**
  * @brief Prompts user to choose a spell among a character's spells list.
