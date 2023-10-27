@@ -83,10 +83,12 @@ Inventory *add_item_to_inventory(Inventory *head, Item *item);
 Item *remove_item_from_inventory(Inventory *head, Item *item);
 
 /**
- * @brief Free a linked list of items from memory
- * @param head A pointer to the head of the linked list of items to be freed
- * @warning Every item in the linked list will be freed from memory
- * @warning In case you're not passing the head of the inventory, only the following nodes will be freed
+ * @brief Frees a linked list of items from memory.
+ * @param head A pointer to the head of the linked list of items to be freed.
+ * @warning No item in the linked list will be freed from memory. It only frees
+ * the linked list. You'll have to free each item manually if needed.
+ * @warning In case you're not passing the head of the inventory, only the
+ * following nodes will be freed.
  */
 void free_inventory(Inventory *head);
 
