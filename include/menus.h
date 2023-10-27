@@ -60,7 +60,7 @@ char *get_user_input(void);
  * @warning This function is not cross-platform because it uses termios.h, which
  * is only available on Unix systems.
  */
-unsigned char no_enter_getchar(void);
+unsigned char getchar_no_enter(void);
 
 /**
  * @brief Prints main menu.
@@ -156,6 +156,6 @@ Item *type_spell_selection_menu(Character *character, ItemType spell_type);
  * is only available on Unix systems. It can only read one character, so only
  * positive digits between 0 and 9 included are valid.
  */
-unsigned char no_enter_get_valid_digit(unsigned char min, unsigned char max);
+unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max);
 
 #endif // MENUS_H
