@@ -258,13 +258,26 @@ void print_character_gold(Character *character)
     color_printf(0xFFD700, "%d\n", character->gold);
 }
 
-Item *spell_selection_menu(Character *character)
+Item *type_spell_selection_menu(Character *character, ItemType spell_type)
 {
     if (!character) return NULL;
 
     clear_screen();
     print_character_stats(character);
-    printf("\nWhich attack spell do you want to cast?\n\n");
+
+    switch (spell_type)
+    {
+    case ATTACK_SPELL:
+        printf("\nWhich attack spell do you want to cast?\n\n");
+        break;
+
+    case HEAL_SPELL:
+        printf("\nWhich heal spell do you want to cast?\n\n");
+        break;
+
+    default:
+        return NULL;
+    }
 
     Inventory *spells_list = character->spells;
 
@@ -272,8 +285,11 @@ Item *spell_selection_menu(Character *character)
     unsigned char number_of_spells = 0;
     while (spells_list)
     {
-        printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
-        spells[number_of_spells - 1] = spells_list->item;
+        if (spells_list->item->type == spell_type)
+        {
+            printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
+            spells[number_of_spells - 1] = spells_list->item;
+        }
         spells_list = spells_list->next;
     }
 

@@ -138,10 +138,13 @@ void print_character_gold(Character *character);
 
 /**
  * @brief Prompts user to choose a spell among a character's spells list.
- * @param character A pointer to the character who has the spells list
- * @return A pointer to the selected spell, NULL on error.
+ * @param character A pointer to the character who has the spells list.
+ * @param spell_type The type of the spell to select (ATTACK_SPELL or HEAL_SPELL).
+ * @return A pointer to the selected spell or NULL if character is NULL, or if
+ * the character doesn't have any spell of the given type, or if a wrong item
+ * type is given.
  */
-Item *spell_selection_menu(Character *character);
+Item *type_spell_selection_menu(Character *character, ItemType spell_type);
 
 /**
  * @brief Gets a digit between min and max from user input without waiting for
