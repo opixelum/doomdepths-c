@@ -60,7 +60,8 @@ Inventory *get_type_spells(Character *character, ItemType type)
 
     while (node)
     {
-        if (node->item->type == type) add_item_to_inventory(type_spells, node->item);
+        if (node->item->type == type)
+            type_spells = add_item_to_inventory(type_spells, node->item);
         node = node->next;
     }
 
