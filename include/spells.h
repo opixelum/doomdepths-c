@@ -20,4 +20,24 @@ unsigned char number_of_attack_spells(Character *character);
  */
 Item *get_attack_spell(Character *character);
 
+/**
+ * @brief Get the number of spells of a given type in a character's spells list.
+ * @param character A pointer to the character to check.
+ * @param type A type of spell (`ATTACK_SPELL` or `HEAL_SPELL`).
+ * @return The number of spells of the given type in the character's spells list.
+ */
+unsigned char number_of_type_spells(Character *character, ItemType type);
+
+/**
+ * @brief Get a linked list of spells of a given type in a character's spells
+ * list.
+ * @param character A pointer to the character to check.
+ * @param type A type of spell (`ATTACK_SPELL` or `HEAL_SPELL`).
+ * @return A pointer to the linked list or NULL if the character doesn't have
+ * any spell or if the character is NULL.
+ * @warning The linked list must be freed with free_inventory() when it is no
+ * longer needed.
+ */
+Inventory *get_type_spells(Character *character, ItemType type);
+
 #endif // SPELLS_H

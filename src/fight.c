@@ -114,9 +114,11 @@ unsigned char battle(Character *player)
 
                 case 2:
                     // If there's only one attack spell, select it automatically
-                    if (number_of_attack_spells(player) == 1)
+                    if (number_of_type_spells(player, ATTACK_SPELL) == 1)
                     {
-                        Item *spell = get_attack_spell(player);
+                        Inventory *attack_spells = get_type_spells(player, ATTACK_SPELL);
+                        Item *spell = attack_spells->item;
+                        free_inventory(attack_spells);
                         printf
                         (
                             "\nYou dealt %d damage to %s by casting %s spell.\n",
@@ -132,7 +134,7 @@ unsigned char battle(Character *player)
                     }
                     else
                     {
-                        Item *spell = spell_selection_menu(player);
+                        Item *spell = type_spell_selection_menu(player, ATTACK_SPELL);
                         printf
                         (
                             "\nYou dealt %d damage to %s by casting %s spell.\n",

@@ -95,7 +95,6 @@ void free_inventory(Inventory *head)
     while (head)
     {
         Inventory *next = head->next;
-        if (head->item) free(head->item);
         free(head);
         head = next;
     }

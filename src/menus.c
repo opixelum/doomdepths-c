@@ -58,7 +58,7 @@ char *get_user_input(void)
     return input;
 }
 
-unsigned char no_enter_getchar(void)
+unsigned char getchar_no_enter(void)
 {
     struct termios old_terminal_settings, new_terminal_settings;
     unsigned char character;
@@ -93,7 +93,7 @@ void main_menu(unsigned char *is_running)
         "\nPress the number of your choice on your keyboard."
     );
 
-    switch (no_enter_get_valid_digit(1, 3))
+    switch (get_valid_digit_no_enter(1, 3))
     {
     case 1:
         // TODO: Implement New Game
@@ -127,7 +127,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         "\nPress the number of your choice on your keyboard."
     );
 
-    return no_enter_get_valid_digit(1, 3);
+    return get_valid_digit_no_enter(1, 3);
 }
 
 Character *monster_selection_menu(Character *character, Monsters *head)
@@ -150,7 +150,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     printf("\nPress the number of your choice on your keyboard.");
 
     // -1 because array starts at 0
-    return monsters[no_enter_get_valid_digit(1, number_of_monsters) - 1];
+    return monsters[get_valid_digit_no_enter(1, number_of_monsters) - 1];
 }
 
 unsigned char attack_selection_menu(Character *character)
@@ -167,7 +167,7 @@ unsigned char attack_selection_menu(Character *character)
         "\nPress the number of your choice on your keyboard."
     );
 
-    return no_enter_get_valid_digit(1, 2);
+    return get_valid_digit_no_enter(1, 2);
 }
 
 void color_printf(unsigned int hexcolor, const char *format, ...)
@@ -258,13 +258,26 @@ void print_character_gold(Character *character)
     color_printf(0xFFD700, "%d\n", character->gold);
 }
 
-Item *spell_selection_menu(Character *character)
+Item *type_spell_selection_menu(Character *character, ItemType spell_type)
 {
     if (!character) return NULL;
 
     clear_screen();
     print_character_stats(character);
-    printf("\nWhich attack spell do you want to cast?\n\n");
+
+    switch (spell_type)
+    {
+    case ATTACK_SPELL:
+        printf("\nWhich attack spell do you want to cast?\n\n");
+        break;
+
+    case HEAL_SPELL:
+        printf("\nWhich heal spell do you want to cast?\n\n");
+        break;
+
+    default:
+        return NULL;
+    }
 
     Inventory *spells_list = character->spells;
 
@@ -272,21 +285,24 @@ Item *spell_selection_menu(Character *character)
     unsigned char number_of_spells = 0;
     while (spells_list)
     {
-        printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
-        spells[number_of_spells - 1] = spells_list->item;
+        if (spells_list->item->type == spell_type)
+        {
+            printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
+            spells[number_of_spells - 1] = spells_list->item;
+        }
         spells_list = spells_list->next;
     }
 
     printf("\nPress the number of your choice on your keyboard.");
 
     // -1 because array starts at 0
-    return spells[no_enter_get_valid_digit(1, number_of_spells) - 1];
+    return spells[get_valid_digit_no_enter(1, number_of_spells) - 1];
 }
 
-unsigned char no_enter_get_valid_digit(unsigned char min, unsigned char max)
+unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
 {
     unsigned char input;
-    do input = no_enter_getchar() - '0'; // Convert ASCII to integer
+    do input = getchar_no_enter() - '0'; // Convert ASCII to integer
     while (input < min || input > max);
     return input;
 }
