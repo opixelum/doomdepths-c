@@ -20,4 +20,22 @@ unsigned char number_of_attack_spells(Character *character);
  */
 Item *get_attack_spell(Character *character);
 
+/**
+ * @brief Get the number of spells of a given type in a character's spells list.
+ * @param character A pointer to the character to check.
+ * @param type A type of spell (`ATTACK_SPELL` or `HEAL_SPELL`).
+ * @return The number of spells of the given type in the character's spells list.
+ */
+unsigned char number_of_type_spells(Character *character, ItemType type);
+
+/**
+ * @brief Get the first (or only) spell of a given type in a character's spells
+ * @param character A pointer to the character to check.
+ * @param type A type of spell (`ATTACK_SPELL` or `HEAL_SPELL`).
+ * @return A pointer to the first (or only) spell of the given type in the
+ * character's spells list or NULL if the character doesn't have any or if the
+ * character is NULL.
+ */
+Item *get_type_spell(Character *character, ItemType type);
+
 #endif // SPELLS_H
