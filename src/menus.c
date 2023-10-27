@@ -249,7 +249,10 @@ void print_character_stats(Character *character)
         character->max_mana,
         0x2596be // Eastern Blue
     );
+}
 
+void print_character_gold(Character *character)
+{
     // Print gold
     printf("  Gold ");
     color_printf(0xFFD700, "%d\n", character->gold);
