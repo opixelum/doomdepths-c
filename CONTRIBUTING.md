@@ -4,7 +4,7 @@
 
 - Branches **prefixes**:
     - `feature/` for new features;
-    - `fix/` for bug fixes;
+    - `bugfix/` for bug fixes;
     - `docs/` for documentation changes;
 - Include **issue number** in branch name: `feature/42-foo-bar`;
 - **Meaningful & short** commit messages: `Add foo bar` instead of `Fix bug`;
