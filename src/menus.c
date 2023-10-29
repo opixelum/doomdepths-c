@@ -261,12 +261,18 @@ void print_character_gold(Character *character)
     color_printf(0xFFD700, "%d\n", character->gold);
 }
 
-Item *type_spell_selection_menu(Character *character, ItemType spell_type)
-{
-    if (!character) return NULL;
+Item *type_spell_selection_menu
+(
+    Character *player,
+    Character *monster,
+    ItemType spell_type
+) {
+    if (!player) return NULL;
 
     clear_screen();
-    print_character_stats(character);
+    print_character_stats(player);
+
+    printf("\nYou are attacking %s.\n", monster->name);
 
     switch (spell_type)
     {
@@ -282,7 +288,7 @@ Item *type_spell_selection_menu(Character *character, ItemType spell_type)
         return NULL;
     }
 
-    Inventory *spells_list = character->spells;
+    Inventory *spells_list = player->spells;
 
     Item *spells[9]; // For simplicity when getting user input, 9 spells max
     unsigned char number_of_spells = 0;

@@ -134,7 +134,12 @@ unsigned char battle(Character *player)
                     }
                     else
                     {
-                        Item *spell = type_spell_selection_menu(player, ATTACK_SPELL);
+                        Item *spell = type_spell_selection_menu
+                        (
+                            player,
+                            monster,
+                            ATTACK_SPELL
+                        );
                         printf
                         (
                             "\nYou dealt %d damage to %s by casting %s spell.\n",
