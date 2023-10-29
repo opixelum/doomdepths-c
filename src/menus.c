@@ -153,12 +153,15 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     return monsters[get_valid_digit_no_enter(1, number_of_monsters) - 1];
 }
 
-unsigned char attack_selection_menu(Character *character)
+unsigned char attack_selection_menu(Character *player, Character *monster)
 {
-    if (!character) return 0;
+    if (!player) return 0;
 
     clear_screen();
-    print_character_stats(character);
+    print_character_stats(player);
+
+    printf("\nYou are attacking %s.\n", monster->name);
+
     printf
     (
         "\nWould you rather use your weapon or cast a spell?\n\n"
