@@ -94,7 +94,7 @@ unsigned char battle(Character *player)
             if (!number_of_attack_spells(player))
                 printf
                 (
-                    "\nYou dealt %d damage to %s using your %s.\n",
+                    "\n\nYou dealt %d damage to %s using your %s.\n",
                     attack(player, monster, NULL),
                     monster->name,
                     player->weapon ? player->weapon->name : "fists"
@@ -105,7 +105,7 @@ unsigned char battle(Character *player)
                 case 1:
                     printf
                     (
-                        "\nYou dealt %d damage to %s using your %s.\n",
+                        "\n\nYou dealt %d damage to %s using your %s.\n",
                         attack(player, monster, NULL),
                         monster->name,
                         player->weapon ? player->weapon->name : "fists"
@@ -121,7 +121,7 @@ unsigned char battle(Character *player)
                         free_inventory(attack_spells);
                         printf
                         (
-                            "\nYou dealt %d damage to %s by casting %s spell.\n",
+                            "\n\nYou dealt %d damage to %s by casting %s spell.\n",
                             attack
                             (
                                 player,
@@ -142,7 +142,7 @@ unsigned char battle(Character *player)
                         );
                         printf
                         (
-                            "\nYou dealt %d damage to %s by casting %s spell.\n",
+                            "\n\nYou dealt %d damage to %s by casting %s spell.\n",
                             attack
                             (
                                 player,
