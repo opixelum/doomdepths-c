@@ -95,10 +95,11 @@ Character *monster_selection_menu(Character *character, Monsters *head);
 
 /**
  * @brief Prompts user to choose between an weapon or a spell.
- * @param character A pointer to the character for printing his stats.
+ * @param player A pointer to the player for printing his stats.
+ * @param monster A pointer to the target monster.
  * @return 1 if weapon, 2 if spell, 0 on error.
  */
-unsigned char attack_selection_menu(Character *character);
+unsigned char attack_selection_menu(Character *player, Character *monster);
 
 /**
  * @brief `printf()`, but in color
@@ -137,14 +138,20 @@ void print_character_stats(Character *character);
 void print_character_gold(Character *character);
 
 /**
- * @brief Prompts user to choose a spell among a character's spells list.
- * @param character A pointer to the character who has the spells list.
+ * @brief Prompts user to choose a spell among a player's spells list.
+ * @param player A pointer to the player who has the spells list.
+ * @param monster A pointer to the target monster.
  * @param spell_type The type of the spell to select (ATTACK_SPELL or HEAL_SPELL).
- * @return A pointer to the selected spell or NULL if character is NULL, or if
- * the character doesn't have any spell of the given type, or if a wrong item
+ * @return A pointer to the selected spell or NULL if player is NULL, or if
+ * the player doesn't have any spell of the given type, or if a wrong item
  * type is given.
  */
-Item *type_spell_selection_menu(Character *character, ItemType spell_type);
+Item *type_spell_selection_menu
+(
+    Character *player,
+    Character *monster,
+    ItemType spell_type
+);
 
 /**
  * @brief Gets a digit between min and max from user input without waiting for
