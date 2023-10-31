@@ -159,7 +159,8 @@ unsigned char battle(Character *player)
 
         case 2:
             // TODO: Implement drink potion
-            printf("\nDrink potion\n");
+            printf("\nDrink potion to implement\n");
+            press_any_key_to_continue();
             break;
 
         case 3:
@@ -170,13 +171,13 @@ unsigned char battle(Character *player)
 
         if (monster->health > 0) printf
         (
-            "%s dealt %d damage to you.\n",
+            "%s dealt %d damage to you.\n\n",
             monster->name,
             attack(monster, player, NULL)
         );
         else
         {
-            printf("You killed %s!\n", monster->name);
+            printf("You killed %s!\n\n", monster->name);
             // Free dead monster & target next monster if any
             head = update_monsters_list(head);
             monster = head ? head->monster : NULL;
@@ -189,7 +190,7 @@ unsigned char battle(Character *player)
             return 0;
         }
 
-        wait_for_enter();
+        press_any_key_to_continue();
     }
 
     return 1;
