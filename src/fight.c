@@ -189,7 +189,7 @@ unsigned char battle(Character *player)
             return 0;
         }
 
-        wait_for_enter();
+        press_any_key_to_continue();
     }
 
     return 1;

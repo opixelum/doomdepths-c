@@ -16,10 +16,10 @@ void clear_stdin(void)
     while ((c = getchar()) != '\n' && c != EOF) {}
 }
 
-void wait_for_enter(void)
+void press_any_key_to_continue(void)
 {
-    printf("\nPress [ENTER] to continue...");
-    clear_stdin();
+    printf("Press any key to continue...");
+    getchar_no_enter();
 }
 
 char *get_user_input(void)

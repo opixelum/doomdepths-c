@@ -44,7 +44,7 @@ void clear_stdin(void);
  * Uses getchar() in clearStdin() to wait for [ENTER] key.
  * Then, it clears the stdin buffer (in case user pressed more than one key).
  */
-void wait_for_enter(void);
+void press_any_key_to_continue(void);
 
 /**
  * @brief Get the user input from stdin
