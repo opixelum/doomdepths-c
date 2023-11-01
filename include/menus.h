@@ -170,6 +170,11 @@ unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max);
  * @return A pointer to the user name.
  * @warning The user name must be freed with free() when it is no longer needed.
  */
-char *get_user_name(void);
+char *get_user_name_menu(void);
+
+/**
+ * @brief Initialize a new game
+ */
+unsigned char new_game();
 
 #endif // MENUS_H

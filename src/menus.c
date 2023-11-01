@@ -96,8 +96,7 @@ void main_menu(unsigned char *is_running)
     switch (get_valid_digit_no_enter(1, 3))
     {
     case 1:
-        // TODO: Implement New Game
-        printf("New Game\n");
+        new_game();
         break;
 
     case 2:
@@ -316,7 +315,7 @@ unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
     return input;
 }
 
-char *get_user_name(void)
+char *get_user_name_menu(void)
 {
     clear_screen();
     printf("Before we start, enter your name: ");
@@ -327,4 +326,33 @@ char *get_user_name(void)
     while (!strlen(user_name));
 
     return user_name;
+}
+
+unsigned char new_game(void)
+{
+    // Ask user for his name
+    char *user_name = get_user_name_menu();
+
+    // Create a new character
+    Character *player = create_character
+    (
+        user_name,
+        1,
+        0,
+        1000,
+        100,
+        100,
+        100,
+        100,
+        0,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    );
+
+    printf("Welcome %s!\n", player->name);
+    press_any_key_to_continue();
+
+    return EXIT_SUCCESS;
 }
