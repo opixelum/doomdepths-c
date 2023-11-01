@@ -22,13 +22,13 @@ void press_any_key_to_continue(void)
     getchar_no_enter();
 }
 
-char *get_user_input(void)
+char *get_string(void)
 {
     // Allocate memory for the string with the maximum size for 255 characters
     char *input = malloc(256 * sizeof input);
     if (!input)
     {
-        fprintf(stderr, "ERROR: menus.c: get_user_input: `input` malloc failed\n");
+        fprintf(stderr, "ERROR: menus.c: get_string: `input` malloc failed\n");
         exit(EXIT_FAILURE);
     }
 
@@ -51,7 +51,7 @@ char *get_user_input(void)
     // Check if memory reallocation failed
     if (!input)
     {
-        fprintf(stderr, "ERROR: menus.c: get_user_input: `input` realloc failed\n");
+        fprintf(stderr, "ERROR: menus.c: get_string: `input` realloc failed\n");
         exit(EXIT_FAILURE);
     }
 
@@ -314,4 +314,17 @@ unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
     do input = getchar_no_enter() - '0'; // Convert ASCII to integer
     while (input < min || input > max);
     return input;
+}
+
+char *get_user_name(void)
+{
+    clear_screen();
+    printf("Before we start, enter your name: ");
+
+    char *user_name = NULL;
+
+    do user_name = get_string();
+    while (!strlen(user_name));
+
+    return user_name;
 }

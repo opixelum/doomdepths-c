@@ -51,7 +51,7 @@ void press_any_key_to_continue(void);
  *
  * @return Pointer to the string or character containing user input
  */
-char *get_user_input(void);
+char *get_string(void);
 
 /**
  * @brief Get a single character from stdin (like `getchar()`) without waiting
@@ -164,5 +164,12 @@ Item *type_spell_selection_menu
  * positive digits between 0 and 9 included are valid.
  */
 unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max);
+
+/**
+ * @brief Prompts user to write his user name.
+ * @return A pointer to the user name.
+ * @warning The user name must be freed with free() when it is no longer needed.
+ */
+char *get_user_name(void);
 
 #endif // MENUS_H
