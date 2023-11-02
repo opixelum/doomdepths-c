@@ -57,8 +57,8 @@ float perlin_noise_2d(float x, float y, float freq, int depth, int seed)
 
 int initialize_map()
 {
-    int posx = -1;
-    int posy = -1;
+    int position_x = -1;
+    int position_y = -1;
 
     FILE *map_file = fopen("../map.txt", "w");
     if (!map_file) return -1;
@@ -70,18 +70,26 @@ int initialize_map()
     {
         for (int x = 0; x < COLUMNS; x++)
         {
-            float tmp = perlin_noise_2d(x, y, 0.05, 8, seed);
+            float temp = perlin_noise_2d
+            (
+                (float) x,
+                (float) y,
+                (float) 0.05,
+                8,
+                seed
+            );
+
             if (x == 0 || y == 0 || x == COLUMNS - 1 || y == ROWS - 1)
                 fputc(OBSTACLE, map_file);
             else
             {
-                if (tmp > 0.4 && tmp < 0.65) fputc(GRASS, map_file);
-                else if (tmp <= 0.4)
+                if (temp > 0.4 && temp < 0.65) fputc(GRASS, map_file);
+                else if (temp <= 0.4)
                 {
-                    if (posx == -1 && posy == -1)
+                    if (position_x == -1 && position_y == -1)
                     {
-                        posx = x;
-                        posy = y;
+                        position_x = x;
+                        position_y = y;
                     }
 
                     fputc(PATH, map_file);
@@ -91,7 +99,7 @@ int initialize_map()
         }
         fputc('\n', map_file);
     }
-    fprintf(map_file, "%d %d", posx, posy);
+    fprintf(map_file, "%d %d", position_x, position_y);
     fclose(map_file);
 
     return 0;
