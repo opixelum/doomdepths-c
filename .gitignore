@@ -19,3 +19,5 @@ cmake-build-debug/
 # Valgrind files
 **/vgcore.*
 
+# Map file
+**/map.txt
