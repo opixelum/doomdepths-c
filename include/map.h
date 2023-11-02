@@ -45,6 +45,21 @@ static int HASH[] =
 };
 
 /**
+ * @brief Generates consistent pseudo-random noise based on coordinates and a
+ * seed.
+ *
+ * This function is used for procedural generation applications like terrain or
+ * texture creation. It ensures that the same inputs (coordinates and seed)
+ * always produce the same output.
+ *
+ * @param x The x-coordinate for noise generation.
+ * @param y The y-coordinate for noise generation.
+ * @param seed A seed value to vary the noise pattern.
+ * @return A pseudo-random, consistent integer based on the inputs.
+ */
+int noise(int x, int y, int seed);
+
+/**
  * Linearly interpolates between x and y using s.
  * @param x Start value
  * @param y End value
