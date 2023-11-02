@@ -47,11 +47,6 @@ static int HASH[] =
 /**
  * @brief Generates consistent pseudo-random noise based on coordinates and a
  * seed.
- *
- * This function is used for procedural generation applications like terrain or
- * texture creation. It ensures that the same inputs (coordinates and seed)
- * always produce the same output.
- *
  * @param x The x-coordinate for noise generation.
  * @param y The y-coordinate for noise generation.
  * @param seed A seed value to vary the noise pattern.
@@ -60,22 +55,24 @@ static int HASH[] =
 int noise(int x, int y, int seed);
 
 /**
- * Linearly interpolates between x and y using s.
- * @param x Start value
- * @param y End value
- * @param s Interpolation factor
- * @return Interpolated value
+ * @brief Performs linear interpolation between two values. This is useful for
+ * creating gradual transitions between values.
+ * @param x The start value.
+ * @param y The end value.
+ * @param factor The interpolation factor (0.0 to 1.0).
+ * @return The interpolated value.
  */
-float linear_interpolation(float x, float y, float s);
+float linear_interpolation(float x, float y, float factor);
 
 /**
- * Performs smooth interpolation between x and y using s.
- * @param x Start value
- * @param y End value
- * @param s Interpolation factor
- * @return Smoothly interpolated value
+ * @brief Performs smooth interpolation between two values. Useful for creating
+ * smoother, more natural transitions than linear interpolation.
+ * @param x The start value.
+ * @param y The end value.
+ * @param factor The interpolation factor (0.0 to 1.0), which is modified for smoothness.
+ * @return The interpolated value.
  */
-float smooth_interpolation(float x, float y, float s);
+float smooth_interpolation(float x, float y, float factor);
 
 /**
  * Generates 2D noise based on x, y coordinates and a seed.
