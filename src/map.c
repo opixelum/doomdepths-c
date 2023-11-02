@@ -60,7 +60,7 @@ int initialize_map()
     int position_x = -1;
     int position_y = -1;
 
-    FILE *map_file = fopen("../map.txt", "w");
+    FILE *map_file = fopen("map.txt", "w");
     if (!map_file) return -1;
 
     srand(time(NULL));
@@ -114,7 +114,7 @@ int get_map(Context* context)
         return EXIT_FAILURE;
     }
 
-    FILE *map_file= fopen("../map.txt", "r");
+    FILE *map_file= fopen("map.txt", "r");
     if(!map_file)
     {
         fprintf(stderr, "ERROR: map.c: get_map: map_file: fopen failed\n");
