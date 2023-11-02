@@ -10,15 +10,15 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-/*
+
 void createDatabaseAndTable(sqlite3 *db) {
     char *errMsg = 0;
     const char *sql_create_db = "CREATE DATABASE IF NOT EXISTS doomdepth;";
     const char *sql_use_db = "USE doomdepths;";
-    const char *sql_create_table_player = "CREATE TABLE IF NOT EXISTS player(id INTEGER PRIMARY KEY, name VARCHAR(255), health INT, max_health INT, mana INT, max_mana INT, id_weapon INT, id_armor INT);";
+    const char *sql_create_table_player = "CREATE TABLE IF NOT EXISTS player(id INTEGER PRIMARY KEY, name VARCHAR(255), health INT, max_health INT, mana INT, max_mana INT, id_weapon INT, id_armor INT, gold INT, xp INT, xp_to_next_level INT);";
     const char *sql_create_table_item_type = "CREATE TABLE IF NOT EXISTS item_type(id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255));";
     const char *sql_insert_item_types = "INSERT INTO item_type (label) VALUES ('WEAPON'), ('ARMOR'), ('HEALTH_POTION'), ('MANA_POTION'), ('ATTACK_SPELL'), ('HEAL_SPELL');";
-    const char *sql_create_table_item = "CREATE TABLE IF NOT EXISTS item(id INTEGER PRIMARY KEY AUTOINCREMENT, idType INT, name VARCHAR(255), description VARCHAR(255), value INT, price INT);";
+    const char *sql_create_table_item = "CREATE TABLE IF NOT EXISTS item(id INTEGER PRIMARY KEY AUTOINCREMENT, idType INT, name VARCHAR(255), description VARCHAR(255), value INT, price INT, xp INT, xp_to_next_level INT);";
 
     if (sqlite3_exec(db, sql_create_db, callback, 0, &errMsg) != SQLITE_OK) {
         fprintf(stderr, "Erreur lors de la création de la base de données : %s\n", errMsg);
@@ -55,7 +55,7 @@ void createDatabaseAndTable(sqlite3 *db) {
         sqlite3_free(errMsg);
         exit(1);
     }
-}*/
+}
 
 
 Item* loadItemFromDatabase(sqlite3 *db, int itemId) {
@@ -165,7 +165,7 @@ Inventory* loadSpellsFromDatabase(sqlite3 *db) {
 Player loadPlayerFromDatabase(sqlite3 *db) {
     Player player;
 
-    const char *sql_select_player = "SELECT id, name, health, max_health, mana, max_mana, id_weapon, id_armor FROM player;";
+    const char *sql_select_player = "SELECT id, name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp, xp_to_next_level FROM player;";
 
     sqlite3_stmt *stmt_player;
     if (sqlite3_prepare_v2(db, sql_select_player, -1, &stmt_player, 0) != SQLITE_OK) {
@@ -179,9 +179,13 @@ Player loadPlayerFromDatabase(sqlite3 *db) {
         player.max_health = sqlite3_column_int(stmt_player, 3);
         player.mana = sqlite3_column_int(stmt_player, 4);
         player.max_mana = sqlite3_column_int(stmt_player, 5);
+        player.gold =sqlite3_column_int(stmt_player, 8);
+        player.xp =sqlite3_column_int(stmt_player, 9);
+        player.xp_to_next_level =sqlite3_column_int(stmt_player, 10);
         int id_weapon = sqlite3_column_int(stmt_player, 6);
-        player.weapon = loadItemFromDatabase(db, id_weapon);
         
+        player.weapon = loadItemFromDatabase(db, id_weapon);
+         
         int id_armor = sqlite3_column_int(stmt_player, 7);
         player.armor = loadItemFromDatabase(db, id_armor);
         
@@ -302,7 +306,7 @@ void saveGame(Player player) {
 
     int armorId = insertArmor(db, player.armor);
 
-    const char *sql_insert_player = "INSERT INTO player (name, health, max_health, mana, max_mana, id_weapon, id_armor) VALUES (?, ?, ?, ?, ?, ?, ?);";
+    const char *sql_insert_player = "INSERT INTO player (name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp_to_next_level ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     sqlite3_stmt *stmt_insert_player;
     if (sqlite3_prepare_v2(db, sql_insert_player, -1, &stmt_insert_player, 0) != SQLITE_OK) {
@@ -317,7 +321,9 @@ void saveGame(Player player) {
     sqlite3_bind_int(stmt_insert_player, 5, player.max_mana);
     sqlite3_bind_int(stmt_insert_player, 6, weaponId);
     sqlite3_bind_int(stmt_insert_player, 7, armorId);
-
+    sqlite3_bind_int(stmt_insert_player, 8, player.gold);
+    sqlite3_bind_int(stmt_insert_player, 9, player.xp);
+    sqlite3_bind_int(stmt_insert_player, 10, player.xp_to_next_level);
     if (sqlite3_step(stmt_insert_player) != SQLITE_DONE) {
         fprintf(stderr, "Erreur lors de l'insertion des données du joueur : %s\n", sqlite3_errmsg(db));
         exit(1);
