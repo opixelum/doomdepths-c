@@ -195,3 +195,16 @@ unsigned char battle(Character *player)
 
     return 1;
 }
+
+void random_battle_trigger(Character *player)
+{
+    srand(time(NULL));
+
+    if (rand() % 100 < 10)
+    {
+        clear_screen();
+        printf("You're in trouble! You must fight!\n\n");
+        press_any_key_to_continue();
+        battle(player);
+    }
+}

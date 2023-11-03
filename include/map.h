@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "fight.h"
 #include "menus.h"
 
 #define ROWS 100
@@ -24,6 +25,7 @@ typedef struct MapContext
     int pos_x;
     int pos_y;
     TILE **map;
+    Character *player;
 }
 MapContext;
 
