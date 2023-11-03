@@ -1,6 +1,7 @@
 #include "map.h"
 
-int noise(int x, int y, int seed) {
+int noise(int x, int y, int seed)
+{
     int temp = HASH[(y + seed) % 256];
     return HASH[(temp + x) % 256];
 }
@@ -105,12 +106,12 @@ int initialize_map()
     return 0;
 }
 
-int get_map(Context* context)
+int get_map(MapContext* map_context)
 {
-    context->map = malloc(ROWS * sizeof context->map);
-    if (!context->map)
+    map_context->map = malloc(ROWS * sizeof map_context->map);
+    if (!map_context->map)
     {
-        fprintf(stderr, "ERROR: map.c: get_map: context->map: malloc failed\n");
+        fprintf(stderr, "ERROR: map.c: get_map: map_context->map: malloc failed\n");
         return EXIT_FAILURE;
     }
 
@@ -123,43 +124,128 @@ int get_map(Context* context)
 
     for (int i = 0; i < ROWS; i++)
     {
-        context->map[i] = malloc(COLUMNS * sizeof context->map[i]);
-        for (int j = 0;j < COLUMNS; j++) context->map[i][j] = fgetc(map_file);
+        map_context->map[i] = malloc(COLUMNS * sizeof map_context->map[i]);
+        for (int j = 0;j < COLUMNS; j++) map_context->map[i][j] = fgetc(map_file);
         fgetc(map_file);
     }
 
     int x;
     int y;
     fscanf(map_file, "%d %d", &x, &y);
-    context->pos_x = x;
-    context->pos_y = y;
+    map_context->pos_x = x;
+    map_context->pos_y = y;
 
     fclose(map_file);
 
     return 0;
 }
 
-void display_map(Context* context)
+void display_map(MapContext* map_context)
 {
-    for (int i = context->pos_y - 12; i < context->pos_y + 12; i++)
+    clear_screen();
+
+    for (int i = map_context->pos_y - 12; i < map_context->pos_y + 12; i++)
     {
-        for (int j = context->pos_x - 24; j < context->pos_x + 24; j++)
+        for (int j = map_context->pos_x - 24; j < map_context->pos_x + 24; j++)
         {
             if (i < 0 || j < 0 || j >= ROWS || i >= COLUMNS) printf(" ");
-            else if (j == context->pos_x && i == context->pos_y)
+            else if (j == map_context->pos_x && i == map_context->pos_y)
                 printf("\033[1;31m%c\033[0m",PLAYER);
             else
             {
-                if (context->map[j][i] == OBSTACLE)
-                    printf("\033[1;37m%c",context->map[j][i]);
-                else if (context->map[j][i] == GRASS)
-                    printf("\033[1;32m%c",context->map[j][i]);
+                if (map_context->map[j][i] == OBSTACLE)
+                    printf("\033[1;37m%c", map_context->map[j][i]);
+                else if (map_context->map[j][i] == GRASS)
+                    printf("\033[1;32m%c", map_context->map[j][i]);
                 else
-                    printf("\033[1;33m%c",context->map[j][i]);
+                    printf("\033[1;33m%c", map_context->map[j][i]);
 
-                printf("%c",context->map[j][i]);
+                printf("%c", map_context->map[j][i]);
             }
         }
         printf("\n");
+    }
+}
+
+unsigned char key_listener(unsigned char key, MapContext *map_context)
+{
+    switch (key)
+    {
+    case 'z':
+        if
+        (
+            map_context->pos_y - 1 < 0
+            || map_context->map[map_context->pos_x][map_context->pos_y - 1] == OBSTACLE
+        )
+            break;
+        else if (map_context->map[map_context->pos_x][map_context->pos_y - 1] == GRASS)
+        {
+            map_context->pos_y--;
+            // TODO: randomly start a battle
+        }
+        else map_context->pos_y--;
+        break;
+
+    case 'd':
+        if
+        (
+            map_context->pos_x + 1 > ROWS
+            || map_context->map[map_context->pos_x + 1][map_context->pos_y] == OBSTACLE
+        )
+            break;
+        else if (map_context->map[map_context->pos_x + 1][map_context->pos_y] == GRASS)
+        {
+            map_context->pos_x++;
+            // TODO: randomly start a battle
+        }
+        else map_context->pos_x++;
+        break;
+
+    case 's':
+        if
+        (
+            map_context->pos_y + 1 > COLUMNS
+            || map_context->map[map_context->pos_x][map_context->pos_y + 1] == OBSTACLE
+        )
+            break;
+        else if (map_context->map[map_context->pos_x][map_context->pos_y + 1] == GRASS)
+        {
+            map_context->pos_y+=1;
+            // TODO: randomly start a battle
+        }
+        else map_context->pos_y+=1;
+        break;
+
+    case 'q':
+        if
+        (
+            map_context->pos_x - 1 < 0
+            || map_context->map[map_context->pos_x - 1][map_context->pos_y] == OBSTACLE
+        )
+            break;
+        else if (map_context->map[map_context->pos_x - 1][map_context->pos_y] == GRASS)
+        {
+            map_context->pos_x--;
+            // TODO: randomly start a battle
+        }
+        else map_context->pos_x--;
+        break;
+
+    case 'i':
+        // TODO: display inventory
+        break;
+
+    case 'Q':
+        // TODO: return to main menu
+        return 0;
+    }
+}
+
+void explore_map(MapContext *map_context)
+{
+    while (1)
+    {
+        display_map(map_context);
+        if (key_listener(getchar_no_enter(), map_context) == 0) break;
     }
 }
