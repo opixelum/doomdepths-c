@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "menus.h"
+
 #define ROWS 100
 #define COLUMNS 300
 
@@ -17,13 +19,13 @@ typedef enum TILE
 }
 TILE;
 
-typedef struct Context
+typedef struct MapContext
 {
     int pos_x;
     int pos_y;
     TILE **map;
 }
-Context;
+MapContext;
 
 /**
  * Hash values used for noise generation.
@@ -102,16 +104,31 @@ float perlin_noise_2d(float x, float y, float freq, int depth, int seed);
 int initialize_map();
 
 /**
- * Loads the map from a file into the given context.
- * @param context Pointer to the context structure
+ * Loads the map from a file into the given map_context.
+ * @param map_context Pointer to the map_context structure
  * @return 0 on success, 1 on failure
  */
-int get_map(Context* context);
+int get_map(MapContext* map_context);
 
 /**
- * Displays the map from the given context on the console.
- * @param context Pointer to the context structure
+ * Displays the map from the given map_context on the console.
+ * @param map_context Pointer to the map_context structure
  */
-void display_map(Context* context);
+void display_map(MapContext* map_context);
+
+/**
+ * @brief Get user key & do something depending on the pressed key.
+ * @param key The key pressed by the user.
+ * @param map_context A pointer to map context.
+ * @return 0 if the user pressed 'q' for quit.
+ */
+unsigned char key_listener(unsigned char key, MapContext *map_context);
+
+/**
+ * @brief Event loop for the map, which displays the map and waits for user
+ * input.
+ * @param map_context A pointer to map context.
+ */
+void explore_map(MapContext *map_context);
 
 #endif // MAP_H
