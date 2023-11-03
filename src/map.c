@@ -1,6 +1,7 @@
 #include "map.h"
 
-int noise(int x, int y, int seed) {
+int noise(int x, int y, int seed)
+{
     int temp = HASH[(y + seed) % 256];
     return HASH[(temp + x) % 256];
 }
