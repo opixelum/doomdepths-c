@@ -45,4 +45,10 @@ Monsters *update_monsters_list(Monsters *head);
  */
 unsigned char battle(Character *player);
 
+/**
+ * @brief Randomly trigger a battle (1/10 chance)
+ * @param A pointer to the player
+ */
+void random_battle_trigger(Character *player);
+
 #endif // FIGHT_H
