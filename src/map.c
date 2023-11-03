@@ -141,6 +141,8 @@ int get_map(MapContext* map_context)
 
 void display_map(MapContext* map_context)
 {
+    clear_screen();
+
     for (int i = map_context->pos_y - 12; i < map_context->pos_y + 12; i++)
     {
         for (int j = map_context->pos_x - 24; j < map_context->pos_x + 24; j++)
@@ -169,8 +171,6 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     switch (key)
     {
     case 'z':
-        printf("Going forward\n");
-
         if
         (
             map_context->pos_y - 1 < 0
@@ -186,8 +186,6 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         break;
 
     case 'd':
-        printf("Going right\n");
-
         if
         (
             map_context->pos_x + 1 > ROWS
@@ -203,8 +201,6 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         break;
 
     case 's':
-        printf("Going backward\n");
-
         if
         (
             map_context->pos_y + 1 > COLUMNS
@@ -220,8 +216,6 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         break;
 
     case 'q':
-        printf("Going left\n");
-
         if
         (
             map_context->pos_x - 1 < 0
@@ -237,23 +231,20 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         break;
 
     case 'i':
-        printf("Displaying inventory\n");
         // TODO: display inventory
         break;
 
     case 'Q':
-        printf("Quitting\n");
         // TODO: return to main menu
         return 0;
     }
-
-    press_any_key_to_continue();
 }
 
 void explore_map(MapContext *map_context)
 {
     while (1)
     {
+        display_map(map_context);
         if (key_listener(getchar_no_enter(), map_context) == 0) break;
     }
 }
