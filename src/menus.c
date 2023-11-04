@@ -25,6 +25,12 @@ void press_any_key_to_continue(void)
     getchar_no_enter();
 }
 
+void press_enter_to_continue(void)
+{
+    printf("Press [ENTER] to continue...");
+    while (getchar_no_enter() != '\n') {}
+}
+
 char *get_string(void)
 {
     // Allocate memory for the string with the maximum size for 255 characters
