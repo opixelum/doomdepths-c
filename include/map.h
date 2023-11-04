@@ -8,7 +8,7 @@
 #include "fight.h"
 #include "menus.h"
 
-#define ROWS 100
+#define ROWS 300
 #define COLUMNS 300
 
 typedef enum TILE
