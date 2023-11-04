@@ -2,7 +2,10 @@
 
 void clear_screen(void)
 {
-    printf("\e[1;1H\e[2J");
+    // printf("\e[1;1H\e[3J\e[2J");
+
+    // Not cross-platform, but faster
+    system("clear");
 }
 
 void clear_lines(unsigned int number_of_lines)
