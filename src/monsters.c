@@ -160,7 +160,7 @@ Monsters *generate_random_monsters_list()
     srand(time(NULL));
 
     Monsters *head = NULL;
-    int monster_count = rand() % 4 + 1;
+    int monster_count = rand() % 2 + 1;
 
     for (int i = 0; i < monster_count; i++)
     {
