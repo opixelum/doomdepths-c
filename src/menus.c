@@ -219,7 +219,7 @@ void print_stat_bar
     }
 
     // Print stat percentage in color
-    for (unsigned char i = 0; i < 100; ++i)
+    for (unsigned char i = 0; i < 92; ++i)
     {
         color_printf
         (
