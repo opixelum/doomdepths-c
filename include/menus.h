@@ -39,12 +39,14 @@ void clear_lines(unsigned int number_of_lines);
 void clear_stdin(void);
 
 /**
- * @brief Waits for user to press [ENTER] key.
- *
- * Uses getchar() in clearStdin() to wait for [ENTER] key.
- * Then, it clears the stdin buffer (in case user pressed more than one key).
+ * @brief Waits for user to press any key.
  */
 void press_any_key_to_continue(void);
+
+/**
+ * @brief Waits for user to press [ENTER] key.
+ */
+void press_enter_to_continue(void);
 
 /**
  * @brief Get the user input from stdin

@@ -204,7 +204,7 @@ void random_battle_trigger(Character *player)
     {
         clear_screen();
         printf("You're in trouble! You must fight!\n\n");
-        press_any_key_to_continue();
+        press_enter_to_continue();
         battle(player);
     }
 }

@@ -2,7 +2,10 @@
 
 void clear_screen(void)
 {
-    printf("\e[1;1H\e[2J");
+    // printf("\e[1;1H\e[3J\e[2J");
+
+    // Not cross-platform, but faster
+    system("clear");
 }
 
 void clear_lines(unsigned int number_of_lines)
@@ -20,6 +23,12 @@ void press_any_key_to_continue(void)
 {
     printf("Press any key to continue...");
     getchar_no_enter();
+}
+
+void press_enter_to_continue(void)
+{
+    printf("Press [ENTER] to continue...");
+    while (getchar_no_enter() != '\n') {}
 }
 
 char *get_string(void)
@@ -216,7 +225,7 @@ void print_stat_bar
     }
 
     // Print stat percentage in color
-    for (unsigned char i = 0; i < 100; ++i)
+    for (unsigned char i = 0; i < 92; ++i)
     {
         color_printf
         (
