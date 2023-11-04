@@ -1,9 +1,5 @@
 #include "save.h"
-#include <stdio.h>
-#include <sqlite3.h>
-#include "player.h"
-#include "stuff.h"
-#include <string.h>
+
 
 
 static int callback(void *data, int argc, char **argv, char **azColName) {
