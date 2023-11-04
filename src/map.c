@@ -145,9 +145,9 @@ void display_map(MapContext* map_context)
     clear_screen();
     unsigned int color;
 
-    for (int i = map_context->pos_y - 12; i < map_context->pos_y + 12; i++)
+    for (int i = map_context->pos_y - 16; i < map_context->pos_y + 16; i++)
     {
-        for (int j = map_context->pos_x - 24; j < map_context->pos_x + 24; j++)
+        for (int j = map_context->pos_x - 55; j < map_context->pos_x + 55; j++)
         {
             if (i < 0 || j < 0 || j >= ROWS || i >= COLUMNS) printf(" ");
             else if (j == map_context->pos_x && i == map_context->pos_y)
