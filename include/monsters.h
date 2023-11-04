@@ -76,7 +76,7 @@ static char *centaur[] =
 };
 
 /**
- * @brief Linked list of all alive monsters
+ * @brief Linked list of all alive monsters of a battle.
  */
 typedef struct Monsters
 {
@@ -86,29 +86,33 @@ typedef struct Monsters
 Monsters;
 
 /**
- * @brief Add an monster to the end of an monsters list
- * @param head Pointer to a node of the monsters list
- * @param monster Pointer to the monster to be added
- * @return Pointer to the given monsters list node or the new monsters list node if the given monsters list node was NULL
+ * @brief Adds an monster to the end of an monsters list.
+ * @param head A pointer to a node of the monsters list.
+ * @param monster A Pointer to the monster to be added.
+ * @return A pointer to the given monsters list node or the new monsters list
+ * node if the given monsters list node was NULL.
  */
 Monsters *add_monster_to_list(Monsters *node, Character *monster);
 
 /**
- * @brief Remove an monster from an monsters list
- * @param head Pointer to the head of the monsters list
- * @param monster Pointer to the monster to be removed
- * @return Pointer to the removed monster, or NULL if the monster was not found
- * @warning This function does not free the monster from memory, it only removes it from the monsters list
- * @warning In case you're not passing the head of the monsters list, the monster to remove can be skipped if it is before the
- * given monsters list node
+ * @brief Removes an monster from an monsters list.
+ * @param head A pointer to the head of the monsters list.
+ * @param monster A pointer to the monster to be removed.
+ * @return A pointer to the removed monster, or NULL if the monster was not
+ * found.
+ * @warning This function does not free the monster from memory, it only removes
+ * it from the monsters list.
+ * @warning In case you're not passing the head of the monsters list, the
+ * monster to remove can be skipped if it's before the given monsters list node.
  */
 Character *remove_monster_from_list(Monsters *head, Character *monster);
 
 /**
- * @brief Free a linked list of monsters from memory
- * @param head A pointer to the head of the linked list of monsters to be freed
- * @warning Every monster in the linked list will be freed from memory
- * @warning In case you're not passing the head of the monsters list, only the following nodes will be freed
+ * @brief Frees a linked list of monsters from memory.
+ * @param head A pointer to the head of the linked list of monsters to be freed.
+ * @warning Every monster in the linked list will be freed from memory.
+ * @warning In case you're not passing the head of the monsters list, only the
+ * following nodes will be freed.
  */
 void free_monsters_list(Monsters *head);
 
@@ -129,18 +133,20 @@ void free_monsters_list(Monsters *head);
  * health = base_health + base_health * (level / 100)
  * Mana is equal to health.
  *
- * @param seed Seed for the random number generator
- * @return Pointer to the new monster
- * @warning The monster must be freed with free_character() when it is no longer needed
+ * @param seed Seed for the random number generator.
+ * @return A pointer to the new monster.
+ * @warning The monster must be freed with free_character() when it's no longer
+ * needed.
  */
 Character *generate_random_monster(unsigned int seed);
 // TODO: Improve randomness for omitting seed parameter
 
 /**
- * @brief Generate a linked list of a random number of random monsters, with a
+ * @brief Generates a linked list of a random number of random monsters, with a
  * maximum of 3 monsters.
- * @return Pointer to the head of the linked list of monsters
- * @warning The monsters list must be freed with free_monsters_list() when it is no longer needed
+ * @return A pointer to the head of the linked list of monsters.
+ * @warning The monsters list must be freed with free_monsters_list() when it's
+ * no longer needed.
  */
 Monsters *generate_random_monsters_list(void);
 
