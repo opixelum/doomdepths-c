@@ -1,8 +1,11 @@
 #include "menus.h"
 
-void clear_screen()
+void clear_screen(void)
 {
-    printf("\e[1;1H\e[2J");
+    // printf("\e[1;1H\e[3J\e[2J");
+
+    // Not cross-platform, but faster
+    system("clear");
 }
 
 void clear_lines(unsigned int number_of_lines)
@@ -10,32 +13,38 @@ void clear_lines(unsigned int number_of_lines)
     for (int i = 0; i < number_of_lines; ++i) printf("\x1b[1F\x1b[2K");
 }
 
-void clear_stdin()
+void clear_stdin(void)
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
 }
 
-void wait_for_enter()
+void press_any_key_to_continue(void)
 {
-    printf("\nPress [ENTER] to continue...");
-    clear_stdin();
+    printf("Press any key to continue...");
+    getchar_no_enter();
 }
 
-char *get_user_input()
+void press_enter_to_continue(void)
+{
+    printf("Press [ENTER] to continue...");
+    while (getchar_no_enter() != '\n') {}
+}
+
+char *get_string(void)
 {
     // Allocate memory for the string with the maximum size for 255 characters
     char *input = malloc(256 * sizeof input);
     if (!input)
     {
-        fprintf(stderr, "ERROR: menus.c: get_user_input: `input` malloc failed\n");
+        fprintf(stderr, "ERROR: menus.c: get_string: `input` malloc failed\n");
         exit(EXIT_FAILURE);
     }
 
     // Get user input from stdin buffer
     fgets(input, 256, stdin);
 
-    // Remove trailing newline & retrun carriage characters
+    // Remove trailing newline & return carriage characters
     input[strcspn(input, "\n\r")] = '\0';
 
     // Check if input is a string or a character
@@ -51,203 +60,125 @@ char *get_user_input()
     // Check if memory reallocation failed
     if (!input)
     {
-        fprintf(stderr, "ERROR: menus.c: get_user_input: `input` realloc failed\n");
+        fprintf(stderr, "ERROR: menus.c: get_string: `input` realloc failed\n");
         exit(EXIT_FAILURE);
     }
 
     return input;
 }
 
+unsigned char getchar_no_enter(void)
+{
+    struct termios old_terminal_settings, new_terminal_settings;
+    unsigned char character;
+
+    // Get the current terminal settings
+    tcgetattr(STDIN_FILENO, &old_terminal_settings);
+    new_terminal_settings = old_terminal_settings;
+
+    // Set the terminal to unbuffered mode, so that characters are available
+    // to be read immediately instead of waiting for the user to press [ENTER]
+    new_terminal_settings.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_terminal_settings);
+
+    // Read a character
+    character = getchar();
+
+    // Restore the original terminal settings
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_terminal_settings);
+
+    return character;
+}
+
 void main_menu(unsigned char *is_running)
 {
-    // First loop for repeating the menu if user enters an invalid choice
-    do
+    clear_screen();
+    printf
+    (
+        "Welcome to Doomdepths C! What do you want to do?\n\n"
+        "    1. Start a new game\n"
+        "    2. Continue my last game\n"
+        "    3. Quit\n"
+        "\nPress the number of your choice on your keyboard."
+    );
+
+    switch (get_valid_digit_no_enter(1, 3))
     {
-        char *input = NULL;
-        clear_lines(10); // Main menu is at most 10 lines long
-        printf("DoomdepthsC\n\n    1. New Game\n    2. Continue Game\n    3. Quit\n\n");
+    case 1:
+        new_game();
+        break;
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(1);
-                free(input);
-            }
-            printf("Enter your choice (1, 2 or 3): ");
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
+    case 2:
+        // TODO: Implement Continue Game
+        printf("Continue Game\n");
+        break;
 
-        switch (input[0])
-        {
-            case '1':
-                // TODO: Implement New Game
-                printf("New Game\n");
-                break;
-
-            case '2':
-                // TODO: Implement Continue Game
-                printf("Continue Game\n");
-                break;
-
-            case '3':
-                clear_screen();
-                *is_running = 0;
-                free(input);
-                return;
-
-            default:
-                printf("Invalid choice!\n");
-                break;
-        }
-
-        free(input);
-        wait_for_enter();
-    } while (1);
+    case 3:
+        clear_screen();
+        *is_running = 0;
+        return;
+    }
 }
 
 unsigned char battle_actions_menu(Character *player, Monsters *head)
 {
     if (!player || !head) return 0;
 
-    // First loop for repeating the menu if user enters an invalid choice
-    do
-    {
-        char *input = NULL;
-        clear_lines(12); // Main menu is at most 10 lines long
-        printf
-        (
-            "DoomdepthsC - Battle\n\n"
-            "    1. Attack\n"
-            "    2. Drink potion\n"
-            "    3. Flee\n\n"
-        );
+    clear_screen();
+    print_character_stats(player);
+    printf
+    (
+        "\nWhat do you want to do now?\n\n"
+        "    1. Attack\n"
+        "    2. Drink potion\n"
+        "    3. Flee\n"
+        "\nPress the number of your choice on your keyboard."
+    );
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(1);
-                free(input);
-            }
-            printf("Enter your choice (1, 2 or 3): ");
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
-
-        // Convert input to integer for direct return
-        long choice = strtol(input, NULL, 10);
-        free(input);
-
-        if (choice < 1 || choice > 3)
-        {
-            printf("\nInvalid choice!\n");
-            wait_for_enter();
-            continue;
-        }
-
-        return choice;
-    } while (1);
+    return get_valid_digit_no_enter(1, 3);
 }
 
-Character *monster_selection_menu(Monsters *head)
+Character *monster_selection_menu(Character *character, Monsters *head)
 {
-    if (!head) return NULL;
+    if (!character || !head) return NULL;
 
-    // First loop for repeating the menu if user enters an invalid choice
-    do
+    clear_screen();
+    print_character_stats(character);
+    printf("\nWhich monster do you want to attack now?\n\n");
+
+    Character *monsters[5];
+    unsigned char number_of_monsters = 0;
+    while (head)
     {
-        char *input = NULL;
-        clear_lines(12); // Main menu is at most 10 lines long
-        printf("DoomdepthsC - Battle - Monsters\n\n");
+        printf("    %d. %s\n", ++number_of_monsters, head->monster->name);
+        monsters[number_of_monsters - 1] = head->monster;
+        head = head->next;
+    }
 
-        Character *monsters[5];
-        unsigned char number_of_monsters = 0;
-        while (head)
-        {
-            number_of_monsters++;
-            printf("    %d. %s\n", number_of_monsters, head->monster->name);
-            monsters[number_of_monsters - 1] = head->monster;
-            head = head->next;
-        }
+    printf("\nPress the number of your choice on your keyboard.");
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(2);
-                free(input);
-            }
-            printf("\nEnter your choice (");
-            for (unsigned char i = 1; i < number_of_monsters; ++i)
-            {
-                if (i < number_of_monsters - 1) printf("%d, ", i);
-                else printf("%d or %d): ", i, i + 1);
-            }
-
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
-
-        // Convert input to integer for direct return
-        long choice = strtol(input, NULL, 10);
-        free(input);
-
-        if (choice < 1 || choice > number_of_monsters)
-        {
-            printf("\nInvalid choice!\n");
-            wait_for_enter();
-            continue;
-        }
-
-        return monsters[choice - 1];
-    } while (1);
+    // -1 because array starts at 0
+    return monsters[get_valid_digit_no_enter(1, number_of_monsters) - 1];
 }
 
-unsigned char attack_selection_menu()
+unsigned char attack_selection_menu(Character *player, Character *monster)
 {
-    // First loop for repeating the menu if user enters an invalid choice
-    do
-    {
-        char *input = NULL;
-        clear_lines(10); // Main menu is at most 10 lines long
-        printf
-        (
-            "DoomdepthsC - Select an attack\n\n"
-            "    1. Weapon attack\n"
-            "    2. Spell attack\n\n"
-        );
+    if (!player) return 0;
 
-        // Second loop for repeating the menu if user enters an empty string
-        do
-        {
-            if (input) // Re-print the last line if user entered an empty string
-            {
-                clear_lines(1);
-                free(input);
-            }
-            printf("Enter your choice (1 or 2): ");
-            input = get_user_input();
-        }
-        while (!strlen(input)); // While length of input is 0
+    clear_screen();
+    print_character_stats(player);
 
-        // Convert input to integer for direct return
-        long choice = strtol(input, NULL, 10);
-        free(input);
+    printf("\nYou are attacking %s.\n", monster->name);
 
-        if (choice < 1 || choice > 3)
-        {
-            printf("\nInvalid choice!\n");
-            wait_for_enter();
-            continue;
-        }
+    printf
+    (
+        "\nWould you rather use your weapon or cast a spell?\n\n"
+        "    1. Weapon attack\n"
+        "    2. Spell attack\n"
+        "\nPress the number of your choice on your keyboard."
+    );
 
-        return choice;
-    } while (1);
+    return get_valid_digit_no_enter(1, 2);
 }
 
 void color_printf(unsigned int hexcolor, const char *format, ...)
@@ -294,7 +225,7 @@ void print_stat_bar
     }
 
     // Print stat percentage in color
-    for (unsigned char i = 0; i < 100; ++i)
+    for (unsigned char i = 0; i < 92; ++i)
     {
         color_printf
         (
@@ -329,8 +260,108 @@ void print_character_stats(Character *character)
         character->max_mana,
         0x2596be // Eastern Blue
     );
+}
 
+void print_character_gold(Character *character)
+{
     // Print gold
     printf("  Gold ");
     color_printf(0xFFD700, "%d\n", character->gold);
+}
+
+Item *type_spell_selection_menu
+(
+    Character *player,
+    Character *monster,
+    ItemType spell_type
+) {
+    if (!player) return NULL;
+
+    clear_screen();
+    print_character_stats(player);
+
+    printf("\nYou are attacking %s.\n", monster->name);
+
+    switch (spell_type)
+    {
+    case ATTACK_SPELL:
+        printf("\nWhich attack spell do you want to cast?\n\n");
+        break;
+
+    case HEAL_SPELL:
+        printf("\nWhich heal spell do you want to cast?\n\n");
+        break;
+
+    default:
+        return NULL;
+    }
+
+    Inventory *spells_list = player->spells;
+
+    Item *spells[9]; // For simplicity when getting user input, 9 spells max
+    unsigned char number_of_spells = 0;
+    while (spells_list)
+    {
+        if (spells_list->item->type == spell_type)
+        {
+            printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
+            spells[number_of_spells - 1] = spells_list->item;
+        }
+        spells_list = spells_list->next;
+    }
+
+    printf("\nPress the number of your choice on your keyboard.");
+
+    // -1 because array starts at 0
+    return spells[get_valid_digit_no_enter(1, number_of_spells) - 1];
+}
+
+unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
+{
+    unsigned char input;
+    do input = getchar_no_enter() - '0'; // Convert ASCII to integer
+    while (input < min || input > max);
+    return input;
+}
+
+char *get_user_name_menu(void)
+{
+    clear_screen();
+    printf("Before we start, enter your name: ");
+
+    char *user_name = NULL;
+
+    do user_name = get_string();
+    while (!strlen(user_name));
+
+    return user_name;
+}
+
+unsigned char new_game(void)
+{
+    // Ask user for his name
+    char *user_name = get_user_name_menu();
+
+    // Create a new character
+    Character *player = create_character
+    (
+        user_name,
+        1,
+        0,
+        1000,
+        100,
+        100,
+        100,
+        100,
+        0,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    );
+
+    printf("Welcome %s!\n", player->name);
+    press_any_key_to_continue();
+
+    return EXIT_SUCCESS;
 }

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "monsters.h"
 
@@ -15,7 +17,7 @@
  * - "\e[1;1H" moves cursor to top left corner of terminal screen;
  * - "\e[2J" replaces all characters of the terminal screen with spaces.
  */
-void clear_screen();
+void clear_screen(void);
 
 /**
  * @brief Cross-platform function to clear a given number of console lines.
@@ -34,22 +36,33 @@ void clear_lines(unsigned int number_of_lines);
  * When calling getchar(), it clears a character from stdin buffer.
  * While it's not a newline character, or EOF, it keeps clearing characters.
  */
-void clear_stdin();
+void clear_stdin(void);
+
+/**
+ * @brief Waits for user to press any key.
+ */
+void press_any_key_to_continue(void);
 
 /**
  * @brief Waits for user to press [ENTER] key.
- *
- * Uses getchar() in clearStdin() to wait for [ENTER] key.
- * Then, it clears the stdin buffer (in case user pressed more than one key).
  */
-void wait_for_enter();
+void press_enter_to_continue(void);
 
 /**
  * @brief Get the user input from stdin
  *
  * @return Pointer to the string or character containing user input
  */
-char *get_user_input();
+char *get_string(void);
+
+/**
+ * @brief Get a single character from stdin (like `getchar()`) without waiting
+ * for [ENTER] key, by temporary setting the terminal to unbuffered mode.
+ * @return The character.
+ * @warning This function is not cross-platform because it uses termios.h, which
+ * is only available on Unix systems.
+ */
+unsigned char getchar_no_enter(void);
 
 /**
  * @brief Prints main menu.
@@ -76,16 +89,19 @@ unsigned char battle_actions_menu(Character *player, Monsters *head);
 
 /**
  * @brief Prompts user to choose a monster to attack among the monsters list.
- * @param head Pointer to the head of the monsters list
- * @return Pointer to the selected monster, NULL on error
+ * @param character A pointer to the character for printing his stats.
+ * @param head A pointer to the head of the monsters list.
+ * @return A pointer to the selected monster, NULL on error.
  */
-Character *monster_selection_menu(Monsters *head);
+Character *monster_selection_menu(Character *character, Monsters *head);
 
 /**
- * @brief Prompts user to choose between an weapon or a spell
- * @return 1 if weapon, 2 if spell, 0 on error
+ * @brief Prompts user to choose between an weapon or a spell.
+ * @param player A pointer to the player for printing his stats.
+ * @param monster A pointer to the target monster.
+ * @return 1 if weapon, 2 if spell, 0 on error.
  */
-unsigned char attack_selection_menu();
+unsigned char attack_selection_menu(Character *player, Character *monster);
 
 /**
  * @brief `printf()`, but in color
@@ -112,9 +128,55 @@ void print_stat_bar
 );
 
 /**
- * @brief Prints health & mana bars & their gold
+ * @brief Prints health & mana bars
  * @param character Pointer to the character
  */
 void print_character_stats(Character *character);
+
+/**
+ * @brief Prints character's amount of gold.
+ * @param character A pointer to the character.
+ */
+void print_character_gold(Character *character);
+
+/**
+ * @brief Prompts user to choose a spell among a player's spells list.
+ * @param player A pointer to the player who has the spells list.
+ * @param monster A pointer to the target monster.
+ * @param spell_type The type of the spell to select (ATTACK_SPELL or HEAL_SPELL).
+ * @return A pointer to the selected spell or NULL if player is NULL, or if
+ * the player doesn't have any spell of the given type, or if a wrong item
+ * type is given.
+ */
+Item *type_spell_selection_menu
+(
+    Character *player,
+    Character *monster,
+    ItemType spell_type
+);
+
+/**
+ * @brief Gets a digit between min and max from user input without waiting for
+ * [ENTER] key. It will keep reading input until a valid digit is entered.
+ * @param min The minimum valid number (included).
+ * @param max The maximum valid number (included).
+ * @return The number read from user input.
+ * @warning This function is not cross-platform because it uses termios.h, which
+ * is only available on Unix systems. It can only read one character, so only
+ * positive digits between 0 and 9 included are valid.
+ */
+unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max);
+
+/**
+ * @brief Prompts user to write his user name.
+ * @return A pointer to the user name.
+ * @warning The user name must be freed with free() when it is no longer needed.
+ */
+char *get_user_name_menu(void);
+
+/**
+ * @brief Initialize a new game
+ */
+unsigned char new_game();
 
 #endif // MENUS_H
