@@ -98,6 +98,29 @@ static char *skeleton[] =
     NULL
 };
 
+static char *ghost[] =
+{
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    "       ",
+    " .-.   ",
+    "(o o)  ",
+    "| O \\  ",
+    " \\   \\ ",
+    "  `~~~'",
+    "       ",
+    "       ",
+    "       ",
+    NULL
+};
+
 /**
  * @brief Linked list of all alive monsters of a battle.
  */
