@@ -1,6 +1,9 @@
 #ifndef SAVE_H
 #define SAVE_H
-#include "player.h"
-void saveGame(Player player);
-Player continueGame();
+
+#include "character.h"
+
+void saveGame(Character player);
+Character continueGame();
+
 #endif // SAVE_H
