@@ -75,6 +75,29 @@ static char *centaur[] =
     NULL
 };
 
+static char *skeleton[] =
+{
+    "         ",
+    "         ",
+    "         ",
+    "         ",
+    "         ",
+    "         ",
+    "         ",
+    "   .-.   ",
+    "  (o.o)  ",
+    "   |=|   ",
+    " ___|___ ",
+    "//.=|=.\\\\",
+    "\\\\.=|=.//",
+    "(:(_=_):)",
+    "  || ||  ",
+    "  () ()  ",
+    "  || ||  ",
+    " ==' '== ",
+    NULL
+};
+
 /**
  * @brief Linked list of all alive monsters of a battle.
  */
