@@ -23,11 +23,16 @@ static char *dragon[] =
     "                 (((~) \\  /             ",
     "                 ______/ /              ",
     "                 '------'               ",
+    "                                        ",
+    "                                        ",
+    "                                        ",
     NULL
 };
 
 static char *grim_reaper[] =
 {
+    "                        ",
+    "                        ",
     "                        ",
     "                        ",
     "                        ",
