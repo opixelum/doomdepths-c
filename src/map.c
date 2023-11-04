@@ -143,6 +143,7 @@ int get_map(MapContext* map_context)
 void display_map(MapContext* map_context)
 {
     clear_screen();
+    unsigned int color;
 
     for (int i = map_context->pos_y - 12; i < map_context->pos_y + 12; i++)
     {
@@ -150,17 +151,18 @@ void display_map(MapContext* map_context)
         {
             if (i < 0 || j < 0 || j >= ROWS || i >= COLUMNS) printf(" ");
             else if (j == map_context->pos_x && i == map_context->pos_y)
-                printf("\033[1;31m%c\033[0m",PLAYER);
+                color_printf(0xff0000, "%c", PLAYER);
             else
             {
                 if (map_context->map[j][i] == OBSTACLE)
-                    printf("\033[1;37m%c", map_context->map[j][i]);
-                else if (map_context->map[j][i] == GRASS)
-                    printf("\033[1;32m%c", map_context->map[j][i]);
-                else
-                    printf("\033[1;33m%c", map_context->map[j][i]);
+                {
+                    printf("%c", map_context->map[j][i]);
+                    continue;
+                }
+                else if (map_context->map[j][i] == GRASS) color = 0x00ff00;
+                else color = 0xeab676; // PATH
 
-                printf("%c", map_context->map[j][i]);
+                color_printf(color, "%c", map_context->map[j][i]);
             }
         }
         printf("\n");
