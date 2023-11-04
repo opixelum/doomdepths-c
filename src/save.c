@@ -158,8 +158,8 @@ Inventory* loadSpellsFromDatabase(sqlite3 *db) {
     return inventory;
 }
 
-Player loadPlayerFromDatabase(sqlite3 *db) {
-    Player player;
+Character loadPlayerFromDatabase(sqlite3 *db) {
+    Character player;
 
     const char *sql_select_player = "SELECT id, name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp, xp_to_next_level FROM player;";
 
@@ -189,7 +189,7 @@ Player loadPlayerFromDatabase(sqlite3 *db) {
         
         player.spells = loadSpellsFromDatabase(db);
     } else {
-        memset(&player, 0, sizeof(Player));
+        memset(&player, 0, sizeof(Character));
     }
 
     sqlite3_finalize(stmt_player);
@@ -199,7 +199,7 @@ Player loadPlayerFromDatabase(sqlite3 *db) {
 
 
 
-Player continueGame() {
+Character continueGame() {
     sqlite3 *db;
     int rc;
     rc = sqlite3_open("doomdepth.db", &db);
@@ -210,7 +210,7 @@ Player continueGame() {
         exit(1);
     }
     
-    Player player = loadPlayerFromDatabase(db);
+    Character player = loadPlayerFromDatabase(db);
     sqlite3_close(db);
 
     return player;
@@ -271,7 +271,7 @@ int insertArmor(sqlite3 *db, Item *armor) {
 }
 
 
-void saveGame(Player player) {
+void saveGame(Character player) {
     sqlite3 *db;
     int rc;
     rc = sqlite3_open("doomdepth.db", &db);
