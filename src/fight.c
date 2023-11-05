@@ -83,6 +83,10 @@ unsigned char battle(Character *player)
 
     while (head)
     {
+        clear_screen();
+        print_character_stats(player);
+        print_monsters(head);
+
         switch (battle_actions_menu(player, head))
         {
         case 1:

@@ -124,11 +124,9 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
 {
     if (!player || !head) return 0;
 
-    clear_screen();
-    print_character_stats(player);
     printf
     (
-        "\nWhat do you want to do now?\n\n"
+        "\n\nWhat do you want to do now?\n\n"
         "    1. Attack\n"
         "    2. Drink potion\n"
         "    3. Flee\n"
