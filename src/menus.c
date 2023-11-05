@@ -176,7 +176,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2);
-    clear_lines(7);
+    clear_lines(8);
 
     return choice;
 }
@@ -277,9 +277,6 @@ Item *type_spell_selection_menu
 ) {
     if (!player) return NULL;
 
-    clear_screen();
-    print_character_stats(player);
-
     printf("\nYou are attacking %s.\n", monster->name);
 
     switch (spell_type)
@@ -312,8 +309,11 @@ Item *type_spell_selection_menu
 
     printf("\nPress the number of your choice on your keyboard.");
 
+    unsigned char choice = get_valid_digit_no_enter(1, number_of_spells);
+    clear_lines(number_of_spells + 6);
+
     // -1 because array starts at 0
-    return spells[get_valid_digit_no_enter(1, number_of_spells) - 1];
+    return spells[choice - 1];
 }
 
 unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
