@@ -104,7 +104,7 @@ unsigned char battle(Character *player)
             if (!number_of_attack_spells(player))
                 printf
                 (
-                    "\n\nYou dealt %d damage to %s using your %s.\n",
+                    "\nYou dealt %d damage to %s using your %s.\n",
                     attack(player, monster, NULL),
                     monster->name,
                     player->weapon ? player->weapon->name : "fists"
@@ -115,7 +115,7 @@ unsigned char battle(Character *player)
                 case 1:
                     printf
                     (
-                        "\n\nYou dealt %d damage to %s using your %s.\n",
+                        "\nYou dealt %d damage to %s using your %s.\n",
                         attack(player, monster, NULL),
                         monster->name,
                         player->weapon ? player->weapon->name : "fists"
@@ -131,7 +131,7 @@ unsigned char battle(Character *player)
                         free_inventory(attack_spells);
                         printf
                         (
-                            "\n\nYou dealt %d damage to %s by casting %s spell.\n",
+                            "\nYou dealt %d damage to %s by casting the %s spell.\n",
                             attack
                             (
                                 player,
@@ -152,7 +152,7 @@ unsigned char battle(Character *player)
                         );
                         printf
                         (
-                            "\n\nYou dealt %d damage to %s by casting %s spell.\n",
+                            "\nYou dealt %d damage to %s by casting the %s spell.\n",
                             attack
                             (
                                 player,
@@ -210,7 +210,7 @@ void random_battle_trigger(Character *player)
 {
     srand(time(NULL));
 
-    if (rand() % 100 < 10)
+    if (rand() % 100 < 30)
     {
         clear_screen();
         printf("You're in trouble! You must fight!\n\n");
