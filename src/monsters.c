@@ -87,42 +87,34 @@ Character *generate_random_monster(unsigned int seed)
     xp_to_next_level = 0;
     gold = rand() % 1000;
 
-    if (random_monster_type < 25) // 25% chance
+    if (random_monster_type < 30) // 30% chance
     {
-        name = "Goblin";
+        name = "Ghost";
         health = (unsigned short) (50.0 + 50.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
     }
-    else if (random_monster_type < 45) // 20% chance
+    else if (random_monster_type < 55) // 25% chance
     {
-        name = "Orc";
+        name = "Skeleton";
         health = (unsigned short) (80.0 + 80.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
     }
-    else if (random_monster_type < 65) // 20% chance
+    else if (random_monster_type < 80) // 25% chance
     {
-        name = "Troll";
+        name = "Centaur";
         health = (unsigned short) (90.0 + 90.0 * (level / 100.0));
-        max_health = health;
-        mana = health;
-        max_mana = health;
-    }
-    else if (random_monster_type < 80) // 15% chance
-    {
-        name = "Ogre";
-        health = (unsigned short) (120.0 + 120.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
     }
     else if (random_monster_type < 95) // 15% chance
     {
-        name = "Giant";
-        health = (unsigned short) (130.0 + 130.0 * (level / 100.0));
+        name = "Grim Reaper";
+        health = (unsigned short) (120.0 + 120.0 * (level / 100.0));
         max_health = health;
         mana = health;
         max_mana = health;
@@ -160,7 +152,7 @@ Monsters *generate_random_monsters_list()
     srand(time(NULL));
 
     Monsters *head = NULL;
-    int monster_count = rand() % 4 + 1;
+    int monster_count = rand() % 3 + 1;
 
     for (int i = 0; i < monster_count; i++)
     {
@@ -169,4 +161,54 @@ Monsters *generate_random_monsters_list()
     }
 
     return head;
+}
+
+const char *get_monster_art_line(const char *monster_name, unsigned char line_number)
+{
+    if (strcmp(monster_name, "Dragon") == 0) return dragon[line_number];
+    if (strcmp(monster_name, "Grim Reaper") == 0) return grim_reaper[line_number];
+    if (strcmp(monster_name, "Centaur") == 0) return centaur[line_number];
+    if (strcmp(monster_name, "Skeleton") == 0) return skeleton[line_number];
+    if (strcmp(monster_name, "Ghost") == 0) return ghost[line_number];
+
+    return NULL;
+}
+
+void print_monsters(Monsters *head)
+{
+    if (!head) return;
+    Monsters *current;
+
+    for (int line_number = 0; dragon[line_number] != NULL; line_number++)
+    {
+        current = head;
+        while (current)
+        {
+            printf
+            (
+                "%s  ",
+                get_monster_art_line(current->monster->name, line_number)
+            );
+            current = current->next;
+        }
+        printf("\n");
+    }
+
+    printf("\n");
+
+    current = head;
+    while (current)
+    {
+        size_t line_length = strlen(get_monster_art_line(current->monster->name, 0));
+        size_t padding = line_length / 2 - strlen(current->monster->name) / 2;
+        
+        for (int space = 0; space < padding; space++) printf(" ");
+        printf("%s", current->monster->name);
+        for (int space = 0; space < padding; space++) printf(" ");
+
+        printf("  ");
+        
+        current = current->next;
+    }
+    printf("\n");
 }
