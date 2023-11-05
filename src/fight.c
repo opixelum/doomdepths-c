@@ -92,7 +92,11 @@ unsigned char battle(Character *player)
         case 1:
             // If there is only one monster, select it automatically
             if (number_of_monsters == 1) monster = head->monster;
-            else monster = monster_selection_menu(player, head);
+            else
+            {
+                clear_lines(7);
+                monster = monster_selection_menu(player, head);
+            }
 
             // If player has no attack spell, don't ask him to choose
             if (!number_of_attack_spells(player))

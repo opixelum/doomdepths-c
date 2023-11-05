@@ -10,6 +10,7 @@ void clear_screen(void)
 
 void clear_lines(unsigned int number_of_lines)
 {
+    printf("\x1b[2K");
     for (int i = 0; i < number_of_lines; ++i) printf("\x1b[1F\x1b[2K");
 }
 
@@ -140,11 +141,9 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 {
     if (!character || !head) return NULL;
 
-    clear_screen();
-    print_character_stats(character);
     printf("\nWhich monster do you want to attack now?\n\n");
 
-    Character *monsters[5];
+    Character *monsters[3];
     unsigned char number_of_monsters = 0;
     while (head)
     {
@@ -155,8 +154,11 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 
     printf("\nPress the number of your choice on your keyboard.");
 
+    unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters);
+    clear_lines(number_of_monsters + 5); // +4 for other menu lines
+
     // -1 because array starts at 0
-    return monsters[get_valid_digit_no_enter(1, number_of_monsters) - 1];
+    return monsters[choice - 1];
 }
 
 unsigned char attack_selection_menu(Character *player, Character *monster)
