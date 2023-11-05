@@ -127,7 +127,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
 
     printf
     (
-        "\n\nWhat do you want to do now?\n\n"
+        "\nWhat do you want to do now?\n\n"
         "    1. Attack\n"
         "    2. Drink potion\n"
         "    3. Flee\n"
@@ -155,7 +155,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     printf("\nPress the number of your choice on your keyboard.");
 
     unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters);
-    clear_lines(number_of_monsters + 5); // +4 for other menu lines
+    clear_lines(number_of_monsters + 4); // +4 for other menu lines
 
     // -1 because array starts at 0
     return monsters[choice - 1];
@@ -165,20 +165,20 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
 {
     if (!player) return 0;
 
-    clear_screen();
-    print_character_stats(player);
-
-    printf("\nYou are attacking %s.\n", monster->name);
-
     printf
     (
+        "\nYou are attacking %s.\n"
         "\nWould you rather use your weapon or cast a spell?\n\n"
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
-        "\nPress the number of your choice on your keyboard."
+        "\nPress the number of your choice on your keyboard.",
+        monster->name
     );
 
-    return get_valid_digit_no_enter(1, 2);
+    unsigned char choice = get_valid_digit_no_enter(1, 2);
+    clear_lines(7);
+
+    return choice;
 }
 
 void color_printf(unsigned int hexcolor, const char *format, ...)
