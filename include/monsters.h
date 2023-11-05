@@ -196,4 +196,24 @@ Character *generate_random_monster(unsigned int seed);
  */
 Monsters *generate_random_monsters_list(void);
 
+/**
+ * @brief Get a line of the art of a monster.
+ * @param monster_name A string containing the name of the monster.
+ * @param line_number The number of the line to get.
+ * @return A string containing the line of the art of the monster.
+ */
+const char *get_monster_art_line
+(
+    const char *monster_name,
+    unsigned char line_number
+);
+
+/**
+ * @brief Prints monsters of a battle on the screen.
+ * @param head A pointer to the head of the monsters list.
+ * @warning It's important to pass the head of the monsters list, otherwise
+ * monsters can be skipped.
+ */
+void print_monsters(Monsters *head);
+
 #endif // MONSTERS_H
