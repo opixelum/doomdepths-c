@@ -87,14 +87,16 @@ unsigned char battle(Character *player)
         print_character_stats(player);
         print_monsters(head);
 
-        switch (battle_actions_menu(player, head))
+        unsigned char choice = battle_actions_menu(player, head);
+        clear_lines(7);
+
+        switch (choice)
         {
         case 1:
             // If there is only one monster, select it automatically
             if (number_of_monsters == 1) monster = head->monster;
             else
             {
-                clear_lines(7);
                 monster = monster_selection_menu(player, head);
             }
 
