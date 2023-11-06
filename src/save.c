@@ -216,7 +216,7 @@ Character *loadPlayerFromDatabase(sqlite3 *db)
         player->inventory = loadInventoryFromDatabase(db);
         
         player->spells = loadSpellsFromDatabase(db);
-    } else memset(&player, 0, sizeof(Character));
+    } else memset(player, 0, sizeof *player);
 
     sqlite3_finalize(stmt_player);
 
