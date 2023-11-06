@@ -8,6 +8,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "character.h"
 #include "map.h"
 #include "monsters.h"
 #include "save.h"

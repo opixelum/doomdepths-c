@@ -110,8 +110,16 @@ void main_menu(unsigned char *is_running)
         break;
 
     case 2:
-        // TODO: Implement Continue Game
-        printf("Continue Game\n");
+        Character *player = load_game();
+        MapContext *map_context = malloc(sizeof *map_context);
+        map_context->player = player;
+
+        get_map(map_context);
+        explore_map(map_context);
+
+        free_character(player);
+        free(map_context);
+
         break;
 
     case 3:
@@ -361,7 +369,7 @@ void new_game(void)
     );
 
     create_tables("doomdepths.db");
-    save_game(*player);
+    save_game(player);
 
     initialize_map();
     MapContext *map_context = malloc(sizeof *map_context);
