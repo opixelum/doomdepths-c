@@ -21,3 +21,6 @@ cmake-build-debug/
 
 # Map file
 **/map.txt
+
+# Database files
+**/*.db
