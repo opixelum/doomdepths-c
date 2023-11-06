@@ -362,6 +362,7 @@ void new_game(void)
 
     initialize_map();
     MapContext *map_context = malloc(sizeof *map_context);
+    map_context->player = player;
     get_map(map_context);
 
     printf("\nWelcome %s!\n\n", player->name);
