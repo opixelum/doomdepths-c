@@ -1,25 +1,27 @@
 #include "save.h"
 
-
-
 static int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
+}
+
+sqlite3 *open_database(const char *db_path)
+{
+    sqlite3 *db;
+
+    if (sqlite3_open(db_path, &db) != SQLITE_OK)
+    {
+        fprintf(stderr, "save.c: open_database(): sqlite3_open(): %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(EXIT_FAILURE);
+    }
+
+    return db;
 }
 
 
 void create_tables(const char *db_path)
 {
-    sqlite3 *db;
-    char *sqlite_err_msg = 0;
-    int return_code;
-
-    return_code = sqlite3_open(db_path, &db);
-    if (return_code != SQLITE_OK)
-    {
-        fprintf(stderr, "save.c: create_tables(): sqlite3_open(): %s\n", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        exit(EXIT_FAILURE);
-    }
+    sqlite3 *db = open_database(db_path);
 
     const char *sql_commands[] =
     {
@@ -54,6 +56,9 @@ void create_tables(const char *db_path)
         "xp INT, "
         "xp_to_next_level INT);"
     };
+
+    int return_code;
+    char *sqlite_err_msg = 0;
 
     for (size_t i = 0; i < sizeof(sql_commands) / sizeof(sql_commands[0]); i++)
     {
@@ -287,16 +292,10 @@ int insertArmor(sqlite3 *db, Item *armor) {
 }
 
 
-void save_game(Character player) {
-    sqlite3 *db;
-    int rc;
-    rc = sqlite3_open("doomdepths.db", &db);
-    if (rc) {
-        fprintf(stderr, "Impossible d'ouvrir la base de données : %s\n", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        exit(1);
-    }
-    
+void save_game(Character player)
+{
+    sqlite3 *db = open_database("doomdepths.db");
+
     const char *sql_delete_player = "DELETE FROM player;";
     const char *sql_delete_inventory = "DELETE FROM item;";
 
