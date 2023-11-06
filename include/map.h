@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "character.h"
 #include "fight.h"
 #include "menus.h"
 

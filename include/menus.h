@@ -8,6 +8,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "map.h"
 #include "monsters.h"
 
 /**
@@ -177,6 +178,6 @@ char *get_user_name_menu(void);
 /**
  * @brief Initialize a new game
  */
-unsigned char new_game();
+void new_game();
 
 #endif // MENUS_H
