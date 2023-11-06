@@ -337,7 +337,7 @@ char *get_user_name_menu(void)
     return user_name;
 }
 
-unsigned char new_game(void)
+void new_game(void)
 {
     // Ask user for his name
     char *user_name = get_user_name_menu();
@@ -360,8 +360,16 @@ unsigned char new_game(void)
         NULL
     );
 
-    printf("Welcome %s!\n", player->name);
+    create_tables("doomdepths.db");
+    save_game(*player);
+
+    initialize_map();
+    MapContext *map_context = malloc(sizeof *map_context);
+    map_context->player = player;
+    get_map(map_context);
+
+    printf("\nWelcome %s!\n\n", player->name);
     press_any_key_to_continue();
 
-    return EXIT_SUCCESS;
+    explore_map(map_context);
 }

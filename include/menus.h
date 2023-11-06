@@ -8,7 +8,9 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "map.h"
 #include "monsters.h"
+#include "save.h"
 
 /**
  * @brief Cross-platform function to clear console screen.
@@ -177,6 +179,6 @@ char *get_user_name_menu(void);
 /**
  * @brief Initialize a new game
  */
-unsigned char new_game();
+void new_game();
 
 #endif // MENUS_H
