@@ -249,5 +249,6 @@ void explore_map(MapContext *map_context)
     {
         display_map(map_context);
         if (key_listener(getchar_no_enter(), map_context) == 0) break;
+        save_game(map_context->player);
     }
 }
