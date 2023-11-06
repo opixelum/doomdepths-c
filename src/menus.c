@@ -360,6 +360,9 @@ void new_game(void)
         NULL
     );
 
+    create_tables("doomdepths.db");
+    save_game(*player);
+
     initialize_map();
     MapContext *map_context = malloc(sizeof *map_context);
     map_context->player = player;
