@@ -183,9 +183,9 @@ Inventory* loadSpellsFromDatabase(sqlite3 *db)
     return inventory;
 }
 
-Character loadPlayerFromDatabase(sqlite3 *db)
+Character *loadPlayerFromDatabase(sqlite3 *db)
 {
-    Character player;
+    Character *player = malloc(sizeof *player);
     sqlite3_stmt *stmt_player;
 
     const char *sql_select_player = "SELECT id, name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp, xp_to_next_level FROM player;";
@@ -198,24 +198,24 @@ Character loadPlayerFromDatabase(sqlite3 *db)
     
     if (sqlite3_step(stmt_player) == SQLITE_ROW)
     {
-        player.name = strdup((const char *)sqlite3_column_text(stmt_player, 1));
-        player.health = sqlite3_column_int(stmt_player, 2);
-        player.max_health = sqlite3_column_int(stmt_player, 3);
-        player.mana = sqlite3_column_int(stmt_player, 4);
-        player.max_mana = sqlite3_column_int(stmt_player, 5);
-        player.gold =sqlite3_column_int(stmt_player, 8);
-        player.xp =sqlite3_column_int(stmt_player, 9);
-        player.xp_to_next_level =sqlite3_column_int(stmt_player, 10);
+        player->name = strdup((const char *)sqlite3_column_text(stmt_player, 1));
+        player->health = sqlite3_column_int(stmt_player, 2);
+        player->max_health = sqlite3_column_int(stmt_player, 3);
+        player->mana = sqlite3_column_int(stmt_player, 4);
+        player->max_mana = sqlite3_column_int(stmt_player, 5);
+        player->gold = sqlite3_column_int(stmt_player, 8);
+        player->xp = sqlite3_column_int(stmt_player, 9);
+        player->xp_to_next_level =sqlite3_column_int(stmt_player, 10);
         int id_weapon = sqlite3_column_int(stmt_player, 6);
         
-        player.weapon = loadItemFromDatabase(db, id_weapon);
+        player->weapon = loadItemFromDatabase(db, id_weapon);
          
         int id_armor = sqlite3_column_int(stmt_player, 7);
-        player.armor = loadItemFromDatabase(db, id_armor);
+        player->armor = loadItemFromDatabase(db, id_armor);
         
-        player.inventory = loadInventoryFromDatabase(db);
+        player->inventory = loadInventoryFromDatabase(db);
         
-        player.spells = loadSpellsFromDatabase(db);
+        player->spells = loadSpellsFromDatabase(db);
     } else memset(&player, 0, sizeof(Character));
 
     sqlite3_finalize(stmt_player);
@@ -223,11 +223,11 @@ Character loadPlayerFromDatabase(sqlite3 *db)
     return player;
 }
 
-Character continue_game()
+Character *load_game()
 {
     sqlite3 *db = open_database("doomdepths.db");
 
-    Character player = loadPlayerFromDatabase(db);
+    Character *player = loadPlayerFromDatabase(db);
     sqlite3_close(db);
 
     return player;
@@ -294,7 +294,7 @@ int insertArmor(sqlite3 *db, Item *armor)
 }
 
 
-void save_game(Character player)
+void save_game(Character *player)
 {
     sqlite3 *db = open_database("doomdepths.db");
 
@@ -318,8 +318,8 @@ void save_game(Character player)
     }
 
     int weapon_id, armor_id;
-    if (player.weapon) weapon_id = insertWeapon(db, player.weapon);
-    if (player.armor) armor_id = insertArmor(db, player.armor);
+    if (player->weapon) weapon_id = insertWeapon(db, player->weapon);
+    if (player->armor) armor_id = insertArmor(db, player->armor);
 
     sqlite3_stmt *stmt_insert_player;
     const char *sql_insert_player = "INSERT INTO player (name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp, xp_to_next_level ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -330,16 +330,16 @@ void save_game(Character player)
         exit(1);
     }
 
-    sqlite3_bind_text(stmt_insert_player, 1, player.name, -1, SQLITE_STATIC);
-    sqlite3_bind_int(stmt_insert_player, 2, player.health);
-    sqlite3_bind_int(stmt_insert_player, 3, player.max_health);
-    sqlite3_bind_int(stmt_insert_player, 4, player.mana);
-    sqlite3_bind_int(stmt_insert_player, 5, player.max_mana);
+    sqlite3_bind_text(stmt_insert_player, 1, player->name, -1, SQLITE_STATIC);
+    sqlite3_bind_int(stmt_insert_player, 2, player->health);
+    sqlite3_bind_int(stmt_insert_player, 3, player->max_health);
+    sqlite3_bind_int(stmt_insert_player, 4, player->mana);
+    sqlite3_bind_int(stmt_insert_player, 5, player->max_mana);
     sqlite3_bind_int(stmt_insert_player, 6, weapon_id);
     sqlite3_bind_int(stmt_insert_player, 7, armor_id);
-    sqlite3_bind_int(stmt_insert_player, 8, player.gold);
-    sqlite3_bind_int(stmt_insert_player, 9, player.xp);
-    sqlite3_bind_int(stmt_insert_player, 10, player.xp_to_next_level);
+    sqlite3_bind_int(stmt_insert_player, 8, player->gold);
+    sqlite3_bind_int(stmt_insert_player, 9, player->xp);
+    sqlite3_bind_int(stmt_insert_player, 10, player->xp_to_next_level);
 
     if (sqlite3_step(stmt_insert_player) != SQLITE_DONE)
     {
@@ -349,7 +349,7 @@ void save_game(Character player)
 
     sqlite3_finalize(stmt_insert_player);
 
-    Inventory *inventory = player.inventory;
+    Inventory *inventory = player->inventory;
     while (inventory)
     {
         const char *sql_insert_inventory = "INSERT INTO item (idType, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
@@ -378,7 +378,7 @@ void save_game(Character player)
         inventory = inventory->next;
     }
 
-    Inventory *spells = player.spells;
+    Inventory *spells = player->spells;
     while (spells)
     {
         sqlite3_stmt *stmt_insert_spells;
