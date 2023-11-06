@@ -33,6 +33,6 @@ void save_game(Character player);
  * @brief Loads the game from the database.
  * @return A pointer to the player character.
  */
-Character continueGame();
+Character continue_game();
 
 #endif // SAVE_H
