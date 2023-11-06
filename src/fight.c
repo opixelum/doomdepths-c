@@ -199,6 +199,8 @@ unsigned char battle(Character *player)
             return 0;
         }
 
+        save_game(player);
+
         press_any_key_to_continue();
     }
 
