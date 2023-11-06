@@ -12,10 +12,9 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
     {
         if (!attacker->weapon)
         {
-            if (strcmp(attacker->name, "Orc") == 0) damage = 20;
-            else if (strcmp(attacker->name, "Troll") == 0) damage = 30;
-            else if (strcmp(attacker->name, "Ogre") == 0) damage = 40;
-            else if (strcmp(attacker->name, "Giant") == 0) damage = 50;
+            if (strcmp(attacker->name, "Skeleton") == 0) damage = 20;
+            else if (strcmp(attacker->name, "Centaur") == 0) damage = 40;
+            else if (strcmp(attacker->name, "Grim Reaper") == 0) damage = 50;
             else if (strcmp(attacker->name, "Dragon") == 0) damage = 70;
             else damage = 5;
         }
