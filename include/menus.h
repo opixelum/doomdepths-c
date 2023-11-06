@@ -10,6 +10,7 @@
 
 #include "map.h"
 #include "monsters.h"
+#include "save.h"
 
 /**
  * @brief Cross-platform function to clear console screen.
