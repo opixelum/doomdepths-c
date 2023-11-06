@@ -183,7 +183,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         else if (map_context->map[map_context->pos_x][map_context->pos_y - 1] == GRASS)
         {
             map_context->pos_y--;
-            // TODO: randomly start a battle
+            random_battle_trigger(map_context->player);
         }
         else map_context->pos_y--;
         break;
@@ -198,7 +198,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         else if (map_context->map[map_context->pos_x + 1][map_context->pos_y] == GRASS)
         {
             map_context->pos_x++;
-            // TODO: randomly start a battle
+            random_battle_trigger(map_context->player);
         }
         else map_context->pos_x++;
         break;
@@ -249,5 +249,6 @@ void explore_map(MapContext *map_context)
     {
         display_map(map_context);
         if (key_listener(getchar_no_enter(), map_context) == 0) break;
+        save_game(map_context->player);
     }
 }

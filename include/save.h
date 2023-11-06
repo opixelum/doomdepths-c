@@ -27,12 +27,12 @@ void create_tables(const char *db_path);
  * @brief Saves the game to the database.
  * @param player A pointer to the player character.
  */
-void save_game(Character player);
+void save_game(Character *player);
 
 /**
  * @brief Loads the game from the database.
  * @return A pointer to the player character.
  */
-Character continue_game();
+Character *load_game();
 
 #endif // SAVE_H
