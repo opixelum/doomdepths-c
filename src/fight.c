@@ -10,17 +10,19 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
     if (spell && spell->type == ATTACK_SPELL)
     {
         attacker->mana -= spell->price;
+        if (attacker->mana < 0) attacker->mana = 0;
         damage = spell->value;
     }
     else
     {
         if (!attacker->weapon)
         {
-            if (strcmp(attacker->name, "Skeleton") == 0) damage = 20;
+            if (strcmp(attacker->name, "Ghost") == 0) damage = 5;
+            else if (strcmp(attacker->name, "Skeleton") == 0) damage = 20;
             else if (strcmp(attacker->name, "Centaur") == 0) damage = 40;
             else if (strcmp(attacker->name, "Grim Reaper") == 0) damage = 50;
             else if (strcmp(attacker->name, "Dragon") == 0) damage = 70;
-            else damage = 5;
+            else damage = 10;
         }
         else damage = attacker->weapon->value;
     }
