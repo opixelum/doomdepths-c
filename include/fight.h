@@ -31,24 +31,44 @@
 unsigned short attack(Character *attacker, Character *defender, Item *spell);
 
 /**
- * @brief Update monsters list if a monster is dead
- * @param head Pointer to the head of the monsters list
- * @return Pointer to the head of the monsters list, NULL if all monsters died
+ * @brief Updates monsters list if a monster is dead.
+ * @param head A pointer to the head of the monsters list.
+ * @return A pointer to the head of the monsters list, NULL if all monsters
+ * died.
+ * @warning It's important to pass the head of the monsters list, otherwise
+ * monsters can be skipped.
  */
 Monsters *update_monsters_list(Monsters *head);
 
 /**
- * @brief Battle between the player and the head. Monsters are generated
- * randomly & free after the battle.
- * @param player Pointer to the player
- * @return 1 if the player won, 0 otherwise
+ * @brief Battle between the player and a random number of monsters. Monsters
+ * are generated randomly & free after the battle.
+ * @param player A pointer to the player.
  */
-unsigned char battle(Character *player);
+void battle(Character *player);
 
 /**
  * @brief Randomly trigger a battle (1/10 chance)
  * @param A pointer to the player
  */
 void random_battle_trigger(Character *player);
+
+/**
+ * @brief Prompts user to choose an attack type, then executes the attack &
+ * prints the turn summary.
+ * @param attacker A pointer to the character who attacks.
+ * @param defender A pointer to the targeted character.
+ * @param monsters A pointer to the head of the monsters list.
+ * @return A pointer to the head of the updated monsters list, NULL if all
+ * monsters died.
+ * @warning It's important to pass the head of the monsters list, otherwise
+ * monsters can be skipped.
+ */
+Monsters *perform_attack
+(
+    Character *attacker,
+    Character *defender,
+    Monsters *monsters
+);
 
 #endif // FIGHT_H

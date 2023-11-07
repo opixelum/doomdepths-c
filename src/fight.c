@@ -7,16 +7,22 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
 
     unsigned short damage;
 
-    if (spell && spell->type == ATTACK_SPELL) damage = spell->value;
+    if (spell && spell->type == ATTACK_SPELL)
+    {
+        attacker->mana -= spell->price;
+        if (attacker->mana < 0) attacker->mana = 0;
+        damage = spell->value;
+    }
     else
     {
         if (!attacker->weapon)
         {
-            if (strcmp(attacker->name, "Skeleton") == 0) damage = 20;
+            if (strcmp(attacker->name, "Ghost") == 0) damage = 5;
+            else if (strcmp(attacker->name, "Skeleton") == 0) damage = 20;
             else if (strcmp(attacker->name, "Centaur") == 0) damage = 40;
             else if (strcmp(attacker->name, "Grim Reaper") == 0) damage = 50;
             else if (strcmp(attacker->name, "Dragon") == 0) damage = 70;
-            else damage = 5;
+            else damage = 10;
         }
         else damage = attacker->weapon->value;
     }
@@ -60,7 +66,7 @@ Monsters *update_monsters_list(Monsters *head)
     return head;
 }
 
-unsigned char battle(Character *player)
+void battle(Character *player)
 {
     if (!player)
     {
@@ -68,143 +74,43 @@ unsigned char battle(Character *player)
         exit(EXIT_FAILURE);
     }
 
-    Monsters *head = generate_random_monsters_list();
-    Character *monster;
+    Monsters *monsters = generate_random_monsters_list();
 
-    // Get number of monsters in the list
-    unsigned char number_of_monsters = 0;
-    Monsters *current = head;
-    while (current)
+    while (monsters)
     {
-        number_of_monsters++;
-        current = current->next;
-    }
-
-    while (head)
-    {
+        unsigned char monster_count = get_number_of_monsters(monsters);
         clear_screen();
         print_character_stats(player);
-        print_monsters(head);
+        print_monsters(monsters);
 
-        unsigned char choice = battle_actions_menu(player, head);
-        clear_lines(7);
+        unsigned char action_choice = battle_actions_menu(player, monsters);
 
-        switch (choice)
+        Character *target_monster = monster_count == 1 ? monsters->monster : NULL;
+
+        switch (action_choice)
         {
         case 1:
-            // If there is only one monster, select it automatically
-            if (number_of_monsters == 1) monster = head->monster;
-            else
-            {
-                monster = monster_selection_menu(player, head);
-            }
-
-            // If player has no attack spell, don't ask him to choose
-            if (!number_of_attack_spells(player))
-                printf
-                (
-                    "\nYou dealt %d damage to %s using your %s.\n",
-                    attack(player, monster, NULL),
-                    monster->name,
-                    player->weapon ? player->weapon->name : "fists"
-                );
-            else
-                switch (attack_selection_menu(player, monster))
-                {
-                case 1:
-                    printf
-                    (
-                        "\nYou dealt %d damage to %s using your %s.\n",
-                        attack(player, monster, NULL),
-                        monster->name,
-                        player->weapon ? player->weapon->name : "fists"
-                    );
-                    break;
-
-                case 2:
-                    // If there's only one attack spell, select it automatically
-                    if (number_of_type_spells(player, ATTACK_SPELL) == 1)
-                    {
-                        Inventory *attack_spells = get_type_spells(player, ATTACK_SPELL);
-                        Item *spell = attack_spells->item;
-                        free_inventory(attack_spells);
-                        printf
-                        (
-                            "\nYou dealt %d damage to %s by casting the %s spell.\n",
-                            attack
-                            (
-                                player,
-                                monster,
-                                spell
-                            ),
-                            monster->name,
-                            spell->name
-                        );
-                    }
-                    else
-                    {
-                        Item *spell = type_spell_selection_menu
-                        (
-                            player,
-                            monster,
-                            ATTACK_SPELL
-                        );
-                        printf
-                        (
-                            "\nYou dealt %d damage to %s by casting the %s spell.\n",
-                            attack
-                            (
-                                player,
-                                monster,
-                                spell
-                            ),
-                            monster->name,
-                            spell->name
-                        );
-                    }
-                    break;
-                }
+            target_monster = target_monster ?: monster_selection_menu(player, monsters);
+            monsters = perform_attack(player, target_monster, monsters);
             break;
 
         case 2:
-            // TODO: Implement drink potion
-            printf("\nDrink potion to implement\n");
+            printf("\nDrink potion to implement\n\n");
             press_any_key_to_continue();
-            break;
+            continue;
 
         case 3:
-            free_monsters_list(head);
-            printf("\nYou fled!\n");
-            return 0;
+            printf("\nYou fled!\n\n");
+            break;
         }
 
-        if (monster->health > 0) printf
-        (
-            "%s dealt %d damage to you.\n\n",
-            monster->name,
-            attack(monster, player, NULL)
-        );
-        else
-        {
-            printf("You killed %s!\n\n", monster->name);
-            // Free dead monster & target next monster if any
-            head = update_monsters_list(head);
-            monster = head ? head->monster : NULL;
-            number_of_monsters--;
-        }
-
-        if (player->health == 0)
-        {
-            free_monsters_list(head);
-            return 0;
-        }
-
+        restore_mana(player, 10);
         save_game(player);
-
         press_any_key_to_continue();
     }
 
-    return 1;
+    player->health = player->max_health;
+    player->mana = player->max_mana;
 }
 
 void random_battle_trigger(Character *player)
@@ -218,4 +124,55 @@ void random_battle_trigger(Character *player)
         press_enter_to_continue();
         battle(player);
     }
+}
+
+Monsters *perform_attack
+(
+    Character *attacker,
+    Character *defender,
+    Monsters *monsters
+) {
+    if (!attacker || !defender) return monsters;
+
+    unsigned short damage_dealt, damage_taken = 0;
+    Item *spell = NULL;
+
+    // If player has no attack spell, don't ask him to choose
+    if
+    (
+        !number_of_attack_spells(attacker)
+        || !has_enough_mana(attacker, ATTACK_SPELL)
+    )
+        goto attack;
+
+    if (attack_selection_menu(attacker, defender) == 2)
+    {
+        // If there's only one attack spell, select it automatically
+        if (number_of_type_spells(attacker, ATTACK_SPELL) == 1)
+        {
+            Inventory *attack_spells = get_type_spells(attacker, ATTACK_SPELL);
+            spell = attack_spells->item;
+            free_inventory(attack_spells);
+            goto attack;
+        }
+
+        spell = type_spell_selection_menu
+        (
+            attacker,
+            defender,
+            ATTACK_SPELL
+        );
+    }
+
+attack:
+    damage_dealt = attack(attacker, defender, spell);
+
+    unsigned char is_defender_dead = defender->health <= 0;
+
+    if (!is_defender_dead)
+        damage_taken = attack(defender, attacker, NULL);
+
+    print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
+
+    return update_monsters_list(monsters);
 }

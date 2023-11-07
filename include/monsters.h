@@ -216,4 +216,13 @@ const char *get_monster_art_line
  */
 void print_monsters(Monsters *head);
 
+/**
+ * @brief Get the number of monsters in a monsters list.
+ * @param head A pointer to the head of the monsters list.
+ * @return The number of monsters in the monsters list.
+ * @warning It's important to pass the head of the monsters list, otherwise
+ * monsters can be skipped.
+ */
+unsigned char get_number_of_monsters(Monsters *head);
+
 #endif // MONSTERS_H

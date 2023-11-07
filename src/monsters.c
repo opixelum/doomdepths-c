@@ -212,3 +212,19 @@ void print_monsters(Monsters *head)
     }
     printf("\n");
 }
+
+unsigned char get_number_of_monsters(Monsters *head)
+{
+    if (!head) return 0;
+
+    unsigned char number_of_monsters = 0;
+    Monsters *current = head;
+
+    while (current)
+    {
+        number_of_monsters++;
+        current = current->next;
+    }
+
+    return number_of_monsters;
+}
