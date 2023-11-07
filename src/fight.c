@@ -164,7 +164,6 @@ Monsters *perform_attack
 
 attack:
     damage_dealt = attack(attacker, defender, spell);
-    attack(defender, attacker, NULL);
 
     unsigned char is_defender_dead = defender->health <= 0;
 
