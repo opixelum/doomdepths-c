@@ -105,7 +105,7 @@ void main_menu(unsigned char *is_running)
 
     Character *player;
 
-    switch (get_valid_digit_no_enter(1, 3))
+    switch (get_valid_digit_no_enter(1, 3, 0))
     {
     case 1:
         new_game();
@@ -144,7 +144,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         "\nPress the number of your choice on your keyboard."
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 3);
+    unsigned char choice = get_valid_digit_no_enter(1, 3, 0);
     clear_lines(7);
 
     return choice;
@@ -167,7 +167,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 
     printf("\nPress the number of your choice on your keyboard.");
 
-    unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters);
+    unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters, 1);
     clear_lines(number_of_monsters + 4); // +4 for other menu lines
 
     // -1 because array starts at 0
@@ -188,7 +188,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
         monster->name
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 2);
+    unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
     clear_lines(8);
 
     return choice;
@@ -316,7 +316,7 @@ Item *spell_selection_menu
         );
 
         press_any_key_to_continue();
-        clear_lines(6);
+        clear_lines(7);
 
         return NULL;
     }
@@ -355,23 +355,35 @@ Item *spell_selection_menu
         spells_list = spells_list->next;
     }
 
-    printf("\nPress the number of your choice on your keyboard.");
+    printf("    B. Back\n\nPress the number of your choice on your keyboard.");
 
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
-        choice = get_valid_digit_no_enter(1, spells_count);
+    {
+        choice = get_valid_digit_no_enter(1, spells_count, 1);
+        if (choice == 'b' || choice == 'B')
+        {
+            clear_lines(spells_count + 7);
+            return NULL;
+        }
+    }
     while (spells[choice - 1]->price > player->mana);
 
-    clear_lines(spells_count + 6);
+    clear_lines(spells_count + 7);
 
     // -1 because array starts at 0
     return spells[choice - 1];
 }
 
-unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
+unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max, unsigned char is_cancelable)
 {
     unsigned char input;
-    do input = getchar_no_enter() - '0'; // Convert ASCII to integer
+    do
+    {
+        input = getchar_no_enter();
+        if (is_cancelable && (input == 'b' || input == 'B')) break;
+        input -= '0'; // Convert ASCII character to digit
+    }
     while (input < min || input > max);
     return input;
 }

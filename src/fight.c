@@ -137,13 +137,15 @@ Monsters *perform_attack
     unsigned short damage_dealt, damage_taken = 0;
     Item *spell = NULL;
 
-    if (attack_selection_menu(attacker, defender) == 2)
+    while (attack_selection_menu(attacker, defender) == 2 && !spell)
+    {
         spell = spell_selection_menu
-            (
-                attacker,
-                defender,
-                ATTACK_SPELL
-            );
+        (
+            attacker,
+            defender,
+            ATTACK_SPELL
+        );
+    }
 
     damage_dealt = attack(attacker, defender, spell);
 
