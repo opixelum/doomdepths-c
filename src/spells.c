@@ -84,3 +84,10 @@ unsigned char has_enough_mana(Character *character, ItemType spell_type)
 
     return 0;
 }
+
+void restore_mana(Character *character, unsigned char percentage)
+{
+    character->mana += character->max_mana / 100 * percentage;
+    if (character->mana > character->max_mana)
+        character->mana = character->max_mana;
+}

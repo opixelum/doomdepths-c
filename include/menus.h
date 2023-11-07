@@ -182,4 +182,24 @@ char *get_user_name_menu(void);
  */
 void new_game();
 
+/**
+ * @brief Display the attacker stats, battle monsters & attack result.
+ * @param attacker A pointer to the attacker.
+ * @param defender A pointer to the targeted monster.
+ * @param monsters A pointer to the head of the monsters list.
+ * @param damage_dealt The damage dealt to the defender.
+ * @param damage_taken The damage taken by the attacker in return.
+ * @param spell A pointer to the spell used to attack the monster, NULL if
+ * weapon was used.
+ */
+void print_attack_result
+(
+    Character *attacker,
+    Character *defender,
+    Monsters *monsters,
+    unsigned short damage_dealt,
+    unsigned short damage_taken,
+    Item *spell
+);
+
 #endif // MENUS_H

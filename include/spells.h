@@ -49,4 +49,12 @@ Inventory *get_type_spells(Character *character, ItemType type);
  */
 unsigned char has_enough_mana(Character *character, ItemType spell_type);
 
+/**
+ * @brief Restore mana to a character depending on a percentage of his maximum
+ * mana.
+ * @param character A pointer to the character to restore mana to.
+ * @param percentage The percentage of the character's maximum mana to restore.
+ */
+void restore_mana(Character *character, unsigned char percentage);
+
 #endif // SPELLS_H

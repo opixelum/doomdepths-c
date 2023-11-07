@@ -103,6 +103,8 @@ void main_menu(unsigned char *is_running)
         "\nPress the number of your choice on your keyboard."
     );
 
+    Character *player;
+
     switch (get_valid_digit_no_enter(1, 3))
     {
     case 1:
@@ -110,7 +112,7 @@ void main_menu(unsigned char *is_running)
         break;
 
     case 2:
-        Character *player = load_game();
+        player = load_game();
         MapContext *map_context = malloc(sizeof *map_context);
         map_context->player = player;
 
@@ -125,7 +127,7 @@ void main_menu(unsigned char *is_running)
     case 3:
         clear_screen();
         *is_running = 0;
-        return;
+        break;
     }
 }
 
@@ -142,7 +144,10 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         "\nPress the number of your choice on your keyboard."
     );
 
-    return get_valid_digit_no_enter(1, 3);
+    unsigned char choice = get_valid_digit_no_enter(1, 3);
+    clear_lines(7);
+
+    return choice;
 }
 
 Character *monster_selection_menu(Character *character, Monsters *head)
@@ -356,6 +361,12 @@ void new_game(void)
     // Ask user for his name
     char *user_name = get_user_name_menu();
 
+    Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
+    Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
+    Inventory *spells = NULL;
+    spells = add_item_to_inventory(spells, fireball);
+    spells = add_item_to_inventory(spells, freeze);
+
     // Create a new character
     Character *player = create_character
     (
@@ -370,7 +381,7 @@ void new_game(void)
         0,
         NULL,
         NULL,
-        NULL,
+        spells,
         NULL
     );
 
@@ -386,4 +397,43 @@ void new_game(void)
     press_any_key_to_continue();
 
     explore_map(map_context);
+}
+
+void print_attack_result
+(
+    Character *player,
+    Character *defender,
+    Monsters *monsters,
+    unsigned short damage_dealt,
+    unsigned short damage_taken,
+    Item *spell
+) {
+    clear_screen();
+    print_character_stats(player);
+    print_monsters(monsters);
+
+    if (spell) printf
+    (
+        "\nYou dealt %d damage to %s by casting the %s spell.\n",
+        damage_dealt,
+        defender->name,
+        spell->name
+    );
+    else printf
+    (
+        "\nYou dealt %d damage to %s using your %s.\n",
+        damage_dealt,
+        defender->name,
+        player->weapon ? player->weapon->name : "fists"
+    );
+
+    if (defender->health <= 0) printf("You killed %s!\n\n", defender->name);
+    else printf
+    (
+        "%s dealt %d damage to you.\n\n",
+        defender->name,
+        damage_taken
+    );
+
+    if (player->health <= 0) printf("You died!\n\n");
 }
