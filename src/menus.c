@@ -316,7 +316,7 @@ Item *spell_selection_menu
         );
 
         press_any_key_to_continue();
-        clear_lines(7);
+        clear_lines(3);
 
         return NULL;
     }
@@ -409,8 +409,8 @@ void new_game(void)
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
     Inventory *spells = NULL;
-    spells = add_item_to_inventory(spells, fireball);
-    spells = add_item_to_inventory(spells, freeze);
+//    spells = add_item_to_inventory(spells, fireball);
+//    spells = add_item_to_inventory(spells, freeze);
 
     // Create a new character
     Character *player = create_character
