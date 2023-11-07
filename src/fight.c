@@ -93,12 +93,12 @@ void battle(Character *player)
             break;
 
         case 2:
-            printf("\nDrink potion to implement\n");
+            printf("\nDrink potion to implement\n\n");
             press_any_key_to_continue();
             continue;
 
         case 3:
-            printf("\nYou fled!\n");
+            printf("\nYou fled!\n\n");
             break;
         }
 
@@ -107,7 +107,8 @@ void battle(Character *player)
         press_any_key_to_continue();
     }
 
-    free_monsters_list(monsters);
+    player->health = player->max_health;
+    player->mana = player->max_mana;
 }
 
 void random_battle_trigger(Character *player)
