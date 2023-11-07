@@ -289,6 +289,37 @@ Item *spell_selection_menu
     ItemType spell_type
 ) {
     if (!player) return NULL;
+    unsigned char spells_count = number_of_type_spells(player, spell_type);
+
+    if (!spells_count)
+    {
+        char *spell_type_string;
+        switch (spell_type)
+        {
+        case ATTACK_SPELL:
+            spell_type_string = "attack ";
+            break;
+
+        case HEAL_SPELL:
+            spell_type_string = "heal ";
+            break;
+
+        default:
+            spell_type_string = "";
+            break;
+        }
+
+        printf
+        (
+            "\nYou don't have any %sspell.\n\n",
+            spell_type_string
+        );
+
+        press_any_key_to_continue();
+        clear_lines(6);
+
+        return NULL;
+    }
 
     printf("\nYou are attacking %s.\n", monster->name);
 
@@ -301,16 +332,12 @@ Item *spell_selection_menu
     case HEAL_SPELL:
         printf("\nWhich heal spell do you want to cast?\n\n");
         break;
-
-    default:
-        return NULL;
     }
 
     Inventory *spells_list = player->spells;
 
-    Item *spells[9]; // For simplicity when getting user input, 9 spells max
-    unsigned char number_of_spells = 0;
-    while (spells_list)
+    Item *spells[spells_count];
+    for (unsigned char i = 0; i < spells_count; ++i)
     {
         if (spells_list->item->type == spell_type)
         {
@@ -319,11 +346,11 @@ Item *spell_selection_menu
             (
                 spells_list->item->price > player->mana ? 0xff0000 : 0xffffff,
                 "    %d. %s (%d mana)\n",
-                ++number_of_spells,
+                i + 1,
                 spells_list->item->name,
                 spells_list->item->price
             );
-            spells[number_of_spells - 1] = spells_list->item;
+            spells[i] = spells_list->item;
         }
         spells_list = spells_list->next;
     }
@@ -332,10 +359,10 @@ Item *spell_selection_menu
 
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
-        choice = get_valid_digit_no_enter(1, number_of_spells);
+        choice = get_valid_digit_no_enter(1, spells_count);
     while (spells[choice - 1]->price > player->mana);
 
-    clear_lines(number_of_spells + 6);
+    clear_lines(spells_count + 6);
 
     // -1 because array starts at 0
     return spells[choice - 1];
