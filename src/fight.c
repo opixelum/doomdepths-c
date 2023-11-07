@@ -91,6 +91,7 @@ void battle(Character *player)
         {
         case 1:
             target_monster = target_monster ?: monster_selection_menu(player, monsters);
+            if (!target_monster) continue; // Case when user goes back
             monsters = perform_attack(player, target_monster, monsters);
             break;
 

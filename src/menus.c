@@ -165,13 +165,13 @@ Character *monster_selection_menu(Character *character, Monsters *head)
         head = head->next;
     }
 
-    printf("\nPress the number of your choice on your keyboard.");
+    printf("    B. Back\n\nPress the number of your choice on your keyboard.");
 
     unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters, 1);
-    clear_lines(number_of_monsters + 4); // +4 for other menu lines
+    clear_lines(number_of_monsters + 5); // +5 for other menu lines
 
     // -1 because array starts at 0
-    return monsters[choice - 1];
+    return choice == 'B' || choice == 'b' ? NULL : monsters[choice - 1];
 }
 
 unsigned char attack_selection_menu(Character *player, Character *monster)
