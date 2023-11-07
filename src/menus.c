@@ -375,8 +375,12 @@ Item *spell_selection_menu
     return spells[choice - 1];
 }
 
-unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max, unsigned char is_cancelable)
-{
+unsigned char get_valid_digit_no_enter
+(
+    unsigned char min,
+    unsigned char max,
+    unsigned char is_cancelable
+) {
     unsigned char input;
     do
     {
