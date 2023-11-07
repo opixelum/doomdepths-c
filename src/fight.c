@@ -7,7 +7,11 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
 
     unsigned short damage;
 
-    if (spell && spell->type == ATTACK_SPELL) damage = spell->value;
+    if (spell && spell->type == ATTACK_SPELL)
+    {
+        attacker->mana -= spell->price;
+        damage = spell->value;
+    }
     else
     {
         if (!attacker->weapon)
