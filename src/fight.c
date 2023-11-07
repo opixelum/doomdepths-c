@@ -207,6 +207,9 @@ unsigned char battle(Character *player)
             return 0;
         }
 
+        // Restore 10% of max mana
+        player->mana += player->max_mana / 10;
+
         save_game(player);
 
         press_any_key_to_continue();
