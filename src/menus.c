@@ -184,12 +184,13 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
         "\nWould you rather use your weapon or cast a spell?\n\n"
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
-        "\nPress the number of your choice on your keyboard.",
+        "    B. Back\n"
+        "\nPress the key of your choice on your keyboard.",
         monster->name
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
-    clear_lines(8);
+    clear_lines(9);
 
     return choice;
 }
