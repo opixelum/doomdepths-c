@@ -282,7 +282,7 @@ void print_character_gold(Character *character)
     color_printf(0xFFD700, "%d\n", character->gold);
 }
 
-Item *type_spell_selection_menu
+Item *spell_selection_menu
 (
     Character *player,
     Character *monster,
@@ -314,8 +314,10 @@ Item *type_spell_selection_menu
     {
         if (spells_list->item->type == spell_type)
         {
-            printf
+            // Print spells in red if player can't afford them
+            color_printf
             (
+                spells_list->item->price > player->mana ? 0xff0000 : 0xffffff,
                 "    %d. %s (%d mana)\n",
                 ++number_of_spells,
                 spells_list->item->name,
@@ -328,7 +330,11 @@ Item *type_spell_selection_menu
 
     printf("\nPress the number of your choice on your keyboard.");
 
-    unsigned char choice = get_valid_digit_no_enter(1, number_of_spells);
+    unsigned char choice;
+    do // Don't allow user to select a spell if he doesn't have enough mana
+        choice = get_valid_digit_no_enter(1, number_of_spells);
+    while (spells[choice - 1]->price > player->mana);
+
     clear_lines(number_of_spells + 6);
 
     // -1 because array starts at 0
