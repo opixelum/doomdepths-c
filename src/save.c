@@ -5,28 +5,39 @@
 static int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
+void insertItem(sqlite3 *db, ItemType type, const char *name, const char *description, unsigned short value, unsigned short price) {
+    sqlite3_stmt *stmt;
+    const char *sql_insert_item = "INSERT INTO itemList (idType, name, description, value, price) VALUES (?, ?, ?, ?, ?)";
+
+    if (sqlite3_prepare_v2(db, sql_insert_item,-1, &stmt, 0) != SQLITE_OK) {
+        fprintf(stderr, "Erreur lors de la préparation de la requête : %s\n",sqlite3_errmsg(db));
+        exit(1);
+    }
+
+    sqlite3_bind_int(stmt, 1, type +1);
+    sqlite3_bind_text(stmt, 2, name, -1,SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 3, description, -1,SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 4,value);
+    sqlite3_bind_int(stmt, 5, price);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        fprintf(stderr, "Erreur lors de l'insertion de l'item : %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+
+    sqlite3_finalize(stmt);
+}
 
 
 void createDatabaseAndTable(sqlite3 *db) {
     char *errMsg = 0;
-    const char *sql_create_db = "CREATE DATABASE IF NOT EXISTS doomdepth;";
-    const char *sql_use_db = "USE doomdepths;";
     const char *sql_create_table_player = "CREATE TABLE IF NOT EXISTS player(id INTEGER PRIMARY KEY, name VARCHAR(255), health INT, max_health INT, mana INT, max_mana INT, id_weapon INT, id_armor INT, gold INT, xp INT, xp_to_next_level INT);";
     const char *sql_create_table_item_type = "CREATE TABLE IF NOT EXISTS item_type(id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255));";
     const char *sql_insert_item_types = "INSERT INTO item_type (label) VALUES ('WEAPON'), ('ARMOR'), ('HEALTH_POTION'), ('MANA_POTION'), ('ATTACK_SPELL'), ('HEAL_SPELL');";
     const char *sql_create_table_item = "CREATE TABLE IF NOT EXISTS item(id INTEGER PRIMARY KEY AUTOINCREMENT, idType INT, name VARCHAR(255), description VARCHAR(255), value INT, price INT, xp INT, xp_to_next_level INT);";
 
-    if (sqlite3_exec(db, sql_create_db, callback, 0, &errMsg) != SQLITE_OK) {
-        fprintf(stderr, "Erreur lors de la création de la base de données : %s\n", errMsg);
-        sqlite3_free(errMsg);
-        exit(1);
-    }
-
-    if (sqlite3_exec(db, sql_use_db, callback, 0, &errMsg) != SQLITE_OK) {
-        fprintf(stderr, "Erreur lors de la sélection de la base de données : %s\n", errMsg);
-        sqlite3_free(errMsg);
-        exit(1);
-    }
+    const char *sql_create_table_itemList = "CREATE TABLE IF NOT EXISTS itemList(id INTEGER PRIMARY KEY AUTOINCREMENT, idType INT, name VARCHAR(255), description VARCHAR(255), value INT, price INT, xp INT, xp_to_next_level INT);";
+    const char *sql_delete_from_table_itemList = "DELETE FROM itemList";
 
     if (sqlite3_exec(db, sql_create_table_player, callback, 0, &errMsg) != SQLITE_OK) {
         fprintf(stderr, "Erreur lors de la création de la table player : %s\n", errMsg);
@@ -51,8 +62,65 @@ void createDatabaseAndTable(sqlite3 *db) {
         sqlite3_free(errMsg);
         exit(1);
     }
+    if (sqlite3_exec(db, sql_create_table_itemList, callback, 0, &errMsg) != SQLITE_OK) {
+        fprintf(stderr, "Erreur lors de la création de la table itemList : %s\n", errMsg);
+        sqlite3_free(errMsg);
+        exit(1);
+    }
+if (sqlite3_exec(db, sql_delete_from_table_itemList, callback, 0, &errMsg) != SQLITE_OK) {
+        fprintf(stderr, "Erreur lors de la supression de la table itemList : %s\n", errMsg);
+        sqlite3_free(errMsg);
+        exit(1);
+    }
+    insertItem(db, WEAPON, "Epée en acier", "Une épée en acier tranchante.", 20, 100);
+    insertItem(db, WEAPON, "Arc long", "Un arc long pour tirer des flèches.", 15, 80);
+    insertItem(db, WEAPON, "Dague empoisonnée", "Une petite dague avec du poison.", 25, 120);
+    insertItem(db, WEAPON, "Marteau de guerre", "Un marteau de guerre massif.", 30, 150);
+
+    insertItem(db, ARMOR, "Armure légère", "Une armure légère pour la protection.", 10, 60);
+    insertItem(db, ARMOR, "Armure lourde", "Une armure lourde pour une grande protection.", 15, 90);
+    insertItem(db, ARMOR, "Bouclier en bois", "Un bouclier en bois pour la défense.", 5, 40);
+    insertItem(db, ARMOR, "Casque en fer", "Un casque en fer pour protéger la tête.", 7, 50);
+
+    insertItem(db, HEALTH_POTION, "Potion de guérison mineure", "Une petite potion pour restaurer la santé.", 10, 40);
+    insertItem(db, HEALTH_POTION, "Potion de guérison", "Une potion pour une guérison modérée.", 20, 80);
+    insertItem(db, HEALTH_POTION, "Potion de guérison majeure", "Une puissante potion de guérison.", 30, 120);
+
+    insertItem(db, MANA_POTION, "Potion de mana mineure", "Une petite potion pour restaurer le mana.", 10, 40);
+    insertItem(db, MANA_POTION, "Potion de mana", "Une potion pour une restauration modérée du mana.", 20, 80);
+    insertItem(db, MANA_POTION, "Potion de mana majeure", "Une puissante potion de mana.", 30, 120);
 }
 
+Item* getRandomItemFromDatabase(sqlite3 *db) {
+    Item* item = NULL;
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT id, name, description, value, price FROM itemList ORDER BY RANDOM() LIMIT 1;");
+
+    sqlite3_stmt *stmt_item;
+    if (sqlite3_prepare_v2(db, query, -1, &stmt_item, 0) != SQLITE_OK) {
+        fprintf(stderr, "Erreur lors de la préparation de la requête SELECT item : %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+    
+    if (sqlite3_step(stmt_item) == SQLITE_ROW) {
+        item = malloc(sizeof(Item));
+        ItemType item_type;
+        int type_id = sqlite3_column_int(stmt_item, 0);
+        if (type_id >= 1 && type_id <= 6) {
+            item_type = (ItemType)(type_id - 1);
+        }
+        fprintf(stderr,strdup((const char *)sqlite3_column_text(stmt_item, 1)));
+        item->type = item_type;
+        item->name = strdup((const char *)sqlite3_column_text(stmt_item, 1));
+        item->description = strdup((const char *)sqlite3_column_text(stmt_item, 2));
+        item->value = sqlite3_column_int(stmt_item, 3);
+        item->price = sqlite3_column_int(stmt_item, 4);
+    }
+
+    sqlite3_finalize(stmt_item);
+
+    return item;
+}
 
 Item* loadItemFromDatabase(sqlite3 *db, int itemId) {
     Item* item = NULL;

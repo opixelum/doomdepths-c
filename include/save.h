@@ -8,5 +8,7 @@
 #include <string.h>
 void saveGame(Character player);
 Character continueGame();
+Item* getRandomItemFromDatabase(sqlite3 *db);
+void createDatabaseAndTable(sqlite3 *db);
 
 #endif // SAVE_H
