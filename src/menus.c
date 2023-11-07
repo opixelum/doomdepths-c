@@ -105,7 +105,7 @@ void main_menu(unsigned char *is_running)
 
     Character *player;
 
-    switch (get_valid_digit_no_enter(1, 3))
+    switch (get_valid_digit_no_enter(1, 3, 0))
     {
     case 1:
         new_game();
@@ -144,7 +144,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         "\nPress the number of your choice on your keyboard."
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 3);
+    unsigned char choice = get_valid_digit_no_enter(1, 3, 0);
     clear_lines(7);
 
     return choice;
@@ -165,13 +165,13 @@ Character *monster_selection_menu(Character *character, Monsters *head)
         head = head->next;
     }
 
-    printf("\nPress the number of your choice on your keyboard.");
+    printf("    B. Back\n\nPress the number of your choice on your keyboard.");
 
-    unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters);
-    clear_lines(number_of_monsters + 4); // +4 for other menu lines
+    unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters, 1);
+    clear_lines(number_of_monsters + 5); // +5 for other menu lines
 
     // -1 because array starts at 0
-    return monsters[choice - 1];
+    return choice == 'B' || choice == 'b' ? NULL : monsters[choice - 1];
 }
 
 unsigned char attack_selection_menu(Character *player, Character *monster)
@@ -184,12 +184,13 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
         "\nWould you rather use your weapon or cast a spell?\n\n"
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
-        "\nPress the number of your choice on your keyboard.",
+        "    B. Back\n"
+        "\nPress the key of your choice on your keyboard.",
         monster->name
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 2);
-    clear_lines(8);
+    unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
+    clear_lines(9);
 
     return choice;
 }
@@ -226,7 +227,7 @@ void print_stat_bar
     // Convert stat to a percentage
     unsigned char percentage = (unsigned char)
     (
-        (float) current / (float) max * 100.0f
+        (float) current / (float) max * 92.0f
     );
 
     // Set color if adaptive
@@ -244,7 +245,7 @@ void print_stat_bar
         (
             color,
             "%s",
-            i <= percentage ? "█" : "-"
+            i < percentage ? "█" : "-"
         );
     }
 
@@ -316,7 +317,7 @@ Item *spell_selection_menu
         );
 
         press_any_key_to_continue();
-        clear_lines(6);
+        clear_lines(3);
 
         return NULL;
     }
@@ -355,23 +356,39 @@ Item *spell_selection_menu
         spells_list = spells_list->next;
     }
 
-    printf("\nPress the number of your choice on your keyboard.");
+    printf("    B. Back\n\nPress the number of your choice on your keyboard.");
 
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
-        choice = get_valid_digit_no_enter(1, spells_count);
+    {
+        choice = get_valid_digit_no_enter(1, spells_count, 1);
+        if (choice == 'b' || choice == 'B')
+        {
+            clear_lines(spells_count + 7);
+            return NULL;
+        }
+    }
     while (spells[choice - 1]->price > player->mana);
 
-    clear_lines(spells_count + 6);
+    clear_lines(spells_count + 7);
 
     // -1 because array starts at 0
     return spells[choice - 1];
 }
 
-unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max)
-{
+unsigned char get_valid_digit_no_enter
+(
+    unsigned char min,
+    unsigned char max,
+    unsigned char is_cancelable
+) {
     unsigned char input;
-    do input = getchar_no_enter() - '0'; // Convert ASCII to integer
+    do
+    {
+        input = getchar_no_enter();
+        if (is_cancelable && (input == 'b' || input == 'B')) break;
+        input -= '0'; // Convert ASCII character to digit
+    }
     while (input < min || input > max);
     return input;
 }
@@ -397,8 +414,8 @@ void new_game(void)
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
     Inventory *spells = NULL;
-    spells = add_item_to_inventory(spells, fireball);
-    spells = add_item_to_inventory(spells, freeze);
+//    spells = add_item_to_inventory(spells, fireball);
+//    spells = add_item_to_inventory(spells, freeze);
 
     // Create a new character
     Character *player = create_character

@@ -91,6 +91,7 @@ void battle(Character *player)
         {
         case 1:
             target_monster = target_monster ?: monster_selection_menu(player, monsters);
+            if (!target_monster) continue; // Case when user goes back
             monsters = perform_attack(player, target_monster, monsters);
             break;
 
@@ -104,9 +105,7 @@ void battle(Character *player)
             break;
         }
 
-        restore_mana(player, 10);
         save_game(player);
-        press_any_key_to_continue();
     }
 
     player->health = player->max_health;
@@ -137,13 +136,22 @@ Monsters *perform_attack
     unsigned short damage_dealt, damage_taken = 0;
     Item *spell = NULL;
 
-    if (attack_selection_menu(attacker, defender) == 2)
+    unsigned char choice;
+    do
+    {
+        choice = attack_selection_menu(attacker, defender);
+
+        if (choice == 'B' || choice == 'b') return monsters;
+        else if (choice == 1) break;
+
         spell = spell_selection_menu
-            (
-                attacker,
-                defender,
-                ATTACK_SPELL
-            );
+        (
+            attacker,
+            defender,
+            ATTACK_SPELL
+        );
+    }
+    while (choice == 2 && !spell);
 
     damage_dealt = attack(attacker, defender, spell);
 
@@ -153,6 +161,8 @@ Monsters *perform_attack
         damage_taken = attack(defender, attacker, NULL);
 
     print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
+    restore_mana(attacker, 10);
+    press_any_key_to_continue();
 
     return update_monsters_list(monsters);
 }

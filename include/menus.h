@@ -163,12 +163,19 @@ Item *spell_selection_menu
  * [ENTER] key. It will keep reading input until a valid digit is entered.
  * @param min The minimum valid number (included).
  * @param max The maximum valid number (included).
+ * @param is_cancelable 1 if the user can go back to previous menu by pressing
+ * [B], 0 otherwise.
  * @return The number read from user input.
  * @warning This function is not cross-platform because it uses termios.h, which
  * is only available on Unix systems. It can only read one character, so only
  * positive digits between 0 and 9 included are valid.
  */
-unsigned char get_valid_digit_no_enter(unsigned char min, unsigned char max);
+unsigned char get_valid_digit_no_enter
+(
+    unsigned char min,
+    unsigned char max,
+    unsigned char is_cancelable
+);
 
 /**
  * @brief Prompts user to write his user name.
