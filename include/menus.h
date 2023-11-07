@@ -151,7 +151,7 @@ void print_character_gold(Character *character);
  * the player doesn't have any spell of the given type, or if a wrong item
  * type is given.
  */
-Item *type_spell_selection_menu
+Item *spell_selection_menu
 (
     Character *player,
     Character *monster,

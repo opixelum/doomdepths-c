@@ -137,34 +137,14 @@ Monsters *perform_attack
     unsigned short damage_dealt, damage_taken = 0;
     Item *spell = NULL;
 
-    // If player has no attack spell, don't ask him to choose
-    if
-    (
-        !number_of_attack_spells(attacker)
-        || !has_enough_mana(attacker, ATTACK_SPELL)
-    )
-        goto attack;
-
     if (attack_selection_menu(attacker, defender) == 2)
-    {
-        // If there's only one attack spell, select it automatically
-        if (number_of_type_spells(attacker, ATTACK_SPELL) == 1)
-        {
-            Inventory *attack_spells = get_type_spells(attacker, ATTACK_SPELL);
-            spell = attack_spells->item;
-            free_inventory(attack_spells);
-            goto attack;
-        }
+        spell = spell_selection_menu
+            (
+                attacker,
+                defender,
+                ATTACK_SPELL
+            );
 
-        spell = type_spell_selection_menu
-        (
-            attacker,
-            defender,
-            ATTACK_SPELL
-        );
-    }
-
-attack:
     damage_dealt = attack(attacker, defender, spell);
 
     unsigned char is_defender_dead = defender->health <= 0;
