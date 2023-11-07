@@ -67,3 +67,20 @@ Inventory *get_type_spells(Character *character, ItemType type)
 
     return type_spells;
 }
+
+unsigned char has_enough_mana(Character *character, ItemType spell_type)
+{
+    if (!character) return 0;
+
+    Inventory *spells = character->spells;
+
+    while (spells)
+    {
+        if (spells->item->type == spell_type)
+            if (character->mana >= spells->item->price) return 1;
+
+        spells = spells->next;
+    }
+
+    return 0;
+}

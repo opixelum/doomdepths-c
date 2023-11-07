@@ -40,4 +40,13 @@ unsigned char number_of_type_spells(Character *character, ItemType type);
  */
 Inventory *get_type_spells(Character *character, ItemType type);
 
+/**
+ * @brief Check if a character has enough mana to cast a spell of a given type.
+ * @param character A pointer to the character to check.
+ * @param spell_type The type of spell to check (`ATTACK_SPELL` or
+ * `HEAL_SPELL`).
+ * @return 1 if the character has enough mana, 0 otherwise.
+ */
+unsigned char has_enough_mana(Character *character, ItemType spell_type);
+
 #endif // SPELLS_H
