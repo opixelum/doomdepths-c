@@ -227,7 +227,7 @@ void print_stat_bar
     // Convert stat to a percentage
     unsigned char percentage = (unsigned char)
     (
-        (float) current / (float) max * 100.0f
+        (float) current / (float) max * 92.0f
     );
 
     // Set color if adaptive
@@ -245,7 +245,7 @@ void print_stat_bar
         (
             color,
             "%s",
-            i <= percentage ? "█" : "-"
+            i < percentage ? "█" : "-"
         );
     }
 
