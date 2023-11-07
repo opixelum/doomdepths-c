@@ -103,8 +103,12 @@ unsigned char battle(Character *player)
                 monster = monster_selection_menu(player, head);
             }
 
-            // If player has no attack spell, don't ask him to choose
-            if (!number_of_attack_spells(player))
+            // If player has no attack spell or not enough mana, don't ask him to choose
+            if
+            (
+                !number_of_attack_spells(player)
+                || !has_enough_mana(player, ATTACK_SPELL)
+            )
                 printf
                 (
                     "\nYou dealt %d damage to %s using your %s.\n",
