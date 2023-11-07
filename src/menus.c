@@ -309,7 +309,13 @@ Item *type_spell_selection_menu
     {
         if (spells_list->item->type == spell_type)
         {
-            printf("    %d. %s\n", ++number_of_spells, spells_list->item->name);
+            printf
+            (
+                "    %d. %s (%d mana)\n",
+                ++number_of_spells,
+                spells_list->item->name,
+                spells_list->item->price
+            );
             spells[number_of_spells - 1] = spells_list->item;
         }
         spells_list = spells_list->next;
