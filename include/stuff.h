@@ -94,7 +94,7 @@ void free_inventory(Inventory *head);
 
 /**
  * @brief Adds game's items in the database.
- * @return 1 if success, 0 if failure
+ * @return 0 if success, 1 if failure
  */
 unsigned char init_items_in_database(void);
 
