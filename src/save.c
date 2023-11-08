@@ -409,5 +409,3 @@ void save_game(Character *player)
 
     sqlite3_close(db);
 }
-
-
