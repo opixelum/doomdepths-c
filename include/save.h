@@ -35,4 +35,12 @@ void save_game(Character *player);
  */
 Character *load_game();
 
+/**
+ * @brief Insert an item into the database.
+ * @param db_path A string containing the path to the database.
+ * @param item A pointer to the item to insert.
+ * @return 0 if the item was inserted successfully, 1 otherwise.
+ */
+unsigned char insert_item(const char *db_path, Item *item);
+
 #endif // SAVE_H

@@ -407,3 +407,37 @@ void save_game(Character *player)
 
     sqlite3_close(db);
 }
+
+unsigned char insert_item(const char *db_path, Item *item)
+{
+    sqlite3 *db = open_database(db_path);
+
+    sqlite3_stmt *stmt_insert_item;
+    const char *sql_insert_item =
+        "INSERT INTO items (type_id, name, description, value, price) "
+        "VALUES (?, ?, ?, ?, ?);";
+
+    if (sqlite3_prepare_v2(db, sql_insert_item, -1, &stmt_insert_item, 0) != SQLITE_OK)
+    {
+        fprintf(stderr, "ERROR: save.c: insert_item(): sqlite3_prepare_v2(): %s\n", sqlite3_errmsg(db));
+        return EXIT_FAILURE;
+    }
+
+    sqlite3_bind_int(stmt_insert_item, 1, (int) item->type + 1);
+    sqlite3_bind_text(stmt_insert_item, 2, item->name, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt_insert_item, 3, item->description, -1, SQLITE_STATIC);
+    sqlite3_bind_int(stmt_insert_item, 4, item->value);
+    sqlite3_bind_int(stmt_insert_item, 5, item->price);
+
+    if (sqlite3_step(stmt_insert_item) != SQLITE_DONE)
+    {
+        fprintf(stderr, "ERROR: save.c: insert_item(): sqlite3_step(): %s\n", sqlite3_errmsg(db));
+        return EXIT_FAILURE;
+    }
+
+    sqlite3_finalize(stmt_insert_item);
+
+    sqlite3_close(db);
+
+    return EXIT_SUCCESS;
+}
