@@ -102,7 +102,7 @@ void free_inventory(Inventory *head)
 
 unsigned char init_db_items(void)
 {
-    unsigned char return_code;
+    unsigned char return_value;
 
     // Health potions
     Item *heartbloom_draught = create_item
@@ -113,9 +113,9 @@ unsigned char init_db_items(void)
         9999,
         1000
     );
-    return_code = insert_item("doomdepths.db", heartbloom_draught);
+    return_value = insert_item("doomdepths.db", heartbloom_draught);
     free(heartbloom_draught);
-    if (return_code == EXIT_FAILURE)
+    if (return_value == EXIT_FAILURE)
     {
         fprintf
         (
@@ -133,9 +133,9 @@ unsigned char init_db_items(void)
         100,
         100
     );
-    return_code = insert_item("doomdepths.db", crimson_elixir_of_regeneration);
+    return_value = insert_item("doomdepths.db", crimson_elixir_of_regeneration);
     free(crimson_elixir_of_regeneration);
-    if (return_code == EXIT_FAILURE)
+    if (return_value == EXIT_FAILURE)
     {
         fprintf
         (
@@ -153,9 +153,9 @@ unsigned char init_db_items(void)
         25,
         30
     );
-    return_code = insert_item("doomdepths.db", vitality_essence);
+    return_value = insert_item("doomdepths.db", vitality_essence);
     free(vitality_essence);
-    if (return_code == EXIT_FAILURE)
+    if (return_value == EXIT_FAILURE)
     {
         fprintf
         (
@@ -174,9 +174,9 @@ unsigned char init_db_items(void)
         9999,
         1000
     );
-    return_code = insert_item("doomdepths.db", mindfrost_decoction);
+    return_value = insert_item("doomdepths.db", mindfrost_decoction);
     free(mindfrost_decoction);
-    if (return_code == EXIT_FAILURE)
+    if (return_value == EXIT_FAILURE)
     {
         fprintf
         (
@@ -194,9 +194,9 @@ unsigned char init_db_items(void)
         100,
         100
     );
-    return_code = insert_item("doomdepths.db", sorcerer_siphon_brew);
+    return_value = insert_item("doomdepths.db", sorcerer_siphon_brew);
     free(sorcerer_siphon_brew);
-    if (return_code == EXIT_FAILURE)
+    if (return_value == EXIT_FAILURE)
     {
         fprintf
         (
@@ -214,9 +214,9 @@ unsigned char init_db_items(void)
         25,
         30
     );
-    return_code = insert_item("doomdepths.db", azure_mystique_vial);
+    return_value = insert_item("doomdepths.db", azure_mystique_vial);
     free(azure_mystique_vial);
-    if (return_code == EXIT_FAILURE)
+    if (return_value == EXIT_FAILURE)
     {
         fprintf
         (
