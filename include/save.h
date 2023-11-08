@@ -1,11 +1,11 @@
 #ifndef SAVE_H
 #define SAVE_H
 
-#include "character.h"
-#include <stdio.h>
 #include <sqlite3.h>
-#include "stuff.h"
+#include <stdio.h>
 #include <string.h>
+
+#include "character.h"
 
 /**
  * @brief Creates a database if it doesn't exist already and opens a connection
@@ -42,5 +42,12 @@ Character *load_game();
  * @return 0 if the item was inserted successfully, 1 otherwise.
  */
 unsigned char insert_item(const char *db_path, Item *item);
+
+
+/**
+ * @brief Adds game's items in the database.
+ * @return 0 if success, 1 if failure
+ */
+unsigned char init_db_items(void);
 
 #endif // SAVE_H

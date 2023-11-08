@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "save.h"
-
 #define MAX_INVENTORY_SIZE 25
 
 typedef enum ItemType
@@ -93,11 +91,5 @@ Item *remove_item_from_inventory(Inventory *head, Item *item);
  * following nodes will be freed.
  */
 void free_inventory(Inventory *head);
-
-/**
- * @brief Adds game's items in the database.
- * @return 0 if success, 1 if failure
- */
-unsigned char init_db_items(void);
 
 #endif // STUFF_H

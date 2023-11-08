@@ -441,3 +441,132 @@ unsigned char insert_item(const char *db_path, Item *item)
 
     return EXIT_SUCCESS;
 }
+
+unsigned char init_db_items(void)
+{
+    unsigned char return_value;
+
+    // Health potions
+    Item *heartbloom_draught = create_item
+        (
+            HEALTH_POTION,
+            "Heartbloom Draught",
+            "A draught made from the heartbloom flower. Restores 9999 HP.",
+            9999,
+            1000
+        );
+    return_value = insert_item("doomdepths.db", heartbloom_draught);
+    free(heartbloom_draught);
+    if (return_value == EXIT_FAILURE)
+    {
+        fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: init_db_items(): insert_item(heartbloom_draught) failed\n"
+            );
+        return EXIT_FAILURE;
+    }
+
+    Item *crimson_elixir_of_regeneration = create_item
+        (
+            HEALTH_POTION,
+            "Crimson Elixir of Regeneration",
+            "A crimson elixir that restores 100 HP.",
+            100,
+            100
+        );
+    return_value = insert_item("doomdepths.db", crimson_elixir_of_regeneration);
+    free(crimson_elixir_of_regeneration);
+    if (return_value == EXIT_FAILURE)
+    {
+        fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: init_db_items(): insert_item(crimson_elixir_of_regeneration) failed\n"
+            );
+        return EXIT_FAILURE;
+    }
+
+    Item *vitality_essence = create_item
+        (
+            HEALTH_POTION,
+            "Vitality's Essence",
+            "A green essence that restores 25 HP.",
+            25,
+            30
+        );
+    return_value = insert_item("doomdepths.db", vitality_essence);
+    free(vitality_essence);
+    if (return_value == EXIT_FAILURE)
+    {
+        fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: init_db_items(): insert_item(vitality_essence) failed\n"
+            );
+        return EXIT_FAILURE;
+    }
+
+    // Mana potions
+    Item *mindfrost_decoction = create_item
+        (
+            MANA_POTION,
+            "Mindfrost Decoction",
+            "A decoction made from the mindfrost flower. Restores 9999 MP.",
+            9999,
+            1000
+        );
+    return_value = insert_item("doomdepths.db", mindfrost_decoction);
+    free(mindfrost_decoction);
+    if (return_value == EXIT_FAILURE)
+    {
+        fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: init_db_items(): insert_item(mindfrost_decoction) failed\n"
+            );
+        return EXIT_FAILURE;
+    }
+
+    Item *sorcerer_siphon_brew = create_item
+        (
+            MANA_POTION,
+            "Sorcerer's Siphon Brew",
+            "A blue brew that restores 100 MP.",
+            100,
+            100
+        );
+    return_value = insert_item("doomdepths.db", sorcerer_siphon_brew);
+    free(sorcerer_siphon_brew);
+    if (return_value == EXIT_FAILURE)
+    {
+        fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: init_db_items(): insert_item(sorcerer_siphon_brew) failed\n"
+            );
+        return EXIT_FAILURE;
+    }
+
+    Item *azure_mystique_vial = create_item
+        (
+            MANA_POTION,
+            "Azure Mystique Vial",
+            "A blue vial that restores 25 MP.",
+            25,
+            30
+        );
+    return_value = insert_item("doomdepths.db", azure_mystique_vial);
+    free(azure_mystique_vial);
+    if (return_value == EXIT_FAILURE)
+    {
+        fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: init_db_items(): insert_item(azure_mystique_vial) failed\n"
+            );
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
