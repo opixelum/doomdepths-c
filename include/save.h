@@ -48,6 +48,6 @@ unsigned char insert_item(const char *db_path, Item *item);
  * @brief Adds game's items in the database.
  * @return 0 if success, 1 if failure
  */
-unsigned char init_db_items(void);
+unsigned char init_db_items(const char *db_path);
 
 #endif // SAVE_H
