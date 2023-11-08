@@ -92,4 +92,10 @@ Item *remove_item_from_inventory(Inventory *head, Item *item);
  */
 void free_inventory(Inventory *head);
 
+/**
+ * @brief Adds game's items in the database.
+ * @return 1 if success, 0 if failure
+ */
+unsigned char init_items_in_database(void);
+
 #endif // STUFF_H
