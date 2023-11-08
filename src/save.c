@@ -48,13 +48,11 @@ void create_tables(const char *db_path)
 
         "CREATE TABLE IF NOT EXISTS item("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "idType INT, "
+        "type_id INT, "
         "name VARCHAR(255), "
         "description VARCHAR(255), "
         "value INT, "
-        "price INT, "
-        "xp INT, "
-        "xp_to_next_level INT);"
+        "price INT);"
     };
 
     int return_code;
