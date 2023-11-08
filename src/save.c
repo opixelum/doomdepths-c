@@ -74,7 +74,7 @@ void create_tables(const char *db_path)
             fprintf
             (
                 stderr,
-                "save.c: create_tables(): %s\n",
+                "ERROR: save.c: create_tables(): %s\n",
                 sqlite_err_msg
             );
             sqlite3_free(sqlite_err_msg);
