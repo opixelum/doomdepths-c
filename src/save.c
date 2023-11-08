@@ -25,34 +25,34 @@ void create_tables(const char *db_path)
 
     const char *sql_commands[] =
     {
-        "CREATE TABLE IF NOT EXISTS player("
+        "CREATE TABLE IF NOT EXISTS characters("
         "id INTEGER PRIMARY KEY, "
-        "name VARCHAR(255), "
-        "health INT, "
-        "max_health INT, "
-        "mana INT, "
-        "max_mana INT, "
-        "id_weapon INT, "
-        "id_armor INT, "
-        "gold INT, "
-        "xp INT, "
-        "xp_to_next_level INT);",
+        "name VARCHAR(255) NOT NULL, "
+        "health INT NOT NULL DEFAULT 100, "
+        "max_health INT NOT NULL DEFAULT 100, "
+        "mana INT NOT NULL DEFAULT 100, "
+        "max_mana INT NOT NULL DEFAULT 100, "
+        "weapon_id INT, "
+        "armor_id INT, "
+        "gold INT NOT NULL DEFAULT 0, "
+        "xp INT NOT NULL DEFAULT 0, "
+        "xp_to_next_level INT NOT NULL DEFAULT 1000);",
 
-        "CREATE TABLE IF NOT EXISTS item_type("
+        "CREATE TABLE IF NOT EXISTS item_types("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "label VARCHAR(255));",
+        "label VARCHAR(255) NOT NULL);",
 
-        "INSERT INTO item_type (label) "
+        "INSERT INTO item_types (label) "
         "VALUES ('WEAPON'), ('ARMOR'), ('HEALTH_POTION'), "
         "('MANA_POTION'), ('ATTACK_SPELL'), ('HEAL_SPELL');",
 
-        "CREATE TABLE IF NOT EXISTS item("
+        "CREATE TABLE IF NOT EXISTS items("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "type_id INT, "
-        "name VARCHAR(255), "
-        "description VARCHAR(255), "
-        "value INT, "
-        "price INT);"
+        "type_id INT NOT NULL, "
+        "name VARCHAR(255) NOT NULL, "
+        "description VARCHAR(255) NOT NULL, "
+        "value INT NOT NULL, "
+        "price INT NOT NULL);"
     };
 
     int return_code;
@@ -79,7 +79,7 @@ Item* loadItemFromDatabase(sqlite3 *db, int itemId)
     char query[256];
     sqlite3_stmt *stmt_item;
 
-    snprintf(query, sizeof(query), "SELECT ity.id, name, description, value, price FROM item inner join item_type ity on ity.id = item.idType WHERE item.id = %d;", itemId);
+    snprintf(query, sizeof(query), "SELECT ity.id, name, description, value, price FROM items inner join item_type ity on ity.id = items.type_id WHERE items.id = %d;", itemId);
 
     if (sqlite3_prepare_v2(db, query, -1, &stmt_item, 0) != SQLITE_OK)
     {
@@ -112,7 +112,7 @@ Inventory* loadInventoryFromDatabase(sqlite3 *db)
     Inventory *inventory = NULL;
     sqlite3_stmt *stmt_items;
 
-    const char *sql_select_items = "SELECT item.id, idType, name, description, value, price FROM item WHERE idType NOT IN (5, 6) AND id NOT IN (SELECT id_weapon FROM player) AND id NOT IN (SELECT id_armor FROM player);";
+    const char *sql_select_items = "SELECT items.id, type_id, name, description, value, price FROM items WHERE type_id NOT IN (5, 6) AND id NOT IN (SELECT weapon_id FROM player) AND id NOT IN (SELECT armor_id FROM player);";
 
     if (sqlite3_prepare_v2(db, sql_select_items, -1, &stmt_items, 0) != SQLITE_OK)
     {
@@ -149,7 +149,7 @@ Inventory* loadSpellsFromDatabase(sqlite3 *db)
 {
     Inventory *inventory = NULL;
 
-    const char *sql_select_items = "SELECT item.id, idType, name, description, value, price FROM item WHERE idType IN (5, 6) AND id NOT IN (SELECT id_weapon FROM player) AND id NOT IN (SELECT id_armor FROM player);";
+    const char *sql_select_items = "SELECT items.id, type_id, name, description, value, price FROM items WHERE type_id IN (5, 6) AND id NOT IN (SELECT weapon_id FROM player) AND id NOT IN (SELECT armor_id FROM player);";
     
     sqlite3_stmt *stmt_items;
     if (sqlite3_prepare_v2(db, sql_select_items, -1, &stmt_items, 0) != SQLITE_OK) {
@@ -186,7 +186,7 @@ Character *loadPlayerFromDatabase(sqlite3 *db)
     Character *player = malloc(sizeof *player);
     sqlite3_stmt *stmt_player;
 
-    const char *sql_select_player = "SELECT id, name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp, xp_to_next_level FROM player;";
+    const char *sql_select_player = "SELECT id, name, health, max_health, mana, max_mana, weapon_id, armor_id, gold, xp, xp_to_next_level FROM player;";
 
     if (sqlite3_prepare_v2(db, sql_select_player, -1, &stmt_player, 0) != SQLITE_OK)
     {
@@ -204,12 +204,12 @@ Character *loadPlayerFromDatabase(sqlite3 *db)
         player->gold = sqlite3_column_int(stmt_player, 8);
         player->xp = sqlite3_column_int(stmt_player, 9);
         player->xp_to_next_level =sqlite3_column_int(stmt_player, 10);
-        int id_weapon = sqlite3_column_int(stmt_player, 6);
+        int weapon_id = sqlite3_column_int(stmt_player, 6);
         
-        player->weapon = loadItemFromDatabase(db, id_weapon);
+        player->weapon = loadItemFromDatabase(db, weapon_id);
          
-        int id_armor = sqlite3_column_int(stmt_player, 7);
-        player->armor = loadItemFromDatabase(db, id_armor);
+        int armor_id = sqlite3_column_int(stmt_player, 7);
+        player->armor = loadItemFromDatabase(db, armor_id);
         
         player->inventory = loadInventoryFromDatabase(db);
         
@@ -234,7 +234,7 @@ Character *load_game()
 int insertWeapon(sqlite3 *db, Item *weapon)
 {
     sqlite3_stmt *stmt_insert_weapon;
-    const char *sql_insert_weapon = "INSERT INTO item (idType, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
+    const char *sql_insert_weapon = "INSERT INTO items (type_id, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
 
     if (sqlite3_prepare_v2(db, sql_insert_weapon, -1, &stmt_insert_weapon, 0) != SQLITE_OK)
     {
@@ -264,7 +264,7 @@ int insertWeapon(sqlite3 *db, Item *weapon)
 int insertArmor(sqlite3 *db, Item *armor)
 {
     sqlite3_stmt *stmt_insert_armor;
-    const char *sql_insert_armor = "INSERT INTO item (idType, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
+    const char *sql_insert_armor = "INSERT INTO items (type_id, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
 
     if (sqlite3_prepare_v2(db, sql_insert_armor, -1, &stmt_insert_armor, 0) != SQLITE_OK)
     {
@@ -297,7 +297,7 @@ void save_game(Character *player)
     sqlite3 *db = open_database("doomdepths.db");
 
     const char *sql_delete_player = "DELETE FROM player;";
-    const char *sql_delete_inventory = "DELETE FROM item;";
+    const char *sql_delete_inventory = "DELETE FROM items;";
 
     char *errMsg = 0;
 
@@ -320,7 +320,7 @@ void save_game(Character *player)
     if (player->armor) armor_id = insertArmor(db, player->armor);
 
     sqlite3_stmt *stmt_insert_player;
-    const char *sql_insert_player = "INSERT INTO player (name, health, max_health, mana, max_mana, id_weapon, id_armor, gold, xp, xp_to_next_level ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    const char *sql_insert_player = "INSERT INTO player (name, health, max_health, mana, max_mana, weapon_id, armor_id, gold, xp, xp_to_next_level ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     if (sqlite3_prepare_v2(db, sql_insert_player, -1, &stmt_insert_player, 0) != SQLITE_OK)
     {
@@ -350,7 +350,7 @@ void save_game(Character *player)
     Inventory *inventory = player->inventory;
     while (inventory)
     {
-        const char *sql_insert_inventory = "INSERT INTO item (idType, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
+        const char *sql_insert_inventory = "INSERT INTO items (type_id, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
 
         sqlite3_stmt *stmt_insert_inventory;
         if (sqlite3_prepare_v2(db, sql_insert_inventory, -1, &stmt_insert_inventory, 0) != SQLITE_OK)
@@ -380,7 +380,7 @@ void save_game(Character *player)
     while (spells)
     {
         sqlite3_stmt *stmt_insert_spells;
-        const char *sql_insert_spells = "INSERT INTO item (idType, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
+        const char *sql_insert_spells = "INSERT INTO items (type_id, name, description, value, price) VALUES (?, ?, ?, ?, ?);";
 
         if (sqlite3_prepare_v2(db, sql_insert_spells, -1, &stmt_insert_spells, 0) != SQLITE_OK)
         {
