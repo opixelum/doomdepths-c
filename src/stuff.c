@@ -22,21 +22,9 @@ Item *create_item
     return item;
 }
 
-unsigned char inventory_size(Inventory *head)
-{
-    unsigned char size = 0;
-    Inventory *current = head;
-    while (current)
-    {
-        size++;
-        current = current->next;
-    }
-    return size;
-}
-
 Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
 {
-    if (inventory_size(head) >= MAX_INVENTORY_SIZE) return NULL;
+    if (inventory_length(head, ITEM) >= MAX_INVENTORY_SIZE) return NULL;
 
     Inventory *new_item_entry = malloc(sizeof *new_item_entry);
     if (!new_item_entry)
@@ -134,7 +122,6 @@ char *item_type_to_string(ItemType item_type)
             item_type_string = "potion";
             break;
 
-
         case SPELL:
             item_type_string = "spell";
             break;
@@ -153,4 +140,26 @@ char *item_type_to_string(ItemType item_type)
     }
 
     return item_type_string;
+}
+
+unsigned char inventory_length(Inventory *head, ItemType item_type)
+{
+    Inventory *current = head;
+    unsigned char number_of_items = 0;
+    while (current)
+    {
+        if
+        (
+            current->item->type == item_type
+            || item_type == ITEM
+            || item_type == SPELL
+            && (
+                current->item->type == ATTACK_SPELL
+                || current->item->type == HEAL_SPELL
+            )
+        ) number_of_items++;
+
+        current = current->next;
+    }
+    return number_of_items;
 }

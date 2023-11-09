@@ -8,12 +8,15 @@
 
 typedef enum ItemType
 {
-    WEAPON,
     ARMOR,
-    HEALTH_POTION,
-    MANA_POTION,
     ATTACK_SPELL,
-    HEAL_SPELL
+    HEAL_SPELL,
+    HEALTH_POTION,
+    ITEM, // Any item
+    MANA_POTION,
+    POTION, // Health or mana potion
+    SPELL, // Attack or heal spell
+    WEAPON,
 }
 ItemType;
 
@@ -98,5 +101,17 @@ void free_inventory(Inventory *head);
  * @return A string literal containing the item type.
  */
 char *item_type_to_string(ItemType item_type);
+
+/**
+ * @brief Get the number of given item type in an inventory (normal one or
+ * spells list).
+ * @param head A pointer to the head of the inventory.
+ * @param item_type The type of the item to count (see ItemType enum). Pass
+ * `Item` to count all items in inventory.
+ * @return The number of items of the given type in the inventory.
+ * @warning If passed inventory is not the head of the inventory, some items
+ * may be skipped.
+ */
+unsigned char inventory_length(Inventory *head, ItemType item_type);
 
 #endif // STUFF_H
