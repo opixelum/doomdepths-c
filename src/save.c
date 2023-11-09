@@ -163,8 +163,8 @@ Inventory *get_inventory_from_db(sqlite3 *db)
     const char *sql_select_items =
         "SELECT items.id, type_id, name, description, value, price "
         "FROM items WHERE type_id NOT IN (5, 6) "
-        "AND id NOT IN (SELECT weapon_id FROM player) "
-        "AND id NOT IN (SELECT armor_id FROM player);";
+        "AND id NOT IN (SELECT weapon_id FROM characters) "
+        "AND id NOT IN (SELECT armor_id FROM characters);";
 
     int return_value = sqlite3_prepare_v2
     (
@@ -230,8 +230,8 @@ Inventory* get_spells_from_db(sqlite3 *db)
     const char *sql_select_items =
         "SELECT item.id, idType, name, description, value, price "
         "FROM item WHERE idType IN (5, 6) "
-        "AND id NOT IN (SELECT id_weapon FROM player) "
-        "AND id NOT IN (SELECT id_armor FROM player);";
+        "AND id NOT IN (SELECT id_weapon FROM characters) "
+        "AND id NOT IN (SELECT id_armor FROM characters);";
 
     sqlite3_stmt *stmt_items;
 
@@ -478,7 +478,7 @@ void save_game(Character *player)
 {
     sqlite3 *db = open_database("doomdepths.db");
 
-    const char *sql_delete_player = "DELETE FROM player;";
+    const char *sql_delete_player = "DELETE FROM characters;";
     const char *sql_delete_inventory = "DELETE FROM items;";
 
     char *err_msg = 0;
@@ -529,7 +529,7 @@ void save_game(Character *player)
 
     sqlite3_stmt *stmt_insert_player;
     const char *sql_insert_player =
-        "INSERT INTO player (name, health, max_health, mana, max_mana, "
+        "INSERT INTO characters (name, health, max_health, mana, max_mana, "
         "weapon_id, armor_id, gold, xp, xp_to_next_level ) "
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
