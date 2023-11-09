@@ -49,3 +49,51 @@ void free_character(Character *character)
     free_inventory(character->inventory);
     free(character);
 }
+
+void drink_potion(Character *character, Item *potion)
+{
+    if (!character)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: drink_potion(): character: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!potion)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: drink_potion(): potion: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    switch (potion->type)
+    {
+    case HEALTH_POTION:
+        if (character->health + potion->value > character->max_health)
+            character->health = character->max_health;
+        else character->health += potion->value;
+        break;
+
+    case MANA_POTION:
+        if (character->mana + potion->value > character->max_mana)
+            character->mana = character->max_mana;
+        else character->mana += potion->value;
+        break;
+
+    default:
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: drink_potion(): potion: invalid item type\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    free(remove_item_from_inventory(character->inventory, potion));
+}

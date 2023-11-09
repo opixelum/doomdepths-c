@@ -59,4 +59,13 @@ Character *create_character
  */
 void free_character(Character *character);
 
+/**
+ * @brief Make a character use a potion.
+ * @param character A pointer to the character who will use the potion.
+ * @param potion A pointer to the potion to use.
+ * @warning The potion will be removed from the character's inventory and freed
+ * from memory.
+ */
+void drink_potion(Character *character, Item *potion);
+
 #endif // PLAYER_H
