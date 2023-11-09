@@ -144,10 +144,9 @@ Monsters *perform_attack
         if (choice == 'B' || choice == 'b') return monsters;
         else if (choice == 1) break;
 
-        spell = spell_selection_menu
+        spell = item_selection_menu
         (
             attacker,
-            defender,
             ATTACK_SPELL
         );
     }
