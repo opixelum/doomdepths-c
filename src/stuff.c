@@ -152,14 +152,21 @@ unsigned char number_of_items(Inventory *head, ItemType item_type)
         (
             current->item->type == item_type
             || item_type == ITEM
-            || item_type == SPELL
-            && (
-                current->item->type == ATTACK_SPELL
-                || current->item->type == HEAL_SPELL
-            )
-        ) number_of_items++;
+            || is_spell(item_type)
+        )
+            number_of_items++;
 
         current = current->next;
     }
     return number_of_items;
+}
+
+unsigned char is_spell(ItemType type)
+{
+    return type == ATTACK_SPELL || type == HEAL_SPELL || type == SPELL;
+}
+
+unsigned char is_potion(ItemType type)
+{
+    return type == HEALTH_POTION || type == MANA_POTION || type == POTION;
 }

@@ -114,4 +114,18 @@ char *item_type_to_string(ItemType item_type);
  */
 unsigned char number_of_items(Inventory *head, ItemType item_type);
 
+/**
+ * @brief Check if an item is a spell.
+ * @param type The type of the item to check.
+ * @return 1 if the item is a spell, 0 otherwise.
+ */
+unsigned char is_spell(ItemType type);
+
+/**
+ * @brief Check if an item is a potion.
+ * @param type The type of the item to check.
+ * @return 1 if the item is a potion, 0 otherwise.
+ */
+unsigned char is_potion(ItemType type);
+
 #endif // STUFF_H
