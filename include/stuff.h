@@ -112,6 +112,6 @@ char *item_type_to_string(ItemType item_type);
  * @warning If passed inventory is not the head of the inventory, some items
  * may be skipped.
  */
-unsigned char inventory_length(Inventory *head, ItemType item_type);
+unsigned char number_of_items(Inventory *head, ItemType item_type);
 
 #endif // STUFF_H

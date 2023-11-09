@@ -24,7 +24,7 @@ Item *create_item
 
 Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
 {
-    if (inventory_length(head, ITEM) >= MAX_INVENTORY_SIZE) return NULL;
+    if (number_of_items(head, ITEM) >= MAX_INVENTORY_SIZE) return NULL;
 
     Inventory *new_item_entry = malloc(sizeof *new_item_entry);
     if (!new_item_entry)
@@ -142,7 +142,7 @@ char *item_type_to_string(ItemType item_type)
     return item_type_string;
 }
 
-unsigned char inventory_length(Inventory *head, ItemType item_type)
+unsigned char number_of_items(Inventory *head, ItemType item_type)
 {
     Inventory *current = head;
     unsigned char number_of_items = 0;
