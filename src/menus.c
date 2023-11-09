@@ -190,7 +190,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
-    clear_lines(9);
+    clear_lines(8);
 
     return choice;
 }
@@ -414,8 +414,8 @@ void new_game(void)
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
     Inventory *spells = NULL;
-//    spells = add_item_to_inventory(spells, fireball);
-//    spells = add_item_to_inventory(spells, freeze);
+    spells = add_item_to_inventory(spells, fireball);
+    spells = add_item_to_inventory(spells, freeze);
 
     // Create a new character
     Character *player = create_character
@@ -565,13 +565,13 @@ Item *item_selection_menu(Character *character, ItemType item_type)
         choice = get_valid_digit_no_enter(1, items_count, 1);
         if (choice == 'b' || choice == 'B')
         {
-            clear_lines(items_count + 7);
+            clear_lines(items_count + 5);
             return NULL;
         }
     }
     while (is_spell(item_type) && items[choice - 1]->price > character->mana);
 
-    clear_lines(items_count + 7);
+    clear_lines(items_count + 5);
 
     // -1 because array starts at 0
     return items[choice - 1];
