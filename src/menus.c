@@ -145,7 +145,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 3, 0);
-    clear_lines(7);
+    clear_lines(6);
 
     return choice;
 }
@@ -154,7 +154,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 {
     if (!character || !head) return NULL;
 
-    printf("\nWhich monster do you want to attack now?\n\n");
+    printf("Which monster do you want to attack now?\n\n");
 
     Character *monsters[3];
     unsigned char number_of_monsters = 0;
@@ -417,6 +417,12 @@ void new_game(void)
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
 
+    Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
+    Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
+    Inventory *inventory = NULL;
+    inventory = add_item_to_inventory(inventory, health_potion);
+    inventory = add_item_to_inventory(inventory, mana_potion);
+
     // Create a new character
     Character *player = create_character
     (
@@ -432,7 +438,7 @@ void new_game(void)
         NULL,
         NULL,
         spells,
-        NULL
+        inventory
     );
 
     create_tables("doomdepths.db");
@@ -519,7 +525,8 @@ Item *item_selection_menu(Character *character, ItemType item_type)
 
     if (!items_count)
     {
-        printf("\nYou don't have any %s.\n", item_type_string);
+        printf("\nYou don't have any %s.\n\n", item_type_string);
+        press_any_key_to_continue();
         return NULL;
     }
 
@@ -537,6 +544,7 @@ Item *item_selection_menu(Character *character, ItemType item_type)
             inventory->item->type == item_type
             || item_type == ITEM
             || is_spell(inventory->item->type)
+            || is_potion(inventory->item->type)
         ) {
             unsigned int hexcolor;
 
