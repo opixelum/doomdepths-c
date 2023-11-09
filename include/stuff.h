@@ -92,4 +92,11 @@ Item *remove_item_from_inventory(Inventory *head, Item *item);
  */
 void free_inventory(Inventory *head);
 
+/**
+ * @brief Get the item type but in string format.
+ * @param item_type The item type.
+ * @return A string literal containing the item type.
+ */
+char *item_type_to_string(ItemType item_type);
+
 #endif // STUFF_H

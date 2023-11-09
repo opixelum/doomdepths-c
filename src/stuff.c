@@ -99,3 +99,58 @@ void free_inventory(Inventory *head)
         head = next;
     }
 }
+
+char *item_type_to_string(ItemType item_type)
+{
+    char *item_type_string;
+
+    switch (item_type)
+    {
+        case ARMOR:
+            item_type_string = "armor";
+            break;
+
+        case ATTACK_SPELL:
+            item_type_string = "attack spell";
+            break;
+
+        case HEAL_SPELL:
+            item_type_string = "heal spell";
+            break;
+
+        case HEALTH_POTION:
+            item_type_string = "health potion";
+            break;
+
+        case ITEM:
+            item_type_string = "item";
+            break;
+
+        case MANA_POTION:
+            item_type_string = "mana potion";
+            break;
+
+        case POTION:
+            item_type_string = "potion";
+            break;
+
+
+        case SPELL:
+            item_type_string = "spell";
+            break;
+
+        case WEAPON:
+            item_type_string = "weapon";
+            break;
+
+        default:
+            fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: item_type_to_string: wrong item type\n"
+            );
+            exit(EXIT_FAILURE);
+    }
+
+    return item_type_string;
+}
