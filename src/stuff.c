@@ -153,6 +153,7 @@ unsigned char number_of_items(Inventory *head, ItemType item_type)
             current->item->type == item_type
             || item_type == ITEM
             || is_spell(item_type)
+            || is_potion(item_type)
         )
             number_of_items++;
 
