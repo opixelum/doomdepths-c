@@ -97,7 +97,7 @@ Item *get_item_from_db(sqlite3 *db, int itemId)
         query,
         sizeof(query),
         "SELECT ity.id, name, description, value, price "
-        "FROM items inner join item_type ity on ity.id = items.type_id "
+        "FROM items inner join item_types ity on ity.id = items.type_id "
         "WHERE items.id = %d;",
         itemId
     );
@@ -128,7 +128,7 @@ Item *get_item_from_db(sqlite3 *db, int itemId)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_item, 1);
-        if (type_id >= 0 && type_id <= 9) item_type = (ItemType) type_id - 1;
+        if (type_id >= 0 && type_id <= 8) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
@@ -162,7 +162,7 @@ Inventory *get_inventory_from_db(sqlite3 *db)
 
     const char *sql_select_items =
         "SELECT items.id, type_id, name, description, value, price "
-        "FROM items WHERE type_id NOT IN (5, 6) "
+        "FROM items WHERE type_id NOT IN (6, 8) "
         "AND id NOT IN (SELECT weapon_id FROM characters) "
         "AND id NOT IN (SELECT armor_id FROM characters);";
 
@@ -192,7 +192,7 @@ Inventory *get_inventory_from_db(sqlite3 *db)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_items, 1);
-        if (type_id >= 0 && type_id <= 9) item_type = (ItemType) type_id - 1;
+        if (type_id >= 0 && type_id <= 8) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
@@ -228,8 +228,8 @@ Inventory* get_spells_from_db(sqlite3 *db)
     Inventory *inventory = NULL;
 
     const char *sql_select_items =
-        "SELECT item.id, idType, name, description, value, price "
-        "FROM item WHERE idType IN (5, 6) "
+        "SELECT id, type_id, name, description, value, price "
+        "FROM items WHERE type_id IN (6, 8) "
         "AND id NOT IN (SELECT weapon_id FROM characters) "
         "AND id NOT IN (SELECT armor_id FROM characters);";
 
@@ -261,7 +261,7 @@ Inventory* get_spells_from_db(sqlite3 *db)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_items, 1);
-        if (type_id >= 0 && type_id <= 9) item_type = (ItemType)type_id-1;
+        if (type_id >= 0 && type_id <= 8) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
