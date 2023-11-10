@@ -239,7 +239,7 @@ Item *item_selection_menu(Character *character, ItemType item_type)
     inventory = inventory->next;
     }
 
-    printf("    B. Back\n\nPress the number of your choice on your keyboard.");
+    printf("    B. Back\n\nPress the key of your choice on your keyboard.");
 
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
