@@ -11,14 +11,14 @@
 typedef enum ItemType
 {
     ARMOR,
-    ATTACK_SPELL,
-    HEAL_SPELL,
-    HEALTH_POTION,
+    WEAPON,
     ITEM, // Any item
-    MANA_POTION,
     POTION, // Health or mana potion
+    HEALTH_POTION,
+    MANA_POTION,
     SPELL, // Attack or heal spell
-    WEAPON
+    ATTACK_SPELL,
+    HEAL_SPELL
 }
 ItemType;
 
