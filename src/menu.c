@@ -63,6 +63,9 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 {
     if (!character || !head) return NULL;
 
+    // Skip menu if there is only one monster
+    if (!head->next) return head->monster;
+
     printf("Which monster do you want to attack now?\n\n");
 
     Character *monsters[3];
@@ -89,7 +92,6 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
 
     printf
     (
-        "You are attacking %s.\n"
         "\nWould you rather use your weapon or cast a spell?\n\n"
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
