@@ -214,16 +214,49 @@ void print_monsters(Monsters *head, Character *targeted_monster)
     while (current)
     {
         size_t line_length = strlen(get_monster_art_line(current->monster->name, 0));
-        size_t padding = line_length / 2 - strlen(current->monster->name) / 2;
-        
-        for (int space = 0; space < padding; space++) printf(" ");
         unsigned int hex_color = current->monster == targeted_monster ?
-            0xff0000 : 0xffffff;
-        color_printf(hex_color, "%s", current->monster->name);
-        for (int space = 0; space < padding; space++) printf(" ");
+             0xff0000 : 0xffffff;
 
-        printf("  ");
-        
+        // Center the monster name
+        char *centered_name = center_string(current->monster->name, line_length);
+        color_printf(hex_color, "%s", centered_name);
+        free(centered_name);
+
+        printf("  "); // Space between monsters
+        current = current->next;
+    }
+    printf("\n");
+
+    // Print the monster health
+    current = head;
+    while (current)
+    {
+        size_t line_length = strlen(get_monster_art_line(current->monster->name, 0));
+        unsigned int hex_color = current->monster == targeted_monster ?
+             0xff0000 : 0xffffff;
+
+        // Health string can be up to 8 characters
+        char *health_string = calloc(8, sizeof *health_string);
+        if (!health_string)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: stuff.c: print_monsters(): health_string: calloc() failed\n"
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        // Build the health string and center it
+        sprintf(health_string, "%d HP", current->monster->health);
+        health_string = realloc(health_string, strlen(health_string) + 1);
+        char *centered_health_string = center_string(health_string, line_length);
+        free(health_string);
+
+        color_printf(hex_color, "%s", centered_health_string);
+        free(centered_health_string);
+
+        printf("  "); // Space between monsters
         current = current->next;
     }
     printf("\n");
