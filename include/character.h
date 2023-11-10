@@ -68,4 +68,12 @@ void free_character(Character *character);
  */
 void drink_potion(Character *character, Item *potion);
 
+/**
+ * @brief Make a character equip an item, either a weapon or an armor.
+ * @param character A pointer to the character who will equip the item.
+ * @param item A pointer to the item to equip. It must be either a weapon or an
+ * armor.
+ */
+void equip_item(Character *character, Item *item);
+
 #endif // PLAYER_H
