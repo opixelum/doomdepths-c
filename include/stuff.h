@@ -8,12 +8,15 @@
 
 typedef enum ItemType
 {
-    WEAPON,
     ARMOR,
-    HEALTH_POTION,
-    MANA_POTION,
     ATTACK_SPELL,
-    HEAL_SPELL
+    HEAL_SPELL,
+    HEALTH_POTION,
+    ITEM, // Any item
+    MANA_POTION,
+    POTION, // Health or mana potion
+    SPELL, // Attack or heal spell
+    WEAPON,
 }
 ItemType;
 
@@ -72,15 +75,16 @@ unsigned char inventory_size(Inventory *head);
 Inventory *add_item_to_inventory(Inventory *head, Item *item);
 
 /**
- * @brief Remove an item from an inventory
- * @param head Pointer to the head of the inventory
- * @param item Pointer to the item to be removed
- * @return Pointer to the removed item, or NULL if the item was not found
- * @warning This function does not free the item from memory, it only removes it from the inventory
- * @warning In case you're not passing the head of the inventory, the item to remove can be skipped if it is before the
- * given inventory node
+ * @brief Removes an item from an inventory.
+ * @param head A pointer to the head of the inventory.
+ * @param item A pointer to the item to be removed.
+ * @return A pointer to the head of the updated inventory.
+ * @warning This function does not free the item from memory, it only removes it
+ * from the inventory by freeing the inventory node.
+ * @warning In case you're not passing the head of the inventory, the item to
+ * remove can be skipped if it is before the given inventory node.
  */
-Item *remove_item_from_inventory(Inventory *head, Item *item);
+Inventory *remove_item_from_inventory(Inventory *head, Item *item);
 
 /**
  * @brief Frees a linked list of items from memory.
@@ -91,5 +95,38 @@ Item *remove_item_from_inventory(Inventory *head, Item *item);
  * following nodes will be freed.
  */
 void free_inventory(Inventory *head);
+
+/**
+ * @brief Get the item type but in string format.
+ * @param item_type The item type.
+ * @return A string literal containing the item type.
+ */
+char *item_type_to_string(ItemType item_type);
+
+/**
+ * @brief Get the number of given item type in an inventory (normal one or
+ * spells list).
+ * @param head A pointer to the head of the inventory.
+ * @param item_type The type of the item to count (see ItemType enum). Pass
+ * `Item` to count all items in inventory.
+ * @return The number of items of the given type in the inventory.
+ * @warning If passed inventory is not the head of the inventory, some items
+ * may be skipped.
+ */
+unsigned char number_of_items(Inventory *head, ItemType item_type);
+
+/**
+ * @brief Check if an item is a spell.
+ * @param type The type of the item to check.
+ * @return 1 if the item is a spell, 0 otherwise.
+ */
+unsigned char is_spell(ItemType type);
+
+/**
+ * @brief Check if an item is a potion.
+ * @param type The type of the item to check.
+ * @return 1 if the item is a potion, 0 otherwise.
+ */
+unsigned char is_potion(ItemType type);
 
 #endif // STUFF_H

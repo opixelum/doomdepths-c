@@ -86,6 +86,7 @@ void battle(Character *player)
         unsigned char action_choice = battle_actions_menu(player, monsters);
 
         Character *target_monster = monster_count == 1 ? monsters->monster : NULL;
+        Item *potion;
 
         switch (action_choice)
         {
@@ -96,9 +97,10 @@ void battle(Character *player)
             break;
 
         case 2:
-            printf("\nDrink potion to implement\n\n");
-            press_any_key_to_continue();
-            continue;
+            potion = item_selection_menu(player, POTION);
+            if (!potion) continue; // Case when user goes back
+            drink_potion(player, potion);
+            break;
 
         case 3:
             printf("\nYou fled!\n\n");
@@ -144,10 +146,9 @@ Monsters *perform_attack
         if (choice == 'B' || choice == 'b') return monsters;
         else if (choice == 1) break;
 
-        spell = spell_selection_menu
+        spell = item_selection_menu
         (
             attacker,
-            defender,
             ATTACK_SPELL
         );
     }

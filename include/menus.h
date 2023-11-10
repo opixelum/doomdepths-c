@@ -209,4 +209,14 @@ void print_attack_result
     Item *spell
 );
 
+/**
+ * @brief Prints a menu for selecting a player's item (either a spell or a
+ * potion).
+ * @param character A pointer to the character who has the items.
+ * @param item_type The type of the item to select (see ItemType enum).
+ * @return A pointer to the selected item or NULL if user chooses to come back
+ * or if he has no item of the given type.
+ */
+Item *item_selection_menu(Character *character, ItemType item_type);
+
 #endif // MENUS_H

@@ -145,7 +145,7 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 3, 0);
-    clear_lines(7);
+    clear_lines(6);
 
     return choice;
 }
@@ -154,7 +154,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
 {
     if (!character || !head) return NULL;
 
-    printf("\nWhich monster do you want to attack now?\n\n");
+    printf("Which monster do you want to attack now?\n\n");
 
     Character *monsters[3];
     unsigned char number_of_monsters = 0;
@@ -168,7 +168,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     printf("    B. Back\n\nPress the number of your choice on your keyboard.");
 
     unsigned char choice = get_valid_digit_no_enter(1, number_of_monsters, 1);
-    clear_lines(number_of_monsters + 5); // +5 for other menu lines
+    clear_lines(number_of_monsters + 4); // +4 for other menu lines
 
     // -1 because array starts at 0
     return choice == 'B' || choice == 'b' ? NULL : monsters[choice - 1];
@@ -180,7 +180,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
 
     printf
     (
-        "\nYou are attacking %s.\n"
+        "You are attacking %s.\n"
         "\nWould you rather use your weapon or cast a spell?\n\n"
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
@@ -190,7 +190,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
-    clear_lines(9);
+    clear_lines(8);
 
     return choice;
 }
@@ -338,7 +338,7 @@ Item *spell_selection_menu
     Inventory *spells_list = player->spells;
 
     Item *spells[spells_count];
-    for (unsigned char i = 0; i < spells_count; ++i)
+    for (unsigned char i = 0; i < spells_count; i++)
     {
         if (spells_list->item->type == spell_type)
         {
@@ -414,8 +414,14 @@ void new_game(void)
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
     Inventory *spells = NULL;
-//    spells = add_item_to_inventory(spells, fireball);
-//    spells = add_item_to_inventory(spells, freeze);
+    spells = add_item_to_inventory(spells, fireball);
+    spells = add_item_to_inventory(spells, freeze);
+
+    Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
+    Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
+    Inventory *inventory = NULL;
+    inventory = add_item_to_inventory(inventory, health_potion);
+    inventory = add_item_to_inventory(inventory, mana_potion);
 
     // Create a new character
     Character *player = create_character
@@ -432,7 +438,7 @@ void new_game(void)
         NULL,
         NULL,
         spells,
-        NULL
+        inventory
     );
 
     create_tables("doomdepths.db");
@@ -486,4 +492,95 @@ void print_attack_result
     );
 
     if (player->health <= 0) printf("You died!\n\n");
+}
+
+Item *item_selection_menu(Character *character, ItemType item_type)
+{
+    if (!character)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menus.c: item_selection_menu: `character` is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    };
+
+    Inventory *inventory = is_spell(item_type) ?
+        character->spells : character->inventory;
+
+    unsigned char items_count = number_of_items(inventory, item_type);
+
+    const char *item_type_string = item_type_to_string(item_type);
+    if (!item_type_string)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menus.c: item_selection_menu(): item_type_to_string() "
+            "failed\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!items_count)
+    {
+        printf("You don't have any %s.\n\n", item_type_string);
+        press_any_key_to_continue();
+        return NULL;
+    }
+
+    if (is_spell(item_type))
+        printf("Which %s do you want to cast?\n\n", item_type_string);
+    else if (is_potion(item_type))
+        printf("Which %s do you want to drink?\n\n", item_type_string);
+    else printf("Which %s do you want to use?\n\n", item_type_string);
+
+    Item *items[items_count];
+    for (unsigned char i = 0; i < items_count; i++)
+    {
+        if
+        (
+            inventory->item->type == item_type
+            || item_type == ITEM
+            || is_spell(inventory->item->type)
+            || is_potion(inventory->item->type)
+        ) {
+            unsigned int hexcolor;
+
+            if (is_spell(inventory->item->type))
+                hexcolor = inventory->item->price > character->mana ?
+                    0xff0000 : 0xffffff;
+            else hexcolor = 0xffffff;
+
+            color_printf
+            (
+                hexcolor,
+                "    %d. %s\n",
+                i + 1,
+                inventory->item->name
+            );
+            items[i] = inventory->item;
+        }
+    inventory = inventory->next;
+    }
+
+    printf("    B. Back\n\nPress the number of your choice on your keyboard.");
+
+    unsigned char choice;
+    do // Don't allow user to select a spell if he doesn't have enough mana
+    {
+        choice = get_valid_digit_no_enter(1, items_count, 1);
+        if (choice == 'b' || choice == 'B')
+        {
+            clear_lines(items_count + 5);
+            return NULL;
+        }
+    }
+    while (is_spell(item_type) && items[choice - 1]->price > character->mana);
+
+    clear_lines(items_count + 5);
+
+    // -1 because array starts at 0
+    return items[choice - 1];
 }
