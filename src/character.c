@@ -102,3 +102,59 @@ void drink_potion(Character *character, Item *potion)
     );
     free(potion);
 }
+
+void equip_item(Character *character, Item *item)
+{
+    if (!character)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: equip_item(): character: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!item)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: equip_item(): item: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (item->type != WEAPON && item->type != ARMOR)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: equip_item(): item: invalid item type\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    character->inventory = remove_item_from_inventory(character->inventory, item);
+
+    if (item->type == WEAPON)
+    {
+        if (character->weapon)
+            character->inventory = add_item_to_inventory
+            (
+                character->inventory,
+                character->weapon
+            );
+        character->weapon = item;
+    }
+    else
+    {
+        if (character->armor)
+            character->inventory = add_item_to_inventory
+            (
+                character->inventory,
+                character->armor
+            );
+        character->armor = item;
+    }
+}

@@ -88,4 +88,10 @@ void print_attack_result
     Item *spell
 );
 
+/**
+ * @brief Prints the inventory of a character.
+ * @param player A pointer to the character.
+ */
+void inventory_menu(Character *player);
+
 #endif // MENUS_H

@@ -234,11 +234,10 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         break;
 
     case 'i':
-        // TODO: display inventory
-        break;
+        inventory_menu(map_context->player);
+        return 1;
 
     case 'Q':
-        // TODO: return to main menu
         return 0;
     }
 }
