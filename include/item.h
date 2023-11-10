@@ -18,7 +18,7 @@ typedef enum ItemType
     MANA_POTION,
     POTION, // Health or mana potion
     SPELL, // Attack or heal spell
-    WEAPON,
+    WEAPON
 }
 ItemType;
 
