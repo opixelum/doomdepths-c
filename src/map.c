@@ -237,7 +237,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         inventory_menu(map_context->player);
         return 1;
 
-    case 'Q':
+    case 'b':
         return 0;
     }
 }
