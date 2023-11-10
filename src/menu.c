@@ -49,12 +49,13 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
         "\nWhat do you want to do now?\n\n"
         "    1. Attack\n"
         "    2. Drink potion\n"
-        "    3. Flee\n"
-        "\nPress the number of your choice on your keyboard."
+        "    3. Open inventory\n"
+        "    4. Flee\n"
+        "\nPress the number of your choice."
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 3, 0);
-    clear_lines(6);
+    unsigned char choice = get_valid_digit_no_enter(1, 4, 0);
+    clear_lines(7);
 
     return choice;
 }

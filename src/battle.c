@@ -79,7 +79,12 @@ void battle(Character *player)
             break;
 
         case 3:
-            printf("\nYou fled!\n\n");
+            inventory_menu(player);
+            break;
+
+        case 4:
+            // TODO: Implement flee
+            printf("Flee to implement\n");
             break;
         }
 
