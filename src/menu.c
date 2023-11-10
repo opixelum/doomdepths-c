@@ -252,7 +252,7 @@ Item *item_selection_menu(Character *character, ItemType item_type)
         choice = get_valid_digit_no_enter(1, items_count, 1);
         if (choice == 'b' || choice == 'B')
         {
-            clear_lines(items_count + 5);
+            clear_lines(items_count + 4);
             return NULL;
         }
     }
