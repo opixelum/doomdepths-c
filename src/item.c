@@ -28,7 +28,12 @@ Item *create_item
 
 Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
 {
-    if (number_of_items(head, ITEM) >= MAX_INVENTORY_SIZE) return NULL;
+    if (number_of_items(head, ITEM) >= MAX_INVENTORY_SIZE)
+    {
+        printf("Your inventory is full.\n\n");
+        press_any_key_to_continue();
+        return head;
+    }
 
     Inventory *new_item_entry = malloc(sizeof *new_item_entry);
     if (!new_item_entry)

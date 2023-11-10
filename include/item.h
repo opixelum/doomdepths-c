@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "terminal.h"
+
 #define MAX_INVENTORY_SIZE 25
 
 typedef enum ItemType
