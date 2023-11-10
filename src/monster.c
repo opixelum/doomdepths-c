@@ -227,6 +227,28 @@ void print_monsters(Monsters *head, Character *targeted_monster)
         current = current->next;
     }
     printf("\n");
+
+    // Print the monster health
+    current = head;
+    while (current)
+    {
+        size_t line_length = strlen(get_monster_art_line(current->monster->name, 0));
+        unsigned int hex_color = current->monster == targeted_monster ?
+             0xff0000 : 0xffffff;
+
+        char *health = calloc(8, sizeof *health); // Health string can be up to 8 characters
+        sprintf(health, "%d HP", current->monster->health);
+        size_t padding = line_length / 2 - strlen(health) / 2;
+
+        for (int space = 0; space < padding; space++) printf(" ");
+        color_printf(hex_color, "%s", health);
+        free(health);
+        for (int space = 0; space < padding; space++) printf(" ");
+
+        printf("  "); // Space between monsters
+        current = current->next;
+    }
+    printf("\n");
 }
 
 unsigned char get_number_of_monsters(Monsters *head)
