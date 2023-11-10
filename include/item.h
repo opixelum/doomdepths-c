@@ -57,15 +57,6 @@ Item *create_item
 );
 
 /**
- * @brief Get the size of an inventory
- * @param head Pointer to the head of the inventory
- * @return The size of the inventory
- * @warning In case you're not passing the head of the inventory, the size check
- * will may not work properly
- */
-unsigned char inventory_size(Inventory *head);
-
-/**
  * @brief Adds an item to the end of an inventory. If inventory is full, the item
  * is not added.
  * @param head A pointer to the head of the inventory.
