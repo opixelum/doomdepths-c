@@ -1,4 +1,4 @@
-#include "fight.h"
+#include "battle.h"
 
 unsigned short attack(Character *attacker, Character *defender, Item *spell)
 {
@@ -37,35 +37,6 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
     return damage;
 }
 
-Monsters *update_monsters_list(Monsters *head)
-{
-    if (!head) return NULL;
-
-    Monsters *node = head;
-    Monsters *prev = NULL;
-
-    while (node)
-    {
-        if (node->monster->health == 0)
-        {
-            if (prev) prev->next = node->next;
-            else head = node->next;
-
-            Monsters *tmp = node;
-            node = node->next;
-            free_character(tmp->monster);
-            free(tmp);
-        }
-        else
-        {
-            prev = node;
-            node = node->next;
-        }
-    }
-
-    return head;
-}
-
 void battle(Character *player)
 {
     if (!player)
@@ -81,7 +52,7 @@ void battle(Character *player)
         unsigned char monster_count = get_number_of_monsters(monsters);
         clear_screen();
         print_character_stats(player);
-        print_monsters(monsters);
+        print_monsters(monsters, NULL);
 
         unsigned char action_choice = battle_actions_menu(player, monsters);
 

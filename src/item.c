@@ -1,4 +1,4 @@
-#include "stuff.h"
+#include "item.h"
 
 Item *create_item
 (
@@ -11,7 +11,11 @@ Item *create_item
     Item *item = malloc(sizeof *item);
     if (!item)
     {
-        fprintf(stderr, "ERROR: stuff.c: create_item: item: malloc failed\n");
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: create_item(): item: malloc() failed\n"
+        );
         exit(EXIT_FAILURE);
     }
     item->type = type;
@@ -29,7 +33,12 @@ Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
     Inventory *new_item_entry = malloc(sizeof *new_item_entry);
     if (!new_item_entry)
     {
-        fprintf(stderr, "ERROR: stuff.c: add_item_to_inventory: new_item_entry: malloc failed\n");
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: add_item_to_inventory(): new_item_entry: malloc() "
+            "failed\n"
+        );
         exit(EXIT_FAILURE);
     }
 
@@ -133,7 +142,7 @@ char *item_type_to_string(ItemType item_type)
             fprintf
             (
                 stderr,
-                "ERROR: stuff.c: item_type_to_string: wrong item type\n"
+                "ERROR: stuff.c: item_type_to_string(): wrong item type\n"
             );
             exit(EXIT_FAILURE);
     }

@@ -1,13 +1,9 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
-
+#include "battle.h"
 #include "character.h"
-#include "fight.h"
-#include "menus.h"
 
 #define ROWS 300
 #define COLUMNS 300
@@ -74,7 +70,8 @@ float linear_interpolation(float x, float y, float factor);
  * smoother, more natural transitions than linear interpolation.
  * @param x The start value.
  * @param y The end value.
- * @param factor The interpolation factor (0.0 to 1.0), which is modified for smoothness.
+ * @param factor The interpolation factor (0.0 to 1.0), which is modified for
+ * smoothness.
  * @return The interpolated value.
  */
 float smooth_interpolation(float x, float y, float factor);

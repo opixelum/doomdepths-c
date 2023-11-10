@@ -1,4 +1,4 @@
-#include "spells.h"
+#include "spell.h"
 
 unsigned char number_of_attack_spells(Character *character)
 {
