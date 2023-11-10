@@ -239,7 +239,7 @@ Item *item_selection_menu(Character *character, ItemType item_type)
     inventory = inventory->next;
     }
 
-    printf("    B. Back\n\nPress the key of your choice on your keyboard.");
+    printf("\nPress the key of your choice or [B] to go back.");
 
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
@@ -296,4 +296,49 @@ void print_attack_result
     );
 
     if (player->health <= 0) printf("You died!\n\n");
+}
+
+void inventory(Character *player)
+{
+    clear_screen();
+
+    unsigned char item_count = number_of_items(player->inventory, ITEM);
+
+    unsigned int hex_color;
+    if (item_count >= 20) hex_color = 0xffff00;
+    else if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
+    else hex_color = 0xffffff;
+
+    color_printf
+    (
+        hex_color,
+        "Inventory (%d/25)\n\n",
+        item_count
+    );
+
+    Item *selected_item = item_selection_menu(player, ITEM);
+    if (!selected_item) return;
+
+    color_printf
+    (
+        hex_color,
+        "Inventory (%d/25)\n\n",
+        item_count
+    );
+    printf("What do you want to do with this %s?\n\n", selected_item->name);
+
+    if (is_potion(selected_item->type)) printf("    1. Drink\n");
+    else printf("    1. Equip\n");
+    printf("    2. Drop\n\nPress the key of your choice or [B] to go back.");
+
+    unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
+
+    if (choice == 1) is_potion(selected_item->type) ?
+        drink_potion(player, selected_item) : equip_item(player, selected_item);
+    else if (choice == 2)
+        player->inventory =
+            remove_item_from_inventory(player->inventory, selected_item);
+
+    clear_screen();
+    inventory(player);
 }
