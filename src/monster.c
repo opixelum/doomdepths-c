@@ -1,11 +1,16 @@
-#include "monsters.h"
+#include "monster.h"
 
 Monsters *add_monster_to_list(Monsters *node, Character *monster_to_add)
 {
     Monsters *new_monster_entry = malloc(sizeof *new_monster_entry);
     if (!new_monster_entry)
     {
-        fprintf(stderr, "ERROR: stuff.c: add_monster_to_list: new_monster_entry: malloc failed\n");
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: add_monster_to_list(): new_monster_entry: malloc()"
+            " failed\n"
+        );
         exit(EXIT_FAILURE);
     }
 
@@ -163,8 +168,11 @@ Monsters *generate_random_monsters_list()
     return head;
 }
 
-const char *get_monster_art_line(const char *monster_name, unsigned char line_number)
-{
+const char *get_monster_art_line
+(
+    const char *monster_name,
+    unsigned char line_number
+) {
     if (strcmp(monster_name, "Dragon") == 0) return dragon[line_number];
     if (strcmp(monster_name, "Grim Reaper") == 0) return grim_reaper[line_number];
     if (strcmp(monster_name, "Centaur") == 0) return centaur[line_number];
@@ -174,18 +182,23 @@ const char *get_monster_art_line(const char *monster_name, unsigned char line_nu
     return NULL;
 }
 
-void print_monsters(Monsters *head)
+void print_monsters(Monsters *head, Character *targeted_monster)
 {
     if (!head) return;
     Monsters *current;
 
+    // Print the monster art
     for (int line_number = 0; dragon[line_number] != NULL; line_number++)
     {
         current = head;
         while (current)
         {
-            printf
+            unsigned int hex_color = current->monster == targeted_monster ?
+                0xff0000 : 0xffffff;
+
+            color_printf
             (
+                hex_color,
                 "%s  ",
                 get_monster_art_line(current->monster->name, line_number)
             );
@@ -196,6 +209,7 @@ void print_monsters(Monsters *head)
 
     printf("\n");
 
+    // Print the monster names
     current = head;
     while (current)
     {
@@ -203,7 +217,9 @@ void print_monsters(Monsters *head)
         size_t padding = line_length / 2 - strlen(current->monster->name) / 2;
         
         for (int space = 0; space < padding; space++) printf(" ");
-        printf("%s", current->monster->name);
+        unsigned int hex_color = current->monster == targeted_monster ?
+            0xff0000 : 0xffffff;
+        color_printf(hex_color, "%s", current->monster->name);
         for (int space = 0; space < padding; space++) printf(" ");
 
         printf("  ");
@@ -227,4 +243,33 @@ unsigned char get_number_of_monsters(Monsters *head)
     }
 
     return number_of_monsters;
+}
+
+Monsters *update_monsters_list(Monsters *head)
+{
+    if (!head) return NULL;
+
+    Monsters *node = head;
+    Monsters *prev = NULL;
+
+    while (node)
+    {
+        if (node->monster->health == 0)
+        {
+            if (prev) prev->next = node->next;
+            else head = node->next;
+
+            Monsters *tmp = node;
+            node = node->next;
+            free_character(tmp->monster);
+            free(tmp);
+        }
+        else
+        {
+            prev = node;
+            node = node->next;
+        }
+    }
+
+    return head;
 }

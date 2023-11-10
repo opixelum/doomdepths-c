@@ -3,8 +3,7 @@
 
 #include <string.h>
 #include <time.h>
-
-#include "character.h"
+#include "pretty-output.h"
 
 static char *dragon[] =
 {
@@ -211,10 +210,12 @@ const char *get_monster_art_line
 /**
  * @brief Prints monsters of a battle on the screen.
  * @param head A pointer to the head of the monsters list.
+ * @param targeted_monster A pointer to the targeted monster or NULL if no
+ * monster is targeted.
  * @warning It's important to pass the head of the monsters list, otherwise
  * monsters can be skipped.
  */
-void print_monsters(Monsters *head);
+void print_monsters(Monsters *head, Character *targeted_monster);
 
 /**
  * @brief Get the number of monsters in a monsters list.
@@ -224,5 +225,15 @@ void print_monsters(Monsters *head);
  * monsters can be skipped.
  */
 unsigned char get_number_of_monsters(Monsters *head);
+
+/**
+ * @brief Updates monsters list if a monster is dead.
+ * @param head A pointer to the head of the monsters list.
+ * @return A pointer to the head of the monsters list, NULL if all monsters
+ * died.
+ * @warning It's important to pass the head of the monsters list, otherwise
+ * monsters can be skipped.
+ */
+Monsters *update_monsters_list(Monsters *head);
 
 #endif // MONSTERS_H

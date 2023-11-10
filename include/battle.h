@@ -1,11 +1,11 @@
 #ifndef FIGHT_H
 #define FIGHT_H
 
-#include <string.h>
-
-#include "menus.h"
-#include "monsters.h"
-#include "spells.h"
+#include "menu.h"
+#include "monster.h"
+#include "pretty-output.h"
+#include "spell.h"
+#include "terminal.h"
 
 /**
  * @brief Attack a defender with an attacker.
@@ -29,16 +29,6 @@
  * @return The damage dealt to the defender.
  */
 unsigned short attack(Character *attacker, Character *defender, Item *spell);
-
-/**
- * @brief Updates monsters list if a monster is dead.
- * @param head A pointer to the head of the monsters list.
- * @return A pointer to the head of the monsters list, NULL if all monsters
- * died.
- * @warning It's important to pass the head of the monsters list, otherwise
- * monsters can be skipped.
- */
-Monsters *update_monsters_list(Monsters *head);
 
 /**
  * @brief Battle between the player and a random number of monsters. Monsters

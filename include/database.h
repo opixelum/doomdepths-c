@@ -2,9 +2,7 @@
 #define SAVE_H
 
 #include <sqlite3.h>
-#include <stdio.h>
 #include <string.h>
-
 #include "character.h"
 
 /**
