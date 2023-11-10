@@ -2,6 +2,7 @@
 #define PRETTY_OUTPUT_H
 
 #include <stdarg.h>
+#include <string.h>
 #include "character.h"
 
 /**
@@ -39,5 +40,14 @@ void print_character_stats(Character *character);
  * @param character A pointer to the character.
  */
 void print_character_gold(Character *character);
+
+/**
+ * @brief Centers a string in a given total_width.
+ * @param string The string to center.
+ * @param total_width The total_width to center the string in.
+ * @return A pointer to the allocated centered string.
+ * @warning The returned string must be freed with `free()`.
+ */
+char *center_string(const char *string, unsigned char total_width);
 
 #endif // PRETTY_OUTPUT_H

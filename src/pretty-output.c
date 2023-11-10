@@ -84,3 +84,30 @@ void print_character_gold(Character *character)
     printf("  Gold ");
     color_printf(0xFFD700, "%d\n", character->gold);
 }
+
+char *center_string(const char *string, unsigned char total_width)
+{
+    int input_length = strlen(string);
+
+    // Calculate the padding on each side
+    int padding_left = (total_width - input_length) / 2;
+    int padding_right = total_width - input_length - padding_left;
+
+    // Allocate memory for the centered string (+1 for the null terminator)
+    char* centered = malloc(total_width + 1);
+    if (centered == NULL) {
+        perror("Unable to allocate memory for the centered string.");
+        exit(EXIT_FAILURE);
+    }
+
+    // Set memory to spaces
+    memset(centered, ' ', total_width);
+
+    // Copy the input string into the centered string at the right offset
+    memcpy(centered + padding_left, string, input_length);
+
+    // Null-terminate the centered string
+    centered[total_width] = '\0';
+
+    return centered;
+}
