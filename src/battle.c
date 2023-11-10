@@ -66,7 +66,7 @@ void battle(Character *player)
             if (!targeted_monster) continue; // Case when user goes back
 
             // Update monsters on screen
-            clear_lines(21);
+            clear_lines(22);
             print_monsters(monsters, targeted_monster);
 
             monsters = perform_attack(player, targeted_monster, monsters);
