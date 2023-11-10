@@ -9,7 +9,7 @@ sqlite3 *open_database(const char *db_path)
         fprintf
         (
             stderr,
-            "ERROR: save.c: open_database(): sqlite3_open(): %s\n",
+            "ERROR: database.c: open_database(): sqlite3_open(): %s\n",
             sqlite3_errmsg(db)
         );
         sqlite3_close(db);
@@ -74,7 +74,7 @@ void create_tables(const char *db_path)
             fprintf
             (
                 stderr,
-                "ERROR: save.c: create_tables(): %s\n",
+                "ERROR: database.c: create_tables(): %s\n",
                 sqlite_err_msg
             );
             sqlite3_free(sqlite_err_msg);
@@ -115,7 +115,7 @@ Item *get_item_from_db(sqlite3 *db, int itemId)
         fprintf
         (
             stderr,
-            "ERROR: save.c: get_item_from_db(): sqlite3_prepare_v2(): "
+            "ERROR: database.c: get_item_from_db(): sqlite3_prepare_v2(): "
             "%s\n",
             sqlite3_errmsg(db)
         );
@@ -128,14 +128,14 @@ Item *get_item_from_db(sqlite3 *db, int itemId)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_item, 1);
-        if (type_id > 0 && type_id < 7) item_type = (ItemType) type_id - 1;
+        if (type_id >= 0 && type_id <= 9) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
             (
                 stderr,
-                "ERROR: save.c: get_item_from_db(): Invalid item type "
-                "ID: %d\n",
+                "ERROR: database.c: get_item_from_db(): Invalid item "
+                "type ID: %d\n",
                 type_id
             );
             exit(EXIT_FAILURE);
@@ -179,7 +179,7 @@ Inventory *get_inventory_from_db(sqlite3 *db)
         fprintf
         (
             stderr,
-            "ERROR: save.c: get_inventory_from_db(): "
+            "ERROR: database.c: get_inventory_from_db(): "
             "sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
@@ -192,14 +192,14 @@ Inventory *get_inventory_from_db(sqlite3 *db)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_items, 1);
-        if (type_id > 0 && type_id < 7) item_type = (ItemType) type_id - 1;
+        if (type_id >= 0 && type_id <= 9) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
             (
                 stderr,
-                "ERROR: save.c: get_inventory_from_db(): Invalid item "
-                "type ID: %d\n",
+                "ERROR: database.c: get_inventory_from_db(): Invalid"
+                "item type ID: %d\n",
                 type_id
             );
             exit(EXIT_FAILURE);
@@ -248,7 +248,7 @@ Inventory* get_spells_from_db(sqlite3 *db)
         fprintf
         (
             stderr,
-            "ERROR: save.c: get_spells_from_db(): sqlite3_prepare_v2(): "
+            "ERROR: database.c: get_spells_from_db(): sqlite3_prepare_v2(): "
             "%s\n",
             sqlite3_errmsg(db)
         );
@@ -261,14 +261,14 @@ Inventory* get_spells_from_db(sqlite3 *db)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_items, 1);
-        if (type_id > 0 && type_id < 7) item_type = (ItemType)type_id-1;
+        if (type_id >= 0 && type_id <= 9) item_type = (ItemType)type_id-1;
         else
         {
             fprintf
             (
                 stderr,
-                "ERROR: save.c: get_spells_from_db(): Invalid item type "
-                "ID: %d\n",
+                "ERROR: database.c: get_spells_from_db(): Invalid item "
+                "type ID: %d\n",
                 type_id
             );
             exit(EXIT_FAILURE);
@@ -294,19 +294,19 @@ Inventory* get_spells_from_db(sqlite3 *db)
 
 Character *get_character_from_db(sqlite3 *db)
 {
-    Character *player = malloc(sizeof *player);
-    sqlite3_stmt *stmt_player;
+    Character *character = malloc(sizeof *character);
+    sqlite3_stmt *result;
 
-    const char *sql_select_player =
+    const char *select_character_stmt =
         "SELECT id, name, health, max_health, mana, max_mana, weapon_id, "
-        "armor_id, gold, xp, xp_to_next_level FROM player;";
+        "armor_id, gold, xp, xp_to_next_level FROM characters;";
 
     int return_value = sqlite3_prepare_v2
     (
         db,
-        sql_select_player,
+        select_character_stmt,
         -1,
-        &stmt_player,
+        &result,
         0
     );
     if (return_value != SQLITE_OK)
@@ -314,39 +314,39 @@ Character *get_character_from_db(sqlite3 *db)
         fprintf
         (
             stderr,
-            "ERROR: save.c: get_character_from_db(): "
+            "ERROR: database.c: get_character_from_db(): "
             "sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
     }
 
-    if (sqlite3_step(stmt_player) == SQLITE_ROW)
+    if (sqlite3_step(result) == SQLITE_ROW)
     {
-        player->name = strdup(
-            (const char *) sqlite3_column_text(stmt_player, 1));
-        player->health = sqlite3_column_int(stmt_player, 2);
-        player->max_health = sqlite3_column_int(stmt_player, 3);
-        player->mana = sqlite3_column_int(stmt_player, 4);
-        player->max_mana = sqlite3_column_int(stmt_player, 5);
-        player->gold = sqlite3_column_int(stmt_player, 8);
-        player->xp = sqlite3_column_int(stmt_player, 9);
-        player->xp_to_next_level = sqlite3_column_int(stmt_player, 10);
-        int weapon_id = sqlite3_column_int(stmt_player, 6);
+        character->name = strdup(
+            (const char *) sqlite3_column_text(result, 1));
+        character->health = sqlite3_column_int(result, 2);
+        character->max_health = sqlite3_column_int(result, 3);
+        character->mana = sqlite3_column_int(result, 4);
+        character->max_mana = sqlite3_column_int(result, 5);
+        character->gold = sqlite3_column_int(result, 8);
+        character->xp = sqlite3_column_int(result, 9);
+        character->xp_to_next_level = sqlite3_column_int(result, 10);
+        int weapon_id = sqlite3_column_int(result, 6);
 
-        player->weapon = get_item_from_db(db, weapon_id);
+        character->weapon = get_item_from_db(db, weapon_id);
 
-        int armor_id = sqlite3_column_int(stmt_player, 7);
-        player->armor = get_item_from_db(db, armor_id);
+        int armor_id = sqlite3_column_int(result, 7);
+        character->armor = get_item_from_db(db, armor_id);
 
-        player->inventory = get_inventory_from_db(db);
+        character->inventory = get_inventory_from_db(db);
 
-        player->spells = get_spells_from_db(db);
-    } else memset(player, 0, sizeof *player);
+        character->spells = get_spells_from_db(db);
+    } else memset(character, 0, sizeof *character);
 
-    sqlite3_finalize(stmt_player);
+    sqlite3_finalize(result);
 
-    return player;
+    return character;
 }
 
 Character *load_game()
@@ -379,7 +379,7 @@ int insert_weapon(sqlite3 *db, Item *weapon)
         fprintf
         (
             stderr,
-            "ERROR: save.c: insert_weapon(): sqlite3_prepare_v2(): %s\n",
+            "ERROR: database.c: insert_weapon(): sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
@@ -403,7 +403,7 @@ int insert_weapon(sqlite3 *db, Item *weapon)
         fprintf
         (
             stderr,
-            "ERROR: save.c: insert_weapon(): sqlite3_step(): %s\n",
+            "ERROR: database.c: insert_weapon(): sqlite3_step(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
@@ -436,7 +436,7 @@ int insert_armor(sqlite3 *db, Item *armor)
         fprintf
         (
             stderr,
-            "ERROR: save.c: insert_armor(): sqlite3_prepare_v2(): %s\n",
+            "ERROR: database.c: insert_armor(): sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
@@ -460,7 +460,7 @@ int insert_armor(sqlite3 *db, Item *armor)
         fprintf
         (
             stderr,
-            "ERROR: save.c: insert_armor(): sqlite3_step(): %s\n",
+            "ERROR: database.c: insert_armor(): sqlite3_step(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
@@ -496,7 +496,7 @@ void save_game(Character *player)
         fprintf
         (
             stderr,
-            "ERROR: save.c: save_game(): sqlite3_exec(): %s\n",
+            "ERROR: database.c: save_game(): sqlite3_exec(): %s\n",
             err_msg
         );
         sqlite3_free(err_msg);
@@ -516,7 +516,7 @@ void save_game(Character *player)
         fprintf
         (
             stderr,
-            "ERROR: save.c: save_game(): sqlite3_exec(): %s\n",
+            "ERROR: database.c: save_game(): sqlite3_exec(): %s\n",
             err_msg
         );
         sqlite3_free(err_msg);
@@ -546,7 +546,7 @@ void save_game(Character *player)
         fprintf
         (
             stderr,
-            "ERROR: save.c: save_game(): sqlite3_prepare_v2(): %s\n",
+            "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
@@ -568,7 +568,7 @@ void save_game(Character *player)
         fprintf
         (
             stderr,
-            "ERROR: save.c: save_game(): sqlite3_step(): %s\n",
+            "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
             sqlite3_errmsg(db)
         );
         exit(EXIT_FAILURE);
@@ -597,7 +597,7 @@ void save_game(Character *player)
             fprintf
             (
                 stderr,
-                "ERROR: save.c: save_game(): sqlite3_prepare_v2(): %s\n",
+                "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
                 sqlite3_errmsg(db)
             );
             exit(EXIT_FAILURE);
@@ -633,7 +633,7 @@ void save_game(Character *player)
             fprintf
             (
                 stderr,
-                "ERROR: save.c: save_game(): sqlite3_step(): %s\n",
+                "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
                 sqlite3_errmsg(db)
             );
             exit(EXIT_FAILURE);
@@ -665,7 +665,7 @@ void save_game(Character *player)
             fprintf
             (
                 stderr,
-                "ERROR: save.c: save_game(): sqlite3_prepare_v2(): %s\n",
+                "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
                 sqlite3_errmsg(db)
             );
             exit(EXIT_FAILURE);
@@ -696,7 +696,7 @@ void save_game(Character *player)
             fprintf
             (
                 stderr,
-                "ERROR: save.c: save_game(): sqlite3_step(): %s\n",
+                "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
                 sqlite3_errmsg(db)
             );
             exit(EXIT_FAILURE);
@@ -732,7 +732,7 @@ unsigned char insert_item(const char *db_path, Item *item)
         fprintf
         (
             stderr,
-            "ERROR: save.c: insert_item(): sqlite3_prepare_v2(): %s\n",
+            "ERROR: database.c: insert_item(): sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
         return EXIT_FAILURE;
@@ -756,7 +756,7 @@ unsigned char insert_item(const char *db_path, Item *item)
         fprintf
         (
             stderr,
-            "ERROR: save.c: insert_item(): sqlite3_step(): %s\n",
+            "ERROR: database.c: insert_item(): sqlite3_step(): %s\n",
             sqlite3_errmsg(db)
         );
         return EXIT_FAILURE;
