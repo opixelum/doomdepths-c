@@ -208,7 +208,7 @@ Item *item_selection_menu(Character *character, ItemType item_type)
         printf("Which %s do you want to cast?\n\n", item_type_string);
     else if (is_potion(item_type))
         printf("Which %s do you want to drink?\n\n", item_type_string);
-    else printf("Which %s do you want to use?\n\n", item_type_string);
+    else printf("Select an item to use, equip or drop.\n\n");
 
     Item *items[items_count];
     for (unsigned char i = 0; i < items_count; i++)
