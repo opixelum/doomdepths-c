@@ -187,6 +187,7 @@ void print_monsters(Monsters *head, Character *targeted_monster)
     if (!head) return;
     Monsters *current;
 
+    // Print the monster art
     for (int line_number = 0; dragon[line_number] != NULL; line_number++)
     {
         current = head;
@@ -208,6 +209,7 @@ void print_monsters(Monsters *head, Character *targeted_monster)
 
     printf("\n");
 
+    // Print the monster names
     current = head;
     while (current)
     {
@@ -215,7 +217,9 @@ void print_monsters(Monsters *head, Character *targeted_monster)
         size_t padding = line_length / 2 - strlen(current->monster->name) / 2;
         
         for (int space = 0; space < padding; space++) printf(" ");
-        printf("%s", current->monster->name);
+        unsigned int hex_color = current->monster == targeted_monster ?
+            0xff0000 : 0xffffff;
+        color_printf(hex_color, "%s", current->monster->name);
         for (int space = 0; space < padding; space++) printf(" ");
 
         printf("  ");
