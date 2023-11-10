@@ -171,6 +171,9 @@ void display_map(MapContext* map_context)
 
 unsigned char key_listener(unsigned char key, MapContext *map_context)
 {
+    // Convert uppercase to lowercase
+    if (key >= 'A' && key <= 'Z') key += 32;
+
     switch (key)
     {
     case 'z':
