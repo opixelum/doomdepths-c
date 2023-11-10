@@ -298,7 +298,7 @@ void print_attack_result
     if (player->health <= 0) printf("You died!\n\n");
 }
 
-void inventory(Character *player)
+void inventory_menu(Character *player)
 {
     clear_screen();
 
@@ -341,5 +341,5 @@ void inventory(Character *player)
             remove_item_from_inventory(player->inventory, selected_item);
 
     clear_screen();
-    inventory(player);
+    inventory_menu(player);
 }

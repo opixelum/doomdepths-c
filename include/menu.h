@@ -92,6 +92,6 @@ void print_attack_result
  * @brief Prints the inventory of a character.
  * @param player A pointer to the character.
  */
-void inventory(Character *player);
+void inventory_menu(Character *player);
 
 #endif // MENUS_H

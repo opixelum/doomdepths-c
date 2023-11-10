@@ -234,7 +234,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         break;
 
     case 'i':
-        inventory(map_context->player);
+        inventory_menu(map_context->player);
         break;
 
     case 'Q':
