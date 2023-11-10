@@ -56,15 +56,20 @@ void battle(Character *player)
 
         unsigned char action_choice = battle_actions_menu(player, monsters);
 
-        Character *target_monster = monster_count == 1 ? monsters->monster : NULL;
+        Character *targeted_monster;
         Item *potion;
 
         switch (action_choice)
         {
         case 1:
-            target_monster = target_monster ?: monster_selection_menu(player, monsters);
-            if (!target_monster) continue; // Case when user goes back
-            monsters = perform_attack(player, target_monster, monsters);
+            targeted_monster = monster_selection_menu(player, monsters);
+            if (!targeted_monster) continue; // Case when user goes back
+
+            // Update monsters on screen
+            clear_lines(21);
+            print_monsters(monsters, targeted_monster);
+
+            monsters = perform_attack(player, targeted_monster, monsters);
             break;
 
         case 2:
