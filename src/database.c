@@ -230,8 +230,8 @@ Inventory* get_spells_from_db(sqlite3 *db)
     const char *sql_select_items =
         "SELECT item.id, idType, name, description, value, price "
         "FROM item WHERE idType IN (5, 6) "
-        "AND id NOT IN (SELECT id_weapon FROM characters) "
-        "AND id NOT IN (SELECT id_armor FROM characters);";
+        "AND id NOT IN (SELECT weapon_id FROM characters) "
+        "AND id NOT IN (SELECT armor_id FROM characters);";
 
     sqlite3_stmt *stmt_items;
 
