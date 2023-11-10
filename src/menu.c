@@ -101,7 +101,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
-    clear_lines(8);
+    clear_lines(6);
 
     return choice;
 }
