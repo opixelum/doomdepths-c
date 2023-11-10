@@ -130,11 +130,16 @@ void new_game(void)
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
 
+    Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
+    Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 100, 100);
+    Item *armor = create_item(ARMOR, "Armor", "An armor", 100, 100);
     Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
     Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
     Inventory *inventory = NULL;
     inventory = add_item_to_inventory(inventory, health_potion);
     inventory = add_item_to_inventory(inventory, mana_potion);
+    inventory = add_item_to_inventory(inventory, weapon2);
+    inventory = add_item_to_inventory(inventory, armor);
 
     // Create a new character
     Character *player = create_character
@@ -148,7 +153,7 @@ void new_game(void)
         100,
         100,
         0,
-        NULL,
+        weapon1,
         NULL,
         spells,
         inventory
@@ -253,7 +258,7 @@ Item *item_selection_menu(Character *character, ItemType item_type)
     }
     while (is_spell(item_type) && items[choice - 1]->price > character->mana);
 
-    clear_lines(items_count + 5);
+    clear_lines(items_count + 3);
 
     // -1 because array starts at 0
     return items[choice - 1];
@@ -302,6 +307,16 @@ void inventory_menu(Character *player)
 {
     clear_screen();
 
+    if (!player)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menus.c: inventory_menu(): `player` is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
     unsigned char item_count = number_of_items(player->inventory, ITEM);
 
     unsigned int hex_color;
@@ -317,15 +332,22 @@ void inventory_menu(Character *player)
         MAX_INVENTORY_SIZE
     );
 
+    if (player->weapon || player->armor)
+    {
+        printf("Equipped items:\n\n");
+
+        if (player->weapon) printf("    Weapon: %s\n", player->weapon->name);
+        else color_printf(0xff0000, "    No weapon\n");
+
+        if (player->armor) printf("    Armor: %s\n", player->armor->name);
+        else color_printf(0xff0000, "    No armor\n");
+
+        printf("\n");
+    }
+
     Item *selected_item = item_selection_menu(player, ITEM);
     if (!selected_item) return;
 
-    color_printf
-    (
-        hex_color,
-        "Inventory (%d/25)\n\n",
-        item_count
-    );
     printf("What do you want to do with this %s?\n\n", selected_item->name);
 
     if (is_potion(selected_item->type)) printf("    1. Drink\n");
