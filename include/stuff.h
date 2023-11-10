@@ -75,15 +75,16 @@ unsigned char inventory_size(Inventory *head);
 Inventory *add_item_to_inventory(Inventory *head, Item *item);
 
 /**
- * @brief Remove an item from an inventory
- * @param head Pointer to the head of the inventory
- * @param item Pointer to the item to be removed
- * @return Pointer to the removed item, or NULL if the item was not found
- * @warning This function does not free the item from memory, it only removes it from the inventory
- * @warning In case you're not passing the head of the inventory, the item to remove can be skipped if it is before the
- * given inventory node
+ * @brief Removes an item from an inventory.
+ * @param head A pointer to the head of the inventory.
+ * @param item A pointer to the item to be removed.
+ * @return A pointer to the head of the updated inventory.
+ * @warning This function does not free the item from memory, it only removes it
+ * from the inventory by freeing the inventory node.
+ * @warning In case you're not passing the head of the inventory, the item to
+ * remove can be skipped if it is before the given inventory node.
  */
-Item *remove_item_from_inventory(Inventory *head, Item *item);
+Inventory *remove_item_from_inventory(Inventory *head, Item *item);
 
 /**
  * @brief Frees a linked list of items from memory.

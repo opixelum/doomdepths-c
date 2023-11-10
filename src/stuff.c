@@ -47,7 +47,7 @@ Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
     return head;
 }
 
-Item *remove_item_from_inventory(Inventory *head, Item *item_to_remove)
+Inventory *remove_item_from_inventory(Inventory *head, Item *item_to_remove)
 {
     Inventory *prev = NULL;
     Inventory *current = head;
@@ -59,23 +59,22 @@ Item *remove_item_from_inventory(Inventory *head, Item *item_to_remove)
             // If the item to remove is at the head of the inventory.
             if (!prev)
             {
-                Item *removed_item = current->item;
+                Inventory *new_head = current->next;
                 free(current);
-                return removed_item;
+                return new_head;
             }
 
             // Item found in the middle or end of the inventory.
-            Item *removed_item = current->item;
             prev->next = current->next;
             free(current);
-            return removed_item;
+            return head;
         }
 
         prev = current;
         current = current->next;
     }
 
-    return NULL; // Item not found in the inventory.
+    return head; // Item not found in the inventory.
 }
 
 void free_inventory(Inventory *head)
