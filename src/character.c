@@ -95,5 +95,10 @@ void drink_potion(Character *character, Item *potion)
         exit(EXIT_FAILURE);
     }
 
-    free(remove_item_from_inventory(character->inventory, potion));
+    character->inventory = remove_item_from_inventory
+    (
+        character->inventory,
+        potion
+    );
+    free(potion);
 }
