@@ -312,8 +312,9 @@ void inventory(Character *player)
     color_printf
     (
         hex_color,
-        "Inventory (%d/25)\n\n",
-        item_count
+        "Inventory (%d/%d)\n\n",
+        item_count,
+        MAX_INVENTORY_SIZE
     );
 
     Item *selected_item = item_selection_menu(player, ITEM);
