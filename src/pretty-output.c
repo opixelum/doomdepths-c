@@ -111,3 +111,87 @@ char *center_string(const char *string, unsigned char total_width)
 
     return centered;
 }
+
+void *print_item_details
+(
+    Character *character,
+    Item *item,
+    unsigned char show_type,
+    unsigned char show_description,
+    unsigned char show_value,
+    unsigned char show_price
+) {
+    if (!character)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: pretty-output.c: item_details_string(): character is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    };
+
+    if (!item)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: pretty-output.c: item_details_string(): item is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    };
+
+    printf("%s", item->name);
+    if (show_type)
+    {
+        printf(" | ");
+        color_printf(0x888888, "%s", item_type_to_string(item->type));
+    }
+    if (show_description)
+    {
+        printf(" | ");
+        color_printf(0x888888, "%s", item->description);
+    }
+    if (show_value)
+    {
+        printf(" | ");
+
+        // Green if better than equipped, red if worse, gray otherwise
+        unsigned int hex_color;
+
+        if (item->type == WEAPON)
+        {
+            if (character->weapon && character->weapon->value > item->value)
+                hex_color = 0xff0000;
+            else if (character->weapon && character->weapon->value < item->value)
+                hex_color = 0x00ff00;
+            else hex_color = 0x888888;
+            color_printf(hex_color, "%d DMG", item->value);
+        }
+        else if
+        (
+            item->type == ARMOR ||
+            item->type == HEAL_SPELL ||
+            item->type == HEALTH_POTION
+        ) {
+            if (character->armor && character->armor->value > item->value)
+                hex_color = 0xff0000;
+            else if (character->armor && character->armor->value < item->value)
+                hex_color = 0x00ff00;
+            else hex_color = 0x888888;
+            color_printf(hex_color, "+%d HP", item->value);
+        }
+        else if (item->type == MANA_POTION)
+            color_printf(0x2596be, "+%d MP", item->value);
+        else
+            color_printf(0x888888, "%d", item->value);
+    }
+    if (show_price)
+    {
+        printf(" | ");
+        if (is_spell(item->type))
+            color_printf(0x2596be, "%d MP", item->price);
+        else
+            color_printf(0xFFD700, "%d GLD", item->price);
+    }
+}
