@@ -137,6 +137,7 @@ void new_game(void)
     Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
     Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 120, 120);
     Item *armor = create_item(ARMOR, "Armor", "An armor", 100, 100);
+    Item *clothes = create_item(ARMOR, "Clothes", "Clothes", 5, 5);
     Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
     Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
     Inventory *inventory = NULL;
@@ -144,6 +145,7 @@ void new_game(void)
     inventory = add_item_to_inventory(inventory, mana_potion);
     inventory = add_item_to_inventory(inventory, weapon2);
     inventory = add_item_to_inventory(inventory, armor);
+    inventory = add_item_to_inventory(inventory, clothes);
 
     // Create a new character
     Character *player = create_character
