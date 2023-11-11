@@ -50,4 +50,24 @@ void print_character_gold(Character *character);
  */
 char *center_string(const char *string, unsigned char total_width);
 
+/**
+ * @brief Prints a string containing the details of an item.
+ * @param character A pointer to the character. Used to know if the item is
+ * better than the equipped one.
+ * @param item A pointer to the item.
+ * @param show_type 1 to show the type of the item, 0 otherwise.
+ * @param show_description 1 to show the description of the item, 0 otherwise.
+ * @param show_value 1 to show the value of the item, 0 otherwise.
+ * @param show_price 1 to show the price of the item, 0 otherwise.
+ */
+void *print_item_details
+(
+    Character *character,
+    Item *item,
+    unsigned char show_type,
+    unsigned char show_description,
+    unsigned char show_value,
+    unsigned char show_price
+);
+
 #endif // PRETTY_OUTPUT_H

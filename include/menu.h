@@ -63,10 +63,16 @@ void new_game();
  * potion).
  * @param character A pointer to the character who has the items.
  * @param item_type The type of the item to select (see ItemType enum).
+ * @param inventory_menu 1 if it is used in the inventory menu, 0 otherwise.
  * @return A pointer to the selected item or NULL if user chooses to come back
  * or if he has no item of the given type.
  */
-Item *item_selection_menu(Character *character, ItemType item_type);
+Item *item_selection_menu
+(
+    Character *character,
+    ItemType item_type,
+    unsigned char inventory_menu
+);
 
 /**
  * @brief Display the attacker stats, battle monsters & attack result.

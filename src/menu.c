@@ -132,7 +132,7 @@ void new_game(void)
     spells = add_item_to_inventory(spells, freeze);
 
     Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
-    Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 100, 100);
+    Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 120, 120);
     Item *armor = create_item(ARMOR, "Armor", "An armor", 100, 100);
     Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
     Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
@@ -174,8 +174,12 @@ void new_game(void)
     explore_map(map_context);
 }
 
-Item *item_selection_menu(Character *character, ItemType item_type)
-{
+Item *item_selection_menu
+(
+    Character *character,
+    ItemType item_type,
+    unsigned char inventory_menu
+) {
     if (!character)
     {
         fprintf
@@ -233,13 +237,18 @@ Item *item_selection_menu(Character *character, ItemType item_type)
                     0xff0000 : 0xffffff;
             else hexcolor = 0xffffff;
 
-            color_printf
+            printf("    %d. ", i + 1);
+            print_item_details
             (
-                hexcolor,
-                "    %d. %s\n",
-                i + 1,
-                inventory->item->name
+                character,
+                inventory->item,
+                is_potion(inventory->item->type) ? 1 : inventory_menu,
+                0,
+                1,
+                is_spell(inventory->item->type) ? 1 : 0
             );
+            printf("\n");
+
             items[i] = inventory->item;
         }
     inventory = inventory->next;
@@ -325,10 +334,11 @@ void inventory_menu(Character *player)
     else if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
     else hex_color = 0xffffff;
 
+    printf("Inventory ");
     color_printf
     (
         hex_color,
-        "Inventory (%d/%d)\n\n",
+        "(%d/%d)\n\n",
         item_count,
         MAX_INVENTORY_SIZE
     );
@@ -337,16 +347,26 @@ void inventory_menu(Character *player)
     {
         printf("Equipped items:\n\n");
 
-        if (player->weapon) printf("    Weapon: %s\n", player->weapon->name);
+        if (player->weapon)
+        {
+            printf("    Weapon: ");
+            print_item_details(player, player->weapon, 0, 0, 1, 0);
+            printf("\n");
+        }
         else color_printf(0xff0000, "    No weapon\n");
 
-        if (player->armor) printf("    Armor: %s\n", player->armor->name);
+        if (player->armor)
+        {
+            printf("    Armor ");
+            print_item_details(player, player->armor, 0, 0, 1, 0);
+            printf("\n");
+        }
         else color_printf(0xff0000, "    No armor\n");
 
         printf("\n");
     }
 
-    Item *selected_item = item_selection_menu(player, ITEM);
+    Item *selected_item = item_selection_menu(player, ITEM, 1);
     if (!selected_item) return;
 
     printf("What do you want to do with this %s?\n\n", selected_item->name);

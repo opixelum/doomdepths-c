@@ -73,7 +73,7 @@ void battle(Character *player)
             break;
 
         case 2:
-            potion = item_selection_menu(player, POTION);
+            potion = item_selection_menu(player, POTION, 0);
             if (!potion) continue; // Case when user goes back
             drink_potion(player, potion);
             break;
@@ -130,7 +130,8 @@ Monsters *perform_attack
         spell = item_selection_menu
         (
             attacker,
-            ATTACK_SPELL
+            ATTACK_SPELL,
+            0
         );
     }
     while (choice == 2 && !spell);
