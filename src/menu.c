@@ -224,7 +224,8 @@ Item *item_selection_menu
     else printf("Select an item to use, equip or drop.\n\n");
 
     Item *items[items_count];
-    for (unsigned char i = 0; i < items_count; i++)
+    unsigned char i = 0;
+    while (inventory)
     {
         if
         (
@@ -246,6 +247,7 @@ Item *item_selection_menu
             printf("\n");
 
             items[i] = inventory->item;
+            i++;
         }
         inventory = inventory->next;
     }
@@ -258,7 +260,7 @@ Item *item_selection_menu
         choice = get_valid_digit_no_enter(1, items_count, 1);
         if (choice == 'b' || choice == 'B')
         {
-            clear_lines(items_count + 3);
+            clear_lines(items_count + 4);
             return NULL;
         }
     }
