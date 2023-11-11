@@ -57,7 +57,7 @@ void battle(Character *player)
         unsigned char action_choice = battle_actions_menu(player, monsters);
 
         Character *targeted_monster;
-        Item *potion;
+        Item *item;
 
         switch (action_choice)
         {
@@ -73,16 +73,22 @@ void battle(Character *player)
             break;
 
         case 2:
-            potion = item_selection_menu(player, POTION, 0);
-            if (!potion) continue; // Case when user goes back
-            drink_potion(player, potion);
+            item = item_selection_menu(player, HEAL_SPELL, 0);
+            if (!item) continue; // Case when user goes back
+            cast_spell(player, player, item);
             break;
 
         case 3:
-            inventory_menu(player);
+            item = item_selection_menu(player, POTION, 0);
+            if (!item) continue; // Case when user goes back
+            drink_potion(player, item);
             break;
 
         case 4:
+            inventory_menu(player);
+            break;
+
+        case 5:
             // TODO: Implement flee
             printf("Flee to implement\n");
             break;
