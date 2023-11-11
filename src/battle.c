@@ -3,14 +3,18 @@
 unsigned short attack(Character *attacker, Character *defender, Item *spell)
 {
     if (!attacker || !defender) return 0;
+    if (spell && spell->type != ATTACK_SPELL)
+    {
+        fprintf(stderr, "Error: attack(): spell: invalid item type\n");
+        exit(EXIT_FAILURE);
+    }
     if (defender->health == 0) return 0;
 
     unsigned short damage;
 
-    if (spell && spell->type == ATTACK_SPELL)
+    if (spell)
     {
-        attacker->mana -= spell->price;
-        if (attacker->mana < 0) attacker->mana = 0;
+        cast_spell(attacker, defender, spell);
         damage = spell->value;
     }
     else
@@ -25,11 +29,7 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
             else damage = 10;
         }
         else damage = attacker->weapon->value;
-    }
 
-    if (defender->armor) damage -= defender->armor->value;
-    if (damage > 0)
-    {
         if (defender->health < damage) defender->health = 0;
         else defender->health -= damage;
     }
