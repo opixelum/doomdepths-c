@@ -49,7 +49,6 @@ void battle(Character *player)
 
     while (monsters)
     {
-        unsigned char monster_count = get_number_of_monsters(monsters);
         clear_screen();
         print_character_stats(player);
         print_monsters(monsters, NULL);
