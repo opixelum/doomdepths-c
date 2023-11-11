@@ -165,7 +165,11 @@ void *print_item_details
         {
             if (character->weapon && character->weapon->value > item->value)
                 hex_color = 0xff0000;
-            else if (character->weapon && character->weapon->value < item->value)
+            else if
+            (
+                !character->weapon ||
+                character->weapon && character->weapon->value < item->value
+            )
                 hex_color = 0x00ff00;
             else hex_color = 0x888888;
 
@@ -176,7 +180,11 @@ void *print_item_details
         {
             if (character->armor && character->armor->value > item->value)
                 hex_color = 0xff0000;
-            else if (character->armor && character->armor->value < item->value)
+            else if
+            (
+                !character->armor ||
+                character->armor && character->armor->value < item->value
+            )
                 hex_color = 0x00ff00;
             else hex_color = 0x888888;
 
