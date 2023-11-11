@@ -31,6 +31,7 @@ void insertItem(sqlite3 *db, ItemType type, const char *name, const char *descri
 
 void createDatabaseAndTable(sqlite3 *db) {
     char *errMsg = 0;
+     const char *sql_drop_table_item_type = "DROP TABLE IF EXISTS item_type;";
     const char *sql_create_table_player = "CREATE TABLE IF NOT EXISTS player(id INTEGER PRIMARY KEY, name VARCHAR(255), health INT, max_health INT, mana INT, max_mana INT, id_weapon INT, id_armor INT, gold INT, xp INT, xp_to_next_level INT);";
     const char *sql_create_table_item_type = "CREATE TABLE IF NOT EXISTS item_type(id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255));";
     const char *sql_insert_item_types = "INSERT INTO item_type (label) VALUES ('WEAPON'), ('ARMOR'), ('HEALTH_POTION'), ('MANA_POTION'), ('ATTACK_SPELL'), ('HEAL_SPELL');";
@@ -38,6 +39,12 @@ void createDatabaseAndTable(sqlite3 *db) {
 
     const char *sql_create_table_itemList = "CREATE TABLE IF NOT EXISTS itemList(id INTEGER PRIMARY KEY AUTOINCREMENT, idType INT, name VARCHAR(255), description VARCHAR(255), value INT, price INT, xp INT, xp_to_next_level INT);";
     const char *sql_delete_from_table_itemList = "DELETE FROM itemList";
+
+if (sqlite3_exec(db, sql_drop_table_item_type, callback, 0, &errMsg) != SQLITE_OK) {
+        fprintf(stderr, "Erreur lors de la suppression de la table item_type : %s\n", errMsg);
+        sqlite3_free(errMsg);
+        exit(1);
+    }
 
     if (sqlite3_exec(db, sql_create_table_player, callback, 0, &errMsg) != SQLITE_OK) {
         fprintf(stderr, "Erreur lors de la création de la table player : %s\n", errMsg);
@@ -76,6 +83,15 @@ if (sqlite3_exec(db, sql_delete_from_table_itemList, callback, 0, &errMsg) != SQ
     insertItem(db, WEAPON, "Arc long", "Un arc long pour tirer des flèches.", 15, 80);
     insertItem(db, WEAPON, "Dague empoisonnée", "Une petite dague avec du poison.", 25, 120);
     insertItem(db, WEAPON, "Marteau de guerre", "Un marteau de guerre massif.", 30, 150);
+
+    insertItem(db, HEAL_SPELL, "Soin léger", "Un sort de soin léger.", 15, 50);
+    insertItem(db, HEAL_SPELL, "Soin moyen", "Un sort de soin moyen.", 30, 100);
+    insertItem(db, HEAL_SPELL, "Soin puissant", "Un sort de soin puissant.", 50, 150);
+
+    insertItem(db, ATTACK_SPELL, "Boule de feu", "Une boule de feu magique.", 40, 120);
+    insertItem(db, ATTACK_SPELL, "Éclair de foudre", "Un éclair de foudre dévastateur.", 60, 180);
+    insertItem(db, ATTACK_SPELL, "Gel paralysant", "Un sort de gel paralysant.", 25, 80);
+
 
     insertItem(db, ARMOR, "Armure légère", "Une armure légère pour la protection.", 10, 60);
     insertItem(db, ARMOR, "Armure lourde", "Une armure lourde pour une grande protection.", 15, 90);
