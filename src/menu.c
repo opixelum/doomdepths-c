@@ -174,8 +174,12 @@ void new_game(void)
     explore_map(map_context);
 }
 
-Item *item_selection_menu(Character *character, ItemType item_type)
-{
+Item *item_selection_menu
+(
+    Character *character,
+    ItemType item_type,
+    unsigned char inventory_menu
+) {
     if (!character)
     {
         fprintf
@@ -244,7 +248,15 @@ Item *item_selection_menu(Character *character, ItemType item_type)
             else
             {
                 printf("    %d. ", i + 1);
-                print_item_details(character, inventory->item, 1, 0, 1, 1);
+                print_item_details
+                (
+                    character,
+                    inventory->item,
+                    is_potion(inventory->item->type) ? 1 : inventory_menu,
+                    0,
+                    1,
+                    is_spell(inventory->item->type) ? 1 : 0
+                );
                 printf("\n");
             }
 
@@ -349,7 +361,7 @@ void inventory_menu(Character *player)
         if (player->weapon)
         {
             printf("    Weapon: ");
-            print_item_details(player, player->weapon, 0, 0, 1, 1);
+            print_item_details(player, player->weapon, 0, 0, 1, 0);
             printf("\n");
         }
         else color_printf(0xff0000, "    No weapon\n");
@@ -357,7 +369,7 @@ void inventory_menu(Character *player)
         if (player->armor)
         {
             printf("    Armor ");
-            print_item_details(player, player->armor, 0, 0, 1, 1);
+            print_item_details(player, player->armor, 0, 0, 1, 0);
             printf("\n");
         }
         else color_printf(0xff0000, "    No armor\n");
@@ -365,7 +377,7 @@ void inventory_menu(Character *player)
         printf("\n");
     }
 
-    Item *selected_item = item_selection_menu(player, ITEM);
+    Item *selected_item = item_selection_menu(player, ITEM, 1);
     if (!selected_item) return;
 
     printf("What do you want to do with this %s?\n\n", selected_item->name);
