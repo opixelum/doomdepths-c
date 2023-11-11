@@ -86,7 +86,7 @@ void create_tables(const char *db_path)
     sqlite3_close(db);
 }
 
-Item *get_item_from_db(sqlite3 *db, int itemId)
+Item *get_item_from_db(sqlite3 *db, int item_id)
 {
     Item *item = NULL;
     char query[256];
@@ -99,7 +99,7 @@ Item *get_item_from_db(sqlite3 *db, int itemId)
         "SELECT ity.id, name, description, value, price "
         "FROM items inner join item_types ity on ity.id = items.type_id "
         "WHERE items.id = %d;",
-        itemId
+        item_id
     );
 
     int return_value = sqlite3_prepare_v2
@@ -128,7 +128,7 @@ Item *get_item_from_db(sqlite3 *db, int itemId)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_item, 1);
-        if (type_id >= 0 && type_id <= 8) item_type = (ItemType) type_id - 1;
+        if (type_id >= 0 && type_id <= 8) item_type = type_id;
         else
         {
             fprintf
@@ -192,13 +192,13 @@ Inventory *get_inventory_from_db(sqlite3 *db)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_items, 1);
-        if (type_id >= 0 && type_id <= 8) item_type = (ItemType) type_id - 1;
+        if (type_id >= 1 && type_id <= 9) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
             (
                 stderr,
-                "ERROR: database.c: get_inventory_from_db(): Invalid"
+                "ERROR: database.c: get_inventory_from_db(): Invalid "
                 "item type ID: %d\n",
                 type_id
             );
@@ -261,7 +261,7 @@ Inventory* get_spells_from_db(sqlite3 *db)
         ItemType item_type;
 
         int type_id = sqlite3_column_int(stmt_items, 1);
-        if (type_id >= 0 && type_id <= 8) item_type = (ItemType) type_id - 1;
+        if (type_id >= 1 && type_id <= 9) item_type = (ItemType) type_id - 1;
         else
         {
             fprintf
@@ -332,11 +332,11 @@ Character *get_character_from_db(sqlite3 *db)
         character->gold = sqlite3_column_int(result, 8);
         character->xp = sqlite3_column_int(result, 9);
         character->xp_to_next_level = sqlite3_column_int(result, 10);
-        int weapon_id = sqlite3_column_int(result, 6);
+        int weapon_id = sqlite3_column_int(result, 6) + 1;
 
         character->weapon = get_item_from_db(db, weapon_id);
 
-        int armor_id = sqlite3_column_int(result, 7);
+        int armor_id = sqlite3_column_int(result, 7) + 1;
         character->armor = get_item_from_db(db, armor_id);
 
         character->inventory = get_inventory_from_db(db);
