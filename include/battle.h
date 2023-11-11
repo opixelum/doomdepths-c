@@ -42,7 +42,7 @@ void battle(Character *player);
  * @param A pointer to the player
  */
 void random_battle_trigger(Character *player);
-
+Monsters *flee(Monsters *monsters, Character *player);
 /**
  * @brief Prompts user to choose an attack type, then executes the attack &
  * prints the turn summary.
