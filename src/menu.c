@@ -48,14 +48,15 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
     (
         "\nWhat do you want to do now?\n\n"
         "    1. Attack\n"
-        "    2. Drink potion\n"
-        "    3. Open inventory\n"
-        "    4. Flee\n"
+        "    2. Cast healing spell\n"
+        "    3. Drink potion\n"
+        "    4. Open inventory\n"
+        "    5. Flee\n"
         "\nPress the number of your choice."
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 4, 0);
-    clear_lines(7);
+    unsigned char choice = get_valid_digit_no_enter(1, 5, 0);
+    clear_lines(8);
 
     return choice;
 }
@@ -127,9 +128,11 @@ void new_game(void)
 
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
+    Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 100 HP", 100, 100);
     Inventory *spells = NULL;
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
+    spells = add_item_to_inventory(spells, jouvence);
 
     Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
     Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 120, 120);
