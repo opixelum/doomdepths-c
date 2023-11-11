@@ -230,16 +230,9 @@ Item *item_selection_menu
         (
             inventory->item->type == item_type
             || item_type == ITEM
-            || is_spell(inventory->item->type)
-            || is_potion(inventory->item->type)
+            || item_type == SPELL && is_spell(inventory->item->type)
+            || item_type == POTION && is_potion(inventory->item->type)
         ) {
-            unsigned int hexcolor;
-
-            if (is_spell(inventory->item->type))
-                hexcolor = inventory->item->price > character->mana ?
-                    0xff0000 : 0xffffff;
-            else hexcolor = 0xffffff;
-
             printf("    %d. ", i + 1);
             print_item_details
             (
