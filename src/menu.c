@@ -258,7 +258,7 @@ Item *item_selection_menu
         choice = get_valid_digit_no_enter(1, items_count, 1);
         if (choice == 'b' || choice == 'B')
         {
-            clear_lines(items_count + 4);
+            clear_lines(items_count + 3);
             return NULL;
         }
     }
