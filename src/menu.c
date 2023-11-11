@@ -48,14 +48,15 @@ unsigned char battle_actions_menu(Character *player, Monsters *head)
     (
         "\nWhat do you want to do now?\n\n"
         "    1. Attack\n"
-        "    2. Drink potion\n"
-        "    3. Open inventory\n"
-        "    4. Flee\n"
+        "    2. Cast healing spell\n"
+        "    3. Drink potion\n"
+        "    4. Open inventory\n"
+        "    5. Flee\n"
         "\nPress the number of your choice."
     );
 
-    unsigned char choice = get_valid_digit_no_enter(1, 4, 0);
-    clear_lines(7);
+    unsigned char choice = get_valid_digit_no_enter(1, 5, 0);
+    clear_lines(8);
 
     return choice;
 }
@@ -127,13 +128,16 @@ void new_game(void)
 
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
+    Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 100 HP", 50, 20);
     Inventory *spells = NULL;
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
+    spells = add_item_to_inventory(spells, jouvence);
 
     Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
     Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 120, 120);
     Item *armor = create_item(ARMOR, "Armor", "An armor", 100, 100);
+    Item *clothes = create_item(ARMOR, "Clothes", "Clothes", 5, 5);
     Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
     Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
     Inventory *inventory = NULL;
@@ -141,6 +145,7 @@ void new_game(void)
     inventory = add_item_to_inventory(inventory, mana_potion);
     inventory = add_item_to_inventory(inventory, weapon2);
     inventory = add_item_to_inventory(inventory, armor);
+    inventory = add_item_to_inventory(inventory, clothes);
 
     // Create a new character
     Character *player = create_character
@@ -221,22 +226,16 @@ Item *item_selection_menu
     else printf("Select an item to use, equip or drop.\n\n");
 
     Item *items[items_count];
-    for (unsigned char i = 0; i < items_count; i++)
+    unsigned char i = 0;
+    while (inventory)
     {
         if
         (
             inventory->item->type == item_type
             || item_type == ITEM
-            || is_spell(inventory->item->type)
-            || is_potion(inventory->item->type)
+            || item_type == SPELL && is_spell(inventory->item->type)
+            || item_type == POTION && is_potion(inventory->item->type)
         ) {
-            unsigned int hexcolor;
-
-            if (is_spell(inventory->item->type))
-                hexcolor = inventory->item->price > character->mana ?
-                    0xff0000 : 0xffffff;
-            else hexcolor = 0xffffff;
-
             printf("    %d. ", i + 1);
             print_item_details
             (
@@ -250,8 +249,9 @@ Item *item_selection_menu
             printf("\n");
 
             items[i] = inventory->item;
+            i++;
         }
-    inventory = inventory->next;
+        inventory = inventory->next;
     }
 
     printf("\nPress the key of your choice or [B] to go back.");

@@ -3,14 +3,18 @@
 unsigned short attack(Character *attacker, Character *defender, Item *spell)
 {
     if (!attacker || !defender) return 0;
+    if (spell && spell->type != ATTACK_SPELL)
+    {
+        fprintf(stderr, "Error: attack(): spell: invalid item type\n");
+        exit(EXIT_FAILURE);
+    }
     if (defender->health == 0) return 0;
 
     unsigned short damage;
 
-    if (spell && spell->type == ATTACK_SPELL)
+    if (spell)
     {
-        attacker->mana -= spell->price;
-        if (attacker->mana < 0) attacker->mana = 0;
+        cast_spell(attacker, defender, spell);
         damage = spell->value;
     }
     else
@@ -25,11 +29,7 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
             else damage = 10;
         }
         else damage = attacker->weapon->value;
-    }
 
-    if (defender->armor) damage -= defender->armor->value;
-    if (damage > 0)
-    {
         if (defender->health < damage) defender->health = 0;
         else defender->health -= damage;
     }
@@ -49,7 +49,6 @@ void battle(Character *player)
 
     while (monsters)
     {
-        unsigned char monster_count = get_number_of_monsters(monsters);
         clear_screen();
         print_character_stats(player);
         print_monsters(monsters, NULL);
@@ -57,7 +56,7 @@ void battle(Character *player)
         unsigned char action_choice = battle_actions_menu(player, monsters);
 
         Character *targeted_monster;
-        Item *potion;
+        Item *item;
 
         switch (action_choice)
         {
@@ -73,16 +72,22 @@ void battle(Character *player)
             break;
 
         case 2:
-            potion = item_selection_menu(player, POTION, 0);
-            if (!potion) continue; // Case when user goes back
-            drink_potion(player, potion);
+            item = item_selection_menu(player, HEAL_SPELL, 0);
+            if (!item) continue; // Case when user goes back
+            cast_spell(player, player, item);
             break;
 
         case 3:
-            inventory_menu(player);
+            item = item_selection_menu(player, POTION, 0);
+            if (!item) continue; // Case when user goes back
+            drink_potion(player, item);
             break;
 
         case 4:
+            inventory_menu(player);
+            break;
+
+        case 5:
             // TODO: Implement flee
             printf("Flee to implement\n");
             break;

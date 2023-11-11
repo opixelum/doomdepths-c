@@ -158,3 +158,61 @@ void equip_item(Character *character, Item *item)
         character->armor = item;
     }
 }
+
+void cast_spell(Character *caster, Character *target, Item *spell)
+{
+    if (!caster)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: cast_spell(): caster: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!target)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: cast_spell(): target: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!spell)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: cast_spell(): spell: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (spell->type != ATTACK_SPELL && spell->type != HEAL_SPELL)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: character.c: cast_spell(): spell: invalid item type\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    caster->mana -= spell->price;
+    if (caster->mana < 0) caster->mana = 0;
+
+    if (spell->type == ATTACK_SPELL)
+    {
+        if (target->health < spell->value) target->health = 0;
+        else target->health -= spell->value;
+    }
+    else
+    {
+        if (target->health + spell->value > target->max_health)
+            target->health = target->max_health;
+        else target->health += spell->value;
+    }
+}
