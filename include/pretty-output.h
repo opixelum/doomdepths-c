@@ -51,17 +51,18 @@ void print_character_gold(Character *character);
 char *center_string(const char *string, unsigned char total_width);
 
 /**
- * @brief Builds a string containing the details of an item.
+ * @brief Prints a string containing the details of an item.
+ * @param character A pointer to the character. Used to know if the item is
+ * better than the equipped one.
  * @param item A pointer to the item.
  * @param show_type 1 to show the type of the item, 0 otherwise.
  * @param show_description 1 to show the description of the item, 0 otherwise.
  * @param show_value 1 to show the value of the item, 0 otherwise.
  * @param show_price 1 to show the price of the item, 0 otherwise.
- * @return A pointer to the allocated string containing the details of the item.
- * @warning The returned string must be freed with `free()` after use.
  */
-char *item_details_string
+void *print_item_details
 (
+    Character *character,
     Item *item,
     unsigned char show_type,
     unsigned char show_description,
