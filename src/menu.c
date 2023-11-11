@@ -237,28 +237,17 @@ Item *item_selection_menu
                     0xff0000 : 0xffffff;
             else hexcolor = 0xffffff;
 
-            if (inventory == character->spells)
-                color_printf
-                (
-                    hexcolor,
-                    "    %d. %s\n",
-                    i + 1,
-                    inventory->item->name
-                );
-            else
-            {
-                printf("    %d. ", i + 1);
-                print_item_details
-                (
-                    character,
-                    inventory->item,
-                    is_potion(inventory->item->type) ? 1 : inventory_menu,
-                    0,
-                    1,
-                    is_spell(inventory->item->type) ? 1 : 0
-                );
-                printf("\n");
-            }
+            printf("    %d. ", i + 1);
+            print_item_details
+            (
+                character,
+                inventory->item,
+                is_potion(inventory->item->type) ? 1 : inventory_menu,
+                0,
+                1,
+                is_spell(inventory->item->type) ? 1 : 0
+            );
+            printf("\n");
 
             items[i] = inventory->item;
         }

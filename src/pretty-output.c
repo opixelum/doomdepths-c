@@ -207,7 +207,12 @@ void *print_item_details
     {
         printf(" | ");
         if (is_spell(item->type))
-            color_printf(0x888888, "%d MP", item->price);
+        {
+            if (item->price > character->mana)
+                color_printf(0xff0000, "%d MP", item->price);
+            else
+                color_printf(0x888888, "%d MP", item->price);
+        }
         else
             color_printf(0xFFD700, "%d GLD", item->price);
     }
