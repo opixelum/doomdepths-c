@@ -182,15 +182,15 @@ void *print_item_details
             color_printf(hex_color, "+%d HP", item->value);
         }
         else if (item->type == MANA_POTION)
-            color_printf(0x2596be, "+%d MP", item->value);
+            color_printf(0x888888, "+%d MP", item->value);
         else
-            color_printf(0x888888, "%d", item->value);
+            color_printf(0x888888, "%d DMG", item->value);
     }
     if (show_price)
     {
         printf(" | ");
         if (is_spell(item->type))
-            color_printf(0x2596be, "%d MP", item->price);
+            color_printf(0x888888, "%d MP", item->price);
         else
             color_printf(0xFFD700, "%d GLD", item->price);
     }
