@@ -128,7 +128,7 @@ void new_game(void)
 
     Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
     Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
-    Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 100 HP", 100, 100);
+    Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 100 HP", 50, 20);
     Inventory *spells = NULL;
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
@@ -247,7 +247,7 @@ Item *item_selection_menu
 
             items[i] = inventory->item;
         }
-    inventory = inventory->next;
+        inventory = inventory->next;
     }
 
     printf("\nPress the key of your choice or [B] to go back.");
