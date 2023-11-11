@@ -76,4 +76,12 @@ void drink_potion(Character *character, Item *potion);
  */
 void equip_item(Character *character, Item *item);
 
+/**
+ * @brief Cast a spell on a target.
+ * @param caster A pointer to the character who will cast the spell.
+ * @param target A pointer to the target of the spell.
+ * @param spell A pointer to the spell to cast.
+ */
+void cast_spell(Character *caster, Character *target, Item *spell);
+
 #endif // PLAYER_H
