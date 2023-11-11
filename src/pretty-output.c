@@ -147,11 +147,13 @@ void *print_item_details
         printf(" | ");
         color_printf(0x888888, "%s", item_type_to_string(item->type));
     }
+
     if (show_description)
     {
         printf(" | ");
         color_printf(0x888888, "%s", item->description);
     }
+
     if (show_value)
     {
         printf(" | ");
@@ -166,26 +168,41 @@ void *print_item_details
             else if (character->weapon && character->weapon->value < item->value)
                 hex_color = 0x00ff00;
             else hex_color = 0x888888;
+
             color_printf(hex_color, "%d DMG", item->value);
         }
-        else if
-        (
-            item->type == ARMOR ||
-            item->type == HEAL_SPELL ||
-            item->type == HEALTH_POTION
-        ) {
+
+        else if (item->type == ARMOR)
+        {
             if (character->armor && character->armor->value > item->value)
                 hex_color = 0xff0000;
             else if (character->armor && character->armor->value < item->value)
                 hex_color = 0x00ff00;
             else hex_color = 0x888888;
+
             color_printf(hex_color, "+%d HP", item->value);
         }
+
+        else if (item->type == ATTACK_SPELL)
+            color_printf(0x888888, "%d DMG", item->value);
+
+        else if (item->type == HEALTH_POTION || item->type == HEAL_SPELL)
+            color_printf(0x888888, "+%d HP", item->value);
+
         else if (item->type == MANA_POTION)
             color_printf(0x888888, "+%d MP", item->value);
+
         else
-            color_printf(0x888888, "%d DMG", item->value);
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: pretty-output.c: item_details_string(): wrong item type\n"
+            );
+            exit(EXIT_FAILURE);
+        }
     }
+
     if (show_price)
     {
         printf(" | ");
