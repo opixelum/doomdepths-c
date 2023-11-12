@@ -198,7 +198,7 @@ Item *item_selection_menu
     Inventory *inventory = is_spell(item_type) ?
         character->spells : character->inventory;
 
-    unsigned char items_count = number_of_items(inventory, item_type);
+    unsigned char items_count = number_of_items_by_type(inventory, item_type);
 
     const char *item_type_string = item_type_to_string(item_type);
     if (!item_type_string)
@@ -327,7 +327,7 @@ void inventory_menu(Character *player)
         exit(EXIT_FAILURE);
     }
 
-    unsigned char item_count = number_of_items(player->inventory, ITEM);
+    unsigned char item_count = number_of_items_by_type(player->inventory, ITEM);
 
     unsigned int hex_color;
     if (item_count >= 20) hex_color = 0xffff00;
