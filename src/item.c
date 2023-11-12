@@ -28,7 +28,7 @@ Item *create_item
 
 Inventory *add_item_to_inventory(Inventory *head, Item *item_to_add)
 {
-    if (number_of_items(head, ITEM) >= MAX_INVENTORY_SIZE)
+    if (number_of_items_by_type(head, ITEM) >= MAX_INVENTORY_SIZE)
     {
         printf("Your inventory is full.\n\n");
         press_any_key_to_continue();
@@ -155,7 +155,7 @@ char *item_type_to_string(ItemType item_type)
     return item_type_string;
 }
 
-unsigned char number_of_items(Inventory *head, ItemType item_type)
+unsigned char number_of_items_by_type(Inventory *head, ItemType item_type)
 {
     Inventory *current = head;
     unsigned char number_of_items = 0;
@@ -172,6 +172,39 @@ unsigned char number_of_items(Inventory *head, ItemType item_type)
 
         current = current->next;
     }
+    return number_of_items;
+}
+
+unsigned char number_of_items(Inventory *head, Item *item)
+{
+    if (!head)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: number_of_items(): head: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!item)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: number_of_items(): item: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    Inventory *current = head;
+    unsigned char number_of_items = 0;
+    while (current)
+    {
+        if (current->item == item) number_of_items++;
+        current = current->next;
+    }
+
     return number_of_items;
 }
 

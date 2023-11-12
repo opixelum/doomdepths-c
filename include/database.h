@@ -44,13 +44,10 @@ Character *load_game();
  * @param item A pointer to the item to insert.
  * @return 0 if the item was inserted successfully, 1 otherwise.
  */
-unsigned char insert_item(const char *db_path, Item *item);
+unsigned char insert_item_into_inventory(const char *db_path, Item *item);
 
+void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, const char *description, unsigned short value, unsigned short price);
 
-/**
- * @brief Adds game's items in the database.
- * @return 0 if success, 1 if failure
- */
-unsigned char init_db_items(const char *db_path);
+Item* get_random_item_from_database(sqlite3 *db);
 
 #endif // SAVE_H

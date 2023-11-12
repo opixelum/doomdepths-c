@@ -31,4 +31,3 @@ void press_enter_to_continue(void)
     printf("Press [ENTER] to continue...");
     while (getchar_no_enter() != '\n') {}
 }
-

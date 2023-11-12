@@ -188,7 +188,7 @@ void *print_item_details
                 hex_color = 0x00ff00;
             else hex_color = 0x888888;
 
-            color_printf(hex_color, "+%d HP", item->value);
+            color_printf(hex_color, "+%d DP", item->value);
         }
 
         else if (item->type == ATTACK_SPELL)
