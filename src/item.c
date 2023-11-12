@@ -175,6 +175,39 @@ unsigned char number_of_items_by_type(Inventory *head, ItemType item_type)
     return number_of_items;
 }
 
+unsigned char number_of_items(Inventory *head, Item *item)
+{
+    if (!head)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: number_of_items(): head: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!item)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: stuff.c: number_of_items(): item: NULL pointer\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    Inventory *current = head;
+    unsigned char number_of_items = 0;
+    while (current)
+    {
+        if (current->item == item) number_of_items++;
+        current = current->next;
+    }
+
+    return number_of_items;
+}
+
 unsigned char is_spell(ItemType type)
 {
     return type == ATTACK_SPELL || type == HEAL_SPELL || type == SPELL;
