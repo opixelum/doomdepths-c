@@ -112,6 +112,16 @@ char *item_type_to_string(ItemType item_type);
 unsigned char number_of_items_by_type(Inventory *head, ItemType item_type);
 
 /**
+ * @brief Get the number of given item in the inventory.
+ * @param head A pointer to the head of the inventory.
+ * @param item The item to count.
+ * @return The number of occurrences of the given item in the inventory.
+ * @warning If passed inventory is not the head of the inventory, some items
+ * may be skipped.
+ */
+unsigned char number_of_items(Inventory *head, Item *item);
+
+/**
  * @brief Check if an item is a spell.
  * @param type The type of the item to check.
  * @return 1 if the item is a spell, 0 otherwise.
