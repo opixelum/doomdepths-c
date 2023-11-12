@@ -32,3 +32,11 @@ void press_enter_to_continue(void)
     while (getchar_no_enter() != '\n') {}
 }
 
+void wait_milliseconds(int milliseconds)
+{
+#ifdef _WIN32
+Sleep(milliseconds);
+#else
+usleep(milliseconds * 1000);  // Convert to microseconds
+#endif
+}
