@@ -43,4 +43,10 @@ void press_any_key_to_continue(void);
  */
 void press_enter_to_continue(void);
 
+/*
+ * @brief Waits for a given number of milliseconds. Cross-platform.
+ * @param milliseconds Number of milliseconds to wait.
+ */
+void wait_milliseconds(int milliseconds);
+
 #endif // TERMINAL_H
