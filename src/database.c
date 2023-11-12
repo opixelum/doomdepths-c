@@ -53,6 +53,11 @@ void create_tables(const char *db_path)
         "description VARCHAR(255) NOT NULL, "
         "value INT NOT NULL, "
         "price INT NOT NULL);"
+        "DROP TABLE IF EXISTS MapContext;"
+        "CREATE TABLE IF NOT EXISTS MapContext ("
+        "pos_x INT,"
+        "pos_y INT"
+        ");"
     };
 
     char *sqlite_err_msg = 0;
@@ -706,7 +711,7 @@ void save_game(Character *player)
 
         spells = spells->next;
     }
-
+    
     sqlite3_close(db);
 }
 
@@ -902,4 +907,60 @@ unsigned char init_db_items(const char *db_path)
     }
 
     return EXIT_SUCCESS;
+}
+
+void save_mapcontext(const char *db_path, MapContext *mapcontext) {
+    
+    sqlite3 *db = open_database(db_path);
+    const char *sql_drop_mapcontext = "DROP TABLE IF EXISTS MapContext;";
+    if (sqlite3_exec(db, sql_drop_mapcontext, 0, 0, 0) != SQLITE_OK) {
+        fprintf(stderr, "ERROR: Failed to drop MapContext table\n");
+        exit(EXIT_FAILURE);
+    }
+    create_tables(db_path);
+
+    const char *sql_insert_mapcontext =
+        "INSERT INTO MapContext (pos_x, pos_y) VALUES (?, ?);";
+
+    sqlite3_stmt *stmt_insert_mapcontext;
+
+    if (sqlite3_prepare_v2(db, sql_insert_mapcontext, -1, &stmt_insert_mapcontext, 0) != SQLITE_OK) {
+        fprintf(stderr, "ERROR: Failed to prepare MapContext insertion statement\n");
+        exit(EXIT_FAILURE);
+    }
+    sqlite3_bind_int(stmt_insert_mapcontext, 1, mapcontext->pos_x);
+    sqlite3_bind_int(stmt_insert_mapcontext, 2, mapcontext->pos_y);
+
+    if (sqlite3_step(stmt_insert_mapcontext) != SQLITE_DONE) {
+        fprintf(stderr, "ERROR: Failed to insert datas in MapContext tabel\n");
+        exit(EXIT_FAILURE);
+    }
+
+    sqlite3_finalize(stmt_insert_mapcontext);
+}
+
+MapContext *get_mapcontext(const char *db_path) {
+    sqlite3 *db = open_database(db_path);
+    const char *sql_select_mapcontext = "SELECT pos_x, pos_y FROM MapContext;";
+
+    sqlite3_stmt *stmt_select_mapcontext;
+    if (sqlite3_prepare_v2(db, sql_select_mapcontext, -1, &stmt_select_mapcontext, 0) != SQLITE_OK) {
+        fprintf(stderr, "ERROR: Failed to prepare MapContext selection statement\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (sqlite3_step(stmt_select_mapcontext) != SQLITE_ROW) {
+        fprintf(stderr, "CAAC\n");
+        press_any_key_to_continue();
+        return NULL;
+    }
+
+    MapContext *mapcontext = (MapContext *)malloc(sizeof(MapContext));
+
+    mapcontext->pos_x = sqlite3_column_int(stmt_select_mapcontext, 0);
+    mapcontext->pos_y = sqlite3_column_int(stmt_select_mapcontext, 1);
+    sqlite3_finalize(stmt_select_mapcontext);
+
+
+    return mapcontext;
 }

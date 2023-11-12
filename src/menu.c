@@ -22,7 +22,14 @@ void main_menu(unsigned char *is_running)
 
     case 2:
         player = load_game();
-        MapContext *map_context = malloc(sizeof *map_context);
+         
+        MapContext *map_context = get_mapcontext("doomdepths.db");
+        if(!map_context)
+        {
+            map_context = malloc(sizeof *map_context);
+            map_context->pos_x = 0;
+            map_context->pos_y = 0;
+        }
         map_context->player = player;
 
         get_map(map_context);
@@ -175,7 +182,7 @@ void new_game(void)
 
     printf("\nWelcome %s!\n\n", player->name);
     press_any_key_to_continue();
-
+    
     explore_map(map_context);
 }
 
