@@ -30,6 +30,12 @@ unsigned short attack(Character *attacker, Character *defender, Item *spell)
         }
         else damage = attacker->weapon->value;
 
+        if (defender->armor)
+        {
+            if (defender->armor->value > damage) damage = 0;
+            else damage -= defender->armor->value;
+        }
+
         if (defender->health < damage) defender->health = 0;
         else defender->health -= damage;
     }

@@ -371,7 +371,8 @@ void inventory_menu(Character *player)
     else if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
     else hex_color = 0xffffff;
 
-    printf("Inventory ");
+    print_character_stats(player);
+    printf("\nInventory ");
     color_printf
     (
         hex_color,
