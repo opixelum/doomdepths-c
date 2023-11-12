@@ -189,7 +189,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
             random_battle_trigger(map_context->player);
         }
         else map_context->pos_y--;
-        break;
+        return 1;
 
     case 'd':
         if
@@ -204,7 +204,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
             random_battle_trigger(map_context->player);
         }
         else map_context->pos_x++;
-        break;
+        return 1;
 
     case 's':
         if
@@ -219,7 +219,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
             random_battle_trigger(map_context->player);
         }
         else map_context->pos_y++;
-        break;
+        return 1;
 
     case 'q':
         if
@@ -234,7 +234,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
             random_battle_trigger(map_context->player);
         }
         else map_context->pos_x--;
-        break;
+        return 1;
 
     case 'i':
         inventory_menu(map_context->player);
@@ -242,6 +242,9 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
 
     case 'b':
         return 0;
+
+    default:
+        return 1;
     }
 }
 
