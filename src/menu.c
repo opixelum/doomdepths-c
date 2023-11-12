@@ -136,16 +136,24 @@ void new_game(void)
 
     Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
     Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 120, 120);
-    Item *armor = create_item(ARMOR, "Armor", "An armor", 100, 100);
+    Item *weapon3 = create_item(WEAPON, "Axe", "An axe", 120, 120);
+    Item *armor = create_item(ARMOR, "Draconic suit", "An armor", 100, 100);
     Item *clothes = create_item(ARMOR, "Clothes", "Clothes", 5, 5);
     Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
+    Item *health_potion1 = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
+    Item *health_potion2 = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
+    Item *health_potion3 = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
     Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
     Inventory *inventory = NULL;
     inventory = add_item_to_inventory(inventory, health_potion);
+    inventory = add_item_to_inventory(inventory, health_potion1);
+    inventory = add_item_to_inventory(inventory, health_potion2);
+    inventory = add_item_to_inventory(inventory, health_potion3);
     inventory = add_item_to_inventory(inventory, mana_potion);
     inventory = add_item_to_inventory(inventory, weapon2);
-    inventory = add_item_to_inventory(inventory, armor);
+    inventory = add_item_to_inventory(inventory, weapon3);
     inventory = add_item_to_inventory(inventory, clothes);
+    inventory = add_item_to_inventory(inventory, armor);
 
     // Create a new character
     Character *player = create_character
@@ -198,7 +206,7 @@ Item *item_selection_menu
     Inventory *inventory = is_spell(item_type) ?
         character->spells : character->inventory;
 
-    unsigned char items_count = number_of_items(inventory, item_type);
+    unsigned char items_count = number_of_items_by_type(inventory, item_type);
 
     const char *item_type_string = item_type_to_string(item_type);
     if (!item_type_string)
@@ -225,33 +233,61 @@ Item *item_selection_menu
         printf("Which %s do you want to drink?\n\n", item_type_string);
     else printf("Select an item to use, equip or drop.\n\n");
 
-    Item *items[items_count];
+    // Temporary array to hold the count for each item
+    ItemCount temp_items[items_count];
+    memset(temp_items, 0, sizeof(temp_items)); // Initialize to zero
+
     unsigned char i = 0;
     while (inventory)
     {
         if
-        (
+            (
             inventory->item->type == item_type
             || item_type == ITEM
             || item_type == SPELL && is_spell(inventory->item->type)
             || item_type == POTION && is_potion(inventory->item->type)
-        ) {
-            printf("    %d. ", i + 1);
-            print_item_details
-            (
-                character,
-                inventory->item,
-                is_potion(inventory->item->type) ? 1 : inventory_menu,
-                0,
-                1,
-                is_spell(inventory->item->type) ? 1 : 0
-            );
-            printf("\n");
+            )
+        {
+            // Check if item already exists in temp_items
+            int found = 0;
+            for (unsigned char j = 0; j < i; ++j)
+            {
+                if (strcmp(temp_items[j].item->name, inventory->item->name) ==
+                    0)
+                {
+                    temp_items[j].count++;
+                    found = 1;
+                    break;
+                }
+            }
 
-            items[i] = inventory->item;
-            i++;
+            // If item not found, add to tempItems
+            if (!found)
+            {
+                temp_items[i].item = inventory->item;
+                temp_items[i].count = 1;
+                i++;
+            }
         }
         inventory = inventory->next;
+    }
+
+    unsigned char j; // Counter for displayed items
+    for (j = 0; j < i; j++)
+    {
+        printf("    %d. ", j + 1);
+        if (temp_items[j].count > 1) printf("(%d) ", temp_items[j].count);
+
+        print_item_details
+        (
+            character,
+            temp_items[j].item,
+            is_potion(temp_items[j].item->type) ? 1 : inventory_menu,
+            0,
+            1,
+            is_spell(temp_items[j].item->type) ? 1 : 0
+        );
+        printf("\n");
     }
 
     printf("\nPress the key of your choice or [B] to go back.");
@@ -259,19 +295,19 @@ Item *item_selection_menu
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
     {
-        choice = get_valid_digit_no_enter(1, items_count, 1);
+        choice = get_valid_digit_no_enter(1, j, 1);
         if (choice == 'b' || choice == 'B')
         {
             clear_lines(items_count + 4);
             return NULL;
         }
     }
-    while (is_spell(item_type) && items[choice - 1]->price > character->mana);
+    while (is_spell(item_type) && temp_items[choice - 1].item->price > character->mana);
 
-    clear_lines(items_count + 3);
+    clear_lines(j + 3);
 
     // -1 because array starts at 0
-    return items[choice - 1];
+    return temp_items[choice - 1].item;
 }
 
 void print_attack_result
@@ -285,6 +321,7 @@ void print_attack_result
 ) {
     clear_screen();
     print_character_stats(player);
+    printf("\n");
     print_monsters(monsters, defender);
 
     if (spell) printf
@@ -327,14 +364,15 @@ void inventory_menu(Character *player)
         exit(EXIT_FAILURE);
     }
 
-    unsigned char item_count = number_of_items(player->inventory, ITEM);
+    unsigned char item_count = number_of_items_by_type(player->inventory, ITEM);
 
     unsigned int hex_color;
     if (item_count >= 20) hex_color = 0xffff00;
     else if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
     else hex_color = 0xffffff;
 
-    printf("Inventory ");
+    print_character_stats(player);
+    printf("\nInventory ");
     color_printf
     (
         hex_color,

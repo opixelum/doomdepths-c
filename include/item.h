@@ -32,6 +32,13 @@ typedef struct Item
 }
 Item;
 
+typedef struct ItemCount
+{
+    Item *item;
+    unsigned char count;
+}
+ItemCount;
+
 typedef struct Inventory
 {
     Item *item;
@@ -109,7 +116,17 @@ char *item_type_to_string(ItemType item_type);
  * @warning If passed inventory is not the head of the inventory, some items
  * may be skipped.
  */
-unsigned char number_of_items(Inventory *head, ItemType item_type);
+unsigned char number_of_items_by_type(Inventory *head, ItemType item_type);
+
+/**
+ * @brief Get the number of given item in the inventory.
+ * @param head A pointer to the head of the inventory.
+ * @param item The item to count.
+ * @return The number of occurrences of the given item in the inventory.
+ * @warning If passed inventory is not the head of the inventory, some items
+ * may be skipped.
+ */
+unsigned char number_of_items(Inventory *head, Item *item);
 
 /**
  * @brief Check if an item is a spell.
