@@ -51,6 +51,7 @@ void battle(Character *player)
     {
         clear_screen();
         print_character_stats(player);
+        printf("\n");
         print_monsters(monsters, NULL);
 
         unsigned char action_choice = battle_actions_menu(player, monsters);
