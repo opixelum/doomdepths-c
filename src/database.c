@@ -683,7 +683,7 @@ void save_game(Character *player)
     sqlite3 *db = open_database("doomdepths.db");
 
     const char *sql_delete_player = "DROP TABLE characters;";
-    const char *sql_delete_inventory = "DROP TABLE items;";
+    const char *sql_delete_inventory = "DROP TABLE inventory;";
     char *err_msg = 0;
 
     int return_value = sqlite3_exec
