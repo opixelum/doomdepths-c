@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "stuff.h"
+#include "item.h"
 
 typedef struct Character
 {
@@ -58,5 +58,30 @@ Character *create_character
  * @param character Pointer to the character to be freed
  */
 void free_character(Character *character);
+
+/**
+ * @brief Make a character use a potion.
+ * @param character A pointer to the character who will use the potion.
+ * @param potion A pointer to the potion to use.
+ * @warning The potion will be removed from the character's inventory and freed
+ * from memory.
+ */
+void drink_potion(Character *character, Item *potion);
+
+/**
+ * @brief Make a character equip an item, either a weapon or an armor.
+ * @param character A pointer to the character who will equip the item.
+ * @param item A pointer to the item to equip. It must be either a weapon or an
+ * armor.
+ */
+void equip_item(Character *character, Item *item);
+
+/**
+ * @brief Cast a spell on a target.
+ * @param caster A pointer to the character who will cast the spell.
+ * @param target A pointer to the target of the spell.
+ * @param spell A pointer to the spell to cast.
+ */
+void cast_spell(Character *caster, Character *target, Item *spell);
 
 #endif // PLAYER_H

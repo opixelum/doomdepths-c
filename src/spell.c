@@ -1,4 +1,4 @@
-#include "spells.h"
+#include "spell.h"
 
 unsigned char number_of_attack_spells(Character *character)
 {
@@ -66,4 +66,28 @@ Inventory *get_type_spells(Character *character, ItemType type)
     }
 
     return type_spells;
+}
+
+unsigned char has_enough_mana(Character *character, ItemType spell_type)
+{
+    if (!character) return 0;
+
+    Inventory *spells = character->spells;
+
+    while (spells)
+    {
+        if (spells->item->type == spell_type)
+            if (character->mana >= spells->item->price) return 1;
+
+        spells = spells->next;
+    }
+
+    return 0;
+}
+
+void restore_mana(Character *character, unsigned char percentage)
+{
+    character->mana += character->max_mana / 100 * percentage;
+    if (character->mana > character->max_mana)
+        character->mana = character->max_mana;
 }

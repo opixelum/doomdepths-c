@@ -125,7 +125,7 @@ int get_map(MapContext* map_context)
     for (int i = 0; i < ROWS; i++)
     {
         map_context->map[i] = malloc(COLUMNS * sizeof map_context->map[i]);
-        for (int j = 0;j < COLUMNS; j++) map_context->map[i][j] = fgetc(map_file);
+        for (int j = 0; j < COLUMNS; j++) map_context->map[i][j] = fgetc(map_file);
         fgetc(map_file);
     }
 
@@ -149,20 +149,20 @@ void display_map(MapContext* map_context)
     {
         for (int j = map_context->pos_x - 55; j < map_context->pos_x + 55; j++)
         {
-            if (i < 0 || j < 0 || j >= ROWS || i >= COLUMNS) printf(" ");
+            if (i < 0 || j < 0 || i >= ROWS || j >= COLUMNS) printf(" ");
             else if (j == map_context->pos_x && i == map_context->pos_y)
                 color_printf(0xff0000, "%c", PLAYER);
             else
             {
-                if (map_context->map[j][i] == OBSTACLE)
+                if (map_context->map[i][j] == OBSTACLE)
                 {
-                    printf("%c", map_context->map[j][i]);
+                    printf("%c", map_context->map[i][j]);
                     continue;
                 }
-                else if (map_context->map[j][i] == GRASS) color = 0x00ff00;
+                else if (map_context->map[i][j] == GRASS) color = 0x00ff00;
                 else color = 0xeab676; // PATH
 
-                color_printf(color, "%c", map_context->map[j][i]);
+                color_printf(color, "%c", map_context->map[i][j]);
             }
         }
         printf("\n");
@@ -171,75 +171,80 @@ void display_map(MapContext* map_context)
 
 unsigned char key_listener(unsigned char key, MapContext *map_context)
 {
+    // Convert uppercase to lowercase
+    if (key >= 'A' && key <= 'Z') key += 32;
+
     switch (key)
     {
     case 'z':
         if
         (
             map_context->pos_y - 1 < 0
-            || map_context->map[map_context->pos_x][map_context->pos_y - 1] == OBSTACLE
+            || map_context->map[map_context->pos_y - 1][map_context->pos_x] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x][map_context->pos_y - 1] == GRASS)
+        else if (map_context->map[map_context->pos_y - 1][map_context->pos_x] == GRASS)
         {
             map_context->pos_y--;
-            // TODO: randomly start a battle
+            random_battle_trigger(map_context->player);
         }
         else map_context->pos_y--;
-        break;
+        return 1;
 
     case 'd':
         if
         (
-            map_context->pos_x + 1 > ROWS
-            || map_context->map[map_context->pos_x + 1][map_context->pos_y] == OBSTACLE
+            map_context->pos_x + 1 > COLUMNS
+            || map_context->map[map_context->pos_y][map_context->pos_x + 1] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x + 1][map_context->pos_y] == GRASS)
+        else if (map_context->map[map_context->pos_y][map_context->pos_x + 1] == GRASS)
         {
             map_context->pos_x++;
-            // TODO: randomly start a battle
+            random_battle_trigger(map_context->player);
         }
         else map_context->pos_x++;
-        break;
+        return 1;
 
     case 's':
         if
         (
-            map_context->pos_y + 1 > COLUMNS
-            || map_context->map[map_context->pos_x][map_context->pos_y + 1] == OBSTACLE
+            map_context->pos_y + 1 > ROWS
+            || map_context->map[map_context->pos_y + 1][map_context->pos_x] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x][map_context->pos_y + 1] == GRASS)
+        else if (map_context->map[map_context->pos_y + 1][map_context->pos_x] == GRASS)
         {
-            map_context->pos_y+=1;
+            map_context->pos_y++;
             random_battle_trigger(map_context->player);
         }
-        else map_context->pos_y+=1;
-        break;
+        else map_context->pos_y++;
+        return 1;
 
     case 'q':
         if
         (
             map_context->pos_x - 1 < 0
-            || map_context->map[map_context->pos_x - 1][map_context->pos_y] == OBSTACLE
+            || map_context->map[map_context->pos_y][map_context->pos_x - 1] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x - 1][map_context->pos_y] == GRASS)
+        else if (map_context->map[map_context->pos_y][map_context->pos_x - 1] == GRASS)
         {
             map_context->pos_x--;
             random_battle_trigger(map_context->player);
         }
         else map_context->pos_x--;
-        break;
+        return 1;
 
     case 'i':
-        // TODO: display inventory
-        break;
+        inventory_menu(map_context->player);
+        return 1;
 
-    case 'Q':
-        // TODO: return to main menu
+    case 'b':
         return 0;
+
+    default:
+        return 1;
     }
 }
 
@@ -249,5 +254,6 @@ void explore_map(MapContext *map_context)
     {
         display_map(map_context);
         if (key_listener(getchar_no_enter(), map_context) == 0) break;
+        save_game(map_context->player);
     }
 }
