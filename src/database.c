@@ -99,8 +99,6 @@ void create_tables(const char *db_path)
         }
     }
 
-    sqlite3_close(db);
-
     insert_item_into_items_list(
         db,
         WEAPON,
@@ -108,7 +106,7 @@ void create_tables(const char *db_path)
         "A sharp steel sword.",
         20,
         100
-                               );
+    );
     insert_item_into_items_list(
         db,
         WEAPON,
@@ -266,6 +264,8 @@ void create_tables(const char *db_path)
         30,
         120
     );
+
+    sqlite3_close(db);
 }
 
 Item *get_item_from_db(sqlite3 *db, int item_id)
@@ -954,8 +954,8 @@ unsigned char insert_item_into_inventory(const char *db_path, Item *item)
 void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, const char *description, unsigned short value, unsigned short price) {
     sqlite3_stmt *stmt;
     const char *sql_insert_item =
-        "INSERT INTO items_list (type_id, name, description, value, price)"
-        "VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO items_list (type_id, name, description, value, price) "
+        "VALUES (?, ?, ?, ?, ?);";
 
     if (sqlite3_prepare_v2(db, sql_insert_item, -1, &stmt, 0) != SQLITE_OK)
     {
@@ -968,7 +968,7 @@ void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, c
         exit(1);
     }
 
-    sqlite3_bind_int(stmt, 1, type +1);
+    sqlite3_bind_int(stmt, 1, type + 1);
     sqlite3_bind_text(stmt, 2, name, -1,SQLITE_STATIC);
     sqlite3_bind_text(stmt, 3, description, -1,SQLITE_STATIC);
     sqlite3_bind_int(stmt, 4,value);
