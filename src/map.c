@@ -125,7 +125,7 @@ int get_map(MapContext* map_context)
     for (int i = 0; i < ROWS; i++)
     {
         map_context->map[i] = malloc(COLUMNS * sizeof map_context->map[i]);
-        for (int j = 0;j < COLUMNS; j++) map_context->map[i][j] = fgetc(map_file);
+        for (int j = 0; j < COLUMNS; j++) map_context->map[i][j] = fgetc(map_file);
         fgetc(map_file);
     }
 
@@ -149,20 +149,20 @@ void display_map(MapContext* map_context)
     {
         for (int j = map_context->pos_x - 55; j < map_context->pos_x + 55; j++)
         {
-            if (i < 0 || j < 0 || j >= ROWS || i >= COLUMNS) printf(" ");
+            if (i < 0 || j < 0 || i >= ROWS || j >= COLUMNS) printf(" ");
             else if (j == map_context->pos_x && i == map_context->pos_y)
                 color_printf(0xff0000, "%c", PLAYER);
             else
             {
-                if (map_context->map[j][i] == OBSTACLE)
+                if (map_context->map[i][j] == OBSTACLE)
                 {
-                    printf("%c", map_context->map[j][i]);
+                    printf("%c", map_context->map[i][j]);
                     continue;
                 }
-                else if (map_context->map[j][i] == GRASS) color = 0x00ff00;
+                else if (map_context->map[i][j] == GRASS) color = 0x00ff00;
                 else color = 0xeab676; // PATH
 
-                color_printf(color, "%c", map_context->map[j][i]);
+                color_printf(color, "%c", map_context->map[i][j]);
             }
         }
         printf("\n");
@@ -180,10 +180,10 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         if
         (
             map_context->pos_y - 1 < 0
-            || map_context->map[map_context->pos_x][map_context->pos_y - 1] == OBSTACLE
+            || map_context->map[map_context->pos_y - 1][map_context->pos_x] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x][map_context->pos_y - 1] == GRASS)
+        else if (map_context->map[map_context->pos_y - 1][map_context->pos_x] == GRASS)
         {
             map_context->pos_y--;
             random_battle_trigger(map_context->player);
@@ -194,11 +194,11 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     case 'd':
         if
         (
-            map_context->pos_x + 1 > ROWS
-            || map_context->map[map_context->pos_x + 1][map_context->pos_y] == OBSTACLE
+            map_context->pos_x + 1 > COLUMNS
+            || map_context->map[map_context->pos_y][map_context->pos_x + 1] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x + 1][map_context->pos_y] == GRASS)
+        else if (map_context->map[map_context->pos_y][map_context->pos_x + 1] == GRASS)
         {
             map_context->pos_x++;
             random_battle_trigger(map_context->player);
@@ -209,26 +209,26 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     case 's':
         if
         (
-            map_context->pos_y + 1 > COLUMNS
-            || map_context->map[map_context->pos_x][map_context->pos_y + 1] == OBSTACLE
+            map_context->pos_y + 1 > ROWS
+            || map_context->map[map_context->pos_y + 1][map_context->pos_x] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x][map_context->pos_y + 1] == GRASS)
+        else if (map_context->map[map_context->pos_y + 1][map_context->pos_x] == GRASS)
         {
-            map_context->pos_y+=1;
+            map_context->pos_y++;
             random_battle_trigger(map_context->player);
         }
-        else map_context->pos_y+=1;
+        else map_context->pos_y++;
         break;
 
     case 'q':
         if
         (
             map_context->pos_x - 1 < 0
-            || map_context->map[map_context->pos_x - 1][map_context->pos_y] == OBSTACLE
+            || map_context->map[map_context->pos_y][map_context->pos_x - 1] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x - 1][map_context->pos_y] == GRASS)
+        else if (map_context->map[map_context->pos_y][map_context->pos_x - 1] == GRASS)
         {
             map_context->pos_x--;
             random_battle_trigger(map_context->player);
