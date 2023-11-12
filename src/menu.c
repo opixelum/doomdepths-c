@@ -20,17 +20,30 @@ void main_menu(unsigned char *is_running)
         new_game();
         break;
 
-    case 2:
-        player = load_game();
-        MapContext *map_context = malloc(sizeof *map_context);
-        map_context->player = player;
+    case 2:{
+        FILE * file = fopen("../build/doomdepths.db", "r+");
+ 
+        if (file == NULL)
+        {
+            clear_screen();
+            printf("There is no save \n");
+            press_any_key_to_continue();
+        }
+        else
+        {
+            fclose(file);
+        
+            player = load_game();
+            MapContext *map_context = malloc(sizeof *map_context);
+            map_context->player = player;
 
-        get_map(map_context);
-        explore_map(map_context);
+            get_map(map_context);
+            explore_map(map_context);
 
-        free_character(player);
-        free(map_context);
-
+            free_character(player);
+            free(map_context);
+        }
+    }
         break;
 
     case 3:
