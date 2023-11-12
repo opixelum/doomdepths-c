@@ -272,7 +272,7 @@ Item *item_selection_menu
         inventory = inventory->next;
     }
 
-    unsigned char j = 0;
+    unsigned char j; // Counter for displayed items
     for (j = 0; j < i; j++)
     {
         printf("    %d. ", j + 1);
@@ -295,7 +295,7 @@ Item *item_selection_menu
     unsigned char choice;
     do // Don't allow user to select a spell if he doesn't have enough mana
     {
-        choice = get_valid_digit_no_enter(1, items_count, 1);
+        choice = get_valid_digit_no_enter(1, j, 1);
         if (choice == 'b' || choice == 'B')
         {
             clear_lines(items_count + 4);
