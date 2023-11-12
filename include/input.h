@@ -1,11 +1,16 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
-#include <unistd.h>
 
 /**
  * @brief Gets the user input from stdin.
