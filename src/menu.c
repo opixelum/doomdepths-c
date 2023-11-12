@@ -321,6 +321,7 @@ void print_attack_result
 ) {
     clear_screen();
     print_character_stats(player);
+    printf("\n");
     print_monsters(monsters, defender);
 
     if (spell) printf
