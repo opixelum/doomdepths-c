@@ -32,6 +32,13 @@ typedef struct Item
 }
 Item;
 
+typedef struct ItemCount
+{
+    Item *item;
+    unsigned char count;
+}
+ItemCount;
+
 typedef struct Inventory
 {
     Item *item;
