@@ -173,7 +173,7 @@ Monsters *flee(Monsters *monsters, Character *player)
     }else{
         printf("You didn't fled !!\n\n");
         unsigned short damage_taken = attack(monsters->monster, player, NULL);
-        printfzb
+        printf
         (
             "%s dealt %d damage to you.\n\n",
             monsters->monster->name,
