@@ -180,10 +180,10 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         if
         (
             map_context->pos_y - 1 < 0
-            || map_context->map[map_context->pos_x][map_context->pos_y - 1] == OBSTACLE
+            || map_context->map[map_context->pos_y - 1][map_context->pos_x] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x][map_context->pos_y - 1] == GRASS)
+        else if (map_context->map[map_context->pos_y - 1][map_context->pos_x] == GRASS)
         {
             map_context->pos_y--;
             random_battle_trigger(map_context->player);
@@ -194,11 +194,11 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     case 'd':
         if
         (
-            map_context->pos_x + 1 > ROWS
-            || map_context->map[map_context->pos_x + 1][map_context->pos_y] == OBSTACLE
+            map_context->pos_x + 1 > COLUMNS
+            || map_context->map[map_context->pos_y][map_context->pos_x + 1] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x + 1][map_context->pos_y] == GRASS)
+        else if (map_context->map[map_context->pos_y][map_context->pos_x + 1] == GRASS)
         {
             map_context->pos_x++;
             random_battle_trigger(map_context->player);
@@ -209,26 +209,26 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     case 's':
         if
         (
-            map_context->pos_y + 1 > COLUMNS
-            || map_context->map[map_context->pos_x][map_context->pos_y + 1] == OBSTACLE
+            map_context->pos_y + 1 > ROWS
+            || map_context->map[map_context->pos_y + 1][map_context->pos_x] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x][map_context->pos_y + 1] == GRASS)
+        else if (map_context->map[map_context->pos_y + 1][map_context->pos_x] == GRASS)
         {
-            map_context->pos_y+=1;
+            map_context->pos_y++;
             random_battle_trigger(map_context->player);
         }
-        else map_context->pos_y+=1;
+        else map_context->pos_y++;
         break;
 
     case 'q':
         if
         (
             map_context->pos_x - 1 < 0
-            || map_context->map[map_context->pos_x - 1][map_context->pos_y] == OBSTACLE
+            || map_context->map[map_context->pos_y][map_context->pos_x - 1] == OBSTACLE
         )
             break;
-        else if (map_context->map[map_context->pos_x - 1][map_context->pos_y] == GRASS)
+        else if (map_context->map[map_context->pos_y][map_context->pos_x - 1] == GRASS)
         {
             map_context->pos_x--;
             random_battle_trigger(map_context->player);
