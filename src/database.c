@@ -88,7 +88,9 @@ void create_tables(const char *db_path)
 
 Item *get_item_from_db(sqlite3 *db, int item_id)
 {
+    
     Item *item = NULL;
+    
     char query[256];
     sqlite3_stmt *stmt_item;
 
@@ -332,12 +334,20 @@ Character *get_character_from_db(sqlite3 *db)
         character->gold = sqlite3_column_int(result, 8);
         character->xp = sqlite3_column_int(result, 9);
         character->xp_to_next_level = sqlite3_column_int(result, 10);
-        int weapon_id = sqlite3_column_int(result, 6) + 1;
 
-        character->weapon = get_item_from_db(db, weapon_id);
+        int weapon_id = sqlite3_column_int(result, 6);
+        if(weapon_id!=0)
+        {
+            character->weapon = get_item_from_db(db, weapon_id);
+        }
+        
 
-        int armor_id = sqlite3_column_int(result, 7) + 1;
-        character->armor = get_item_from_db(db, armor_id);
+        int armor_id = sqlite3_column_int(result, 7);
+        if(armor_id != 0)
+        {
+            character->armor = get_item_from_db(db, armor_id);
+        }
+        
 
         character->inventory = get_inventory_from_db(db);
 
@@ -361,6 +371,9 @@ Character *load_game()
 
 int insert_weapon(sqlite3 *db, Item *weapon)
 {
+    if(!weapon){
+        return 0;
+    }
     sqlite3_stmt *stmt_insert_weapon;
     const char *sql_insert_weapon =
         "INSERT INTO items (type_id, name, description, value, price)"
@@ -418,6 +431,10 @@ int insert_weapon(sqlite3 *db, Item *weapon)
 
 int insert_armor(sqlite3 *db, Item *armor)
 {
+    if(!armor){
+        return 0;
+    }
+    
     sqlite3_stmt *stmt_insert_armor;
     const char *sql_insert_armor =
         "INSERT INTO items (type_id, name, description, value, price)"
@@ -469,7 +486,12 @@ int insert_armor(sqlite3 *db, Item *armor)
     int armor_id = (int) sqlite3_last_insert_rowid(db);
 
     sqlite3_finalize(stmt_insert_armor);
-
+    fprintf
+            (
+                stderr,
+                "%d\n",
+                armor_id
+            );
     return armor_id;
 }
 
@@ -478,9 +500,9 @@ void save_game(Character *player)
 {
     sqlite3 *db = open_database("doomdepths.db");
 
-    const char *sql_delete_player = "DELETE FROM characters;";
-    const char *sql_delete_inventory = "DELETE FROM items;";
-
+    const char *sql_delete_player = "DROP TABLE characters;";
+    const char *sql_delete_inventory = "DROP TABLE items;";
+    
     char *err_msg = 0;
 
     int return_value = sqlite3_exec
@@ -522,10 +544,10 @@ void save_game(Character *player)
         sqlite3_free(err_msg);
         exit(EXIT_FAILURE);
     }
-
+    create_tables("doomdepths.db");
     int weapon_id, armor_id;
-    if (player->weapon) weapon_id = insert_weapon(db, player->weapon);
-    if (player->armor) armor_id = insert_armor(db, player->armor);
+    if (player->weapon) weapon_id = insert_weapon(db, player->weapon); else weapon_id = 0;
+    if (player->armor) armor_id = insert_armor(db, player->armor); else armor_id = 0;
 
     sqlite3_stmt *stmt_insert_player;
     const char *sql_insert_player =
