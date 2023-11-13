@@ -4,7 +4,12 @@
 #include <sqlite3.h>
 #include <string.h>
 #include "character.h"
+#include "map.h"
+struct MapContext;
 
+void save_map_context(const char *db_path, struct MapContext *mapcontext);
+
+struct MapContext *get_map_context(const char *db_path);
 /**
  * @brief Creates a database if it doesn't exist already and opens a connection
  * to it.
@@ -39,13 +44,10 @@ Character *load_game();
  * @param item A pointer to the item to insert.
  * @return 0 if the item was inserted successfully, 1 otherwise.
  */
-unsigned char insert_item(const char *db_path, Item *item);
+unsigned char insert_item_into_inventory(const char *db_path, Item *item);
 
+void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, const char *description, unsigned short value, unsigned short price);
 
-/**
- * @brief Adds game's items in the database.
- * @return 0 if success, 1 if failure
- */
-unsigned char init_db_items(const char *db_path);
+Item* get_random_item_from_database(sqlite3 *db);
 
 #endif // SAVE_H
