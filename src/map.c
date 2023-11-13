@@ -128,13 +128,14 @@ int get_map(MapContext* map_context)
         for (int j = 0; j < COLUMNS; j++) map_context->map[i][j] = fgetc(map_file);
         fgetc(map_file);
     }
-
-    int x;
-    int y;
-    fscanf(map_file, "%d %d", &x, &y);
-    map_context->pos_x = x;
-    map_context->pos_y = y;
-
+ 
+    if(map_context->pos_x >=300 || map_context->pos_y >=300){
+        int x;
+        int y;
+        fscanf(map_file, "%d %d", &x, &y);
+        map_context->pos_x = x;
+        map_context->pos_y = y;
+    }
     fclose(map_file);
 
     return 0;
@@ -270,6 +271,8 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     default:
         return 1;
     }
+
+    return 1;
 }
 
 void explore_map(MapContext *map_context)
@@ -278,6 +281,6 @@ void explore_map(MapContext *map_context)
     {
         display_map(map_context);
         if (key_listener(getchar_no_enter(), map_context) == 0) break;
-        save_game(map_context->player);
+        save_map_context("doomdepths.db", map_context);
     }
 }

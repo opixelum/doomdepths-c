@@ -4,6 +4,7 @@
 #include <time.h>
 #include "battle.h"
 #include "character.h"
+#include "database.h"
 
 #define ROWS 300
 #define COLUMNS 300

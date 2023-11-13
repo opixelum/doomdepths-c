@@ -101,8 +101,7 @@ void battle(Character *player)
             break;
 
         case 5:
-            // TODO: Implement flee
-            printf("Flee to implement\n");
+            monsters = flee(monsters, player);
             break;
         }
 
@@ -168,4 +167,30 @@ Monsters *perform_attack
     press_any_key_to_continue();
 
     return update_monsters_list(monsters);
+}
+
+Monsters *flee(Monsters *monsters, Character *player)
+{
+    int rdm = rand()%100 +1;
+    if(rdm<=30){
+        free(monsters);
+        clear_screen();
+        printf("You fled !!\n\n");
+        press_enter_to_continue();
+        return NULL;
+    }else{
+        printf("You didn't fled !!\n\n");
+        unsigned short damage_taken = attack(monsters->monster, player, NULL);
+        printf
+        (
+            "%s dealt %d damage to you.\n\n",
+            monsters->monster->name,
+            damage_taken
+        );
+        restore_mana(player, 10);
+        press_any_key_to_continue();
+
+        return monsters;
+    }
+    
 }
