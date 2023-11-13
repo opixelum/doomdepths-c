@@ -76,12 +76,7 @@ void battle(Character *player)
             print_monsters(monsters, targeted_monster);
 
             monsters = perform_attack(player, targeted_monster, monsters);
-            if (player->health<=0) {
-            // Le joueur est mort, affiche un message et retourne au menu principal
-            printf("\n\n\033[1;31m%s was killed by %s!\nYou will be better next time!\033[0m\n\n", player->name, targeted_monster->name);
-            press_any_key_to_continue();
-            return;
-        }
+            if (player->health <= 0) return;
             break;
 
         case 2:
@@ -102,10 +97,9 @@ void battle(Character *player)
 
         case 5:
             monsters = flee(monsters, player);
+            if (!monsters) return;
             break;
         }
-
-        
         save_game(player);
     }
 
@@ -123,7 +117,6 @@ void random_battle_trigger(Character *player)
         printf("You're in trouble! You must fight!\n\n");
         press_enter_to_continue();
         battle(player);
-        
     }
 }
 
@@ -163,6 +156,28 @@ Monsters *perform_attack
         damage_taken = attack(defender, attacker, NULL);
 
     print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
+
+    if (attacker->health <= 0)
+    {
+        color_printf
+        (
+            0xff0000,
+            "%s killed you... See you up there!\n\n",
+            defender->name
+        );
+        press_any_key_to_continue();
+
+        Monsters *current_monster = monsters;
+        while (current_monster)
+        {
+            Monsters *next_monster = current_monster->next;
+            free_character(current_monster->monster);
+            free(current_monster);
+            current_monster = next_monster;
+        }
+
+        return NULL;
+    }
     restore_mana(attacker, 10);
     press_any_key_to_continue();
 
@@ -182,14 +197,42 @@ Monsters *flee(Monsters *monsters, Character *player)
     }
     else
     {
-        printf("You failed to flee!\n\n");
         unsigned short damage_taken = attack(monsters->monster, player, NULL);
+
+        clear_screen();
+        print_character_stats(player);
+        printf("\n");
+        print_monsters(monsters, monsters->monster);
+
         printf
         (
-            "%s dealt %d damage to you.\n\n",
+            "\nYou failed to flee...\n%s dealt %d damage to you.\n\n",
             monsters->monster->name,
             damage_taken
         );
+
+        if (player->health <= 0)
+        {
+            color_printf
+            (
+                0xff0000,
+                "%s killed you... See you up there!\n\n",
+                monsters->monster->name
+            );
+
+            Monsters *current_monster = monsters;
+            while (current_monster)
+            {
+                Monsters *next_monster = current_monster->next;
+                free_character(current_monster->monster);
+                free(current_monster);
+                current_monster = next_monster;
+            }
+
+            press_any_key_to_continue();
+            return NULL;
+        }
+
         restore_mana(player, 10);
         press_any_key_to_continue();
 
