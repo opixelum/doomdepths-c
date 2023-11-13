@@ -21,24 +21,40 @@ void main_menu(unsigned char *is_running)
         break;
 
     case 2:
-        player = load_game();
-         
-        MapContext *map_context = get_map_context("doomdepths.db");
-        if(!map_context)
+    {
+        FILE *file = fopen("doomdepths.db", "r+");
+ 
+        if (!file)
         {
-            map_context = malloc(sizeof *map_context);
-            map_context->pos_x = 0;
-            map_context->pos_y = 0;
+            clear_screen();
+            printf("There's no saved game. Start a new one!\n\n");
+            press_any_key_to_continue();
         }
-        map_context->player = player;
+        else
+        {
+            fclose(file);
+            player = load_game();
+            MapContext *map_context = get_map_context("doomdepths.db");
+            if (!map_context) map_context = malloc(sizeof *map_context);
+            if (!map_context)
+            {
+                fprintf
+                (
+                    stderr,
+                    "ERROR: menus.c: main_menu(): malloc failed\n"
+                );
+                exit(EXIT_FAILURE);
+            }
 
-        get_map(map_context);
-        explore_map(map_context);
+            map_context->player = player;
+            get_map(map_context);
+            explore_map(map_context);
 
-        free_character(player);
-        free(map_context);
-
+            free_character(player);
+            free(map_context);
+        }
         break;
+    }
 
     case 3:
         clear_screen();
@@ -181,12 +197,14 @@ void new_game(void)
     );
 
     create_tables("doomdepths.db");
-    save_game(player);
 
     initialize_map();
     MapContext *map_context = malloc(sizeof *map_context);
     map_context->player = player;
     get_map(map_context);
+
+    save_game(player);
+    save_map_context("doomdepths.db", map_context);
 
     printf("\nWelcome %s!\n\n", player->name);
     press_any_key_to_continue();
