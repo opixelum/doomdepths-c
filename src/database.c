@@ -70,12 +70,11 @@ void create_tables(const char *db_path)
         "value INT NOT NULL, "
         "price INT NOT NULL);",
       
-        "DROP TABLE IF EXISTS MapContext;",
+        "DROP TABLE IF EXISTS map_context;",
       
-        "CREATE TABLE IF NOT EXISTS MapContext ("
+        "CREATE TABLE IF NOT EXISTS map_context("
         "pos_x INT,"
-        "pos_y INT"
-        ");"
+        "pos_y INT);"
     };
 
     char *sqlite_err_msg = 0;
@@ -1024,43 +1023,55 @@ Item* get_random_item_from_database(sqlite3 *db) {
     return item;
 }
 
-void save_mapcontext(const char *db_path, MapContext *mapcontext) {
+void save_map_context(const char *db_path, struct MapContext *mapcontext) {
     
     sqlite3 *db = open_database(db_path);
-    const char *sql_drop_mapcontext = "DROP TABLE IF EXISTS MapContext;";
-    if (sqlite3_exec(db, sql_drop_mapcontext, 0, 0, 0) != SQLITE_OK) {
-        fprintf(stderr, "ERROR: Failed to drop MapContext table\n");
+    const char *delete_from_map_context_stmt = "DELETE FROM map_context;";
+
+    if (sqlite3_exec(db, delete_from_map_context_stmt, 0, 0, 0) != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: save_map_context(): sqlite3_exec(): %s\n",
+            sqlite3_errmsg(db)
+        );
         exit(EXIT_FAILURE);
     }
-    create_tables(db_path);
 
     const char *sql_insert_mapcontext =
-        "INSERT INTO MapContext (pos_x, pos_y) VALUES (?, ?);";
+        "INSERT INTO map_context (pos_x, pos_y) VALUES (?, ?);";
 
     sqlite3_stmt *stmt_insert_mapcontext;
 
-    if (sqlite3_prepare_v2(db, sql_insert_mapcontext, -1, &stmt_insert_mapcontext, 0) != SQLITE_OK) {
-        fprintf(stderr, "ERROR: Failed to prepare MapContext insertion statement\n");
+    if (sqlite3_prepare_v2(db, sql_insert_mapcontext, -1, &stmt_insert_mapcontext, 0) != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: save_map_context(): sqlite3_prepare_v2(): %s\n",
+            sqlite3_errmsg(db)
+        );
         exit(EXIT_FAILURE);
     }
     sqlite3_bind_int(stmt_insert_mapcontext, 1, mapcontext->pos_x);
     sqlite3_bind_int(stmt_insert_mapcontext, 2, mapcontext->pos_y);
 
     if (sqlite3_step(stmt_insert_mapcontext) != SQLITE_DONE) {
-        fprintf(stderr, "ERROR: Failed to insert datas in MapContext tabel\n");
+        fprintf(stderr, "ERROR: Failed to insert datas in map_context tabel\n");
         exit(EXIT_FAILURE);
     }
 
     sqlite3_finalize(stmt_insert_mapcontext);
 }
 
-MapContext *get_mapcontext(const char *db_path) {
+MapContext *get_map_context(const char *db_path) {
     sqlite3 *db = open_database(db_path);
-    const char *sql_select_mapcontext = "SELECT pos_x, pos_y FROM MapContext;";
+    const char *sql_select_mapcontext = "SELECT pos_x, pos_y FROM map_context;";
 
     sqlite3_stmt *stmt_select_mapcontext;
     if (sqlite3_prepare_v2(db, sql_select_mapcontext, -1, &stmt_select_mapcontext, 0) != SQLITE_OK) {
-        fprintf(stderr, "ERROR: Failed to prepare MapContext selection statement\n");
+        fprintf(stderr, "ERROR: Failed to prepare map_context selection statement\n");
         exit(EXIT_FAILURE);
     }
 
