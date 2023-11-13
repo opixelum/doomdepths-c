@@ -7,9 +7,9 @@
 #include "map.h"
 struct MapContext;
 
-void save_mapcontext(const char *db_path, struct MapContext *mapcontext);
+void save_map_context(const char *db_path, struct MapContext *mapcontext);
 
-struct MapContext *get_mapcontext(const char *db_path);
+struct MapContext *get_map_context(const char *db_path);
 /**
  * @brief Creates a database if it doesn't exist already and opens a connection
  * to it.
