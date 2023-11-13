@@ -371,8 +371,6 @@ void print_attack_result
         defender->name,
         damage_taken
     );
-
-
 }
 
 void inventory_menu(Character *player)

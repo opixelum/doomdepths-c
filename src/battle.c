@@ -171,14 +171,17 @@ Monsters *perform_attack
 
 Monsters *flee(Monsters *monsters, Character *player)
 {
-    int rdm = rand()%100 +1;
-    if(rdm<=30){
+    int chances_to_flee = rand() % 100 + 1;
+    if (chances_to_flee <= 30)
+    {
         free(monsters);
         clear_screen();
-        printf("You fled !!\n\n");
+        printf("You fled!\n\n");
         press_enter_to_continue();
         return NULL;
-    }else{
+    }
+    else
+    {
         printf("You didn't fled !!\n\n");
         unsigned short damage_taken = attack(monsters->monster, player, NULL);
         printf
@@ -192,5 +195,4 @@ Monsters *flee(Monsters *monsters, Character *player)
 
         return monsters;
     }
-    
 }
