@@ -371,8 +371,6 @@ void print_attack_result
         defender->name,
         damage_taken
     );
-
-    if (player->health <= 0) printf("You died!\n\n");
 }
 
 void inventory_menu(Character *player)

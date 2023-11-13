@@ -188,6 +188,12 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         {
             map_context->pos_y--;
             random_battle_trigger(map_context->player);
+            if (map_context->player->health <= 0)
+            {
+                const char *filename = "doomdepths.db";
+                remove(filename);
+                return 0;
+            }
         }
         else map_context->pos_y--;
         return 1;
@@ -203,6 +209,12 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         {
             map_context->pos_x++;
             random_battle_trigger(map_context->player);
+            if (map_context->player->health <= 0)
+            {
+                const char *filename = "doomdepths.db";
+                remove(filename);
+                return 0;
+            }
         }
         else map_context->pos_x++;
         return 1;
@@ -218,6 +230,12 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         {
             map_context->pos_y++;
             random_battle_trigger(map_context->player);
+            if(map_context->player->health <= 0)
+            {
+                const char *filename = "doomdepths.db";
+                remove(filename);
+                return 0;
+            }
         }
         else map_context->pos_y++;
         return 1;
@@ -233,6 +251,12 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
         {
             map_context->pos_x--;
             random_battle_trigger(map_context->player);
+            if(map_context->player->health <= 0)
+            {
+                const char *filename = "doomdepths.db";
+                remove(filename);
+                return 0;
+            }
         }
         else map_context->pos_x--;
         return 1;
