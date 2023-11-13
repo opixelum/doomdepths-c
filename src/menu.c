@@ -27,7 +27,7 @@ void main_menu(unsigned char *is_running)
         if (!file)
         {
             clear_screen();
-            printf("There's no saved game. Start a new one!\n");
+            printf("There's no saved game. Start a new one!\n\n");
             press_any_key_to_continue();
         }
         else
