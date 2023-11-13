@@ -23,7 +23,7 @@ void main_menu(unsigned char *is_running)
     case 2:
         player = load_game();
          
-        MapContext *map_context = get_mapcontext("doomdepths.db");
+        MapContext *map_context = get_map_context("doomdepths.db");
         if(!map_context)
         {
             map_context = malloc(sizeof *map_context);

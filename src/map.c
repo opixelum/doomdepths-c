@@ -247,6 +247,8 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
     default:
         return 1;
     }
+
+    return 1;
 }
 
 void explore_map(MapContext *map_context)
@@ -255,7 +257,6 @@ void explore_map(MapContext *map_context)
     {
         display_map(map_context);
         if (key_listener(getchar_no_enter(), map_context) == 0) break;
-        save_game(map_context->player);
-        save_mapcontext("doomdepths.db", map_context);
+        save_map_context("doomdepths.db", map_context);
     }
 }
