@@ -4,7 +4,12 @@
 #include <sqlite3.h>
 #include <string.h>
 #include "character.h"
+#include "map.h"
+struct MapContext;
 
+void save_map_context(const char *db_path, struct MapContext *mapcontext);
+
+struct MapContext *get_map_context(const char *db_path);
 /**
  * @brief Creates a database if it doesn't exist already and opens a connection
  * to it.
