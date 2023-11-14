@@ -165,7 +165,7 @@ Monsters *perform_attack
             "%s killed you... See you up there!\n\n",
             defender->name
         );
-        press_any_key_to_continue();
+        press_enter_to_continue();
 
         Monsters *current_monster = monsters;
         while (current_monster)
