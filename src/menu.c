@@ -405,9 +405,9 @@ void inventory_menu(Character *player)
     unsigned char item_count = number_of_items_by_type(player->inventory, ITEM);
 
     unsigned int hex_color;
-    if (item_count >= 20) hex_color = 0xffff00;
-    else if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
-    else hex_color = 0xffffff;
+    if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
+    else if (item_count < 25 && item_count >= 20) hex_color = 0xffff00;
+    else hex_color = 0xfffff;
 
     print_character_stats(player);
     printf("\nInventory ");
