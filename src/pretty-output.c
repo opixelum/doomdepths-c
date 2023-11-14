@@ -205,7 +205,8 @@ void *print_item_details
             fprintf
             (
                 stderr,
-                "ERROR: pretty-output.c: item_details_string(): wrong item type\n"
+                "ERROR: pretty-output.c: item_details_string(): wrong item type: %d\n",
+                item->type
             );
             exit(EXIT_FAILURE);
         }
