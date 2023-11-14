@@ -322,7 +322,7 @@ Item *item_selection_menu
     return temp_items[choice - 1].item;
 }
 
-void print_attack_result
+unsigned char print_attack_result
 (
     Character *player,
     Character *defender,
@@ -361,11 +361,14 @@ void print_attack_result
                 "%s has some items in his inventory. Want to loot them? [Y/N]",
                 defender->name
             );
+
             if (yes_no_input())
             {
                 clear_lines(25);
                 loot_character_menu(player, defender);
             }
+
+            return 1;
         }
     }
     else printf
@@ -374,6 +377,8 @@ void print_attack_result
         defender->name,
         damage_taken
     );
+
+    return 0;
 }
 
 void inventory_menu(Character *player)

@@ -155,7 +155,7 @@ Monsters *perform_attack
     if (!is_defender_dead)
         damage_taken = attack(defender, attacker, NULL);
 
-    print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
+    unsigned char has_looted = print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
 
     if (attacker->health <= 0)
     {
@@ -179,7 +179,7 @@ Monsters *perform_attack
         return NULL;
     }
     restore_mana(attacker, 10);
-    press_any_key_to_continue();
+    if (!has_looted) press_any_key_to_continue();
 
     return update_monsters_list(monsters);
 }

@@ -83,8 +83,9 @@ Item *item_selection_menu
  * @param damage_taken The damage taken by the attacker in return.
  * @param spell A pointer to the spell used to attack the monster, NULL if
  * weapon was used.
+ * @return 1 if player looted the monster, 0 otherwise.
  */
-void print_attack_result
+unsigned char print_attack_result
 (
     Character *attacker,
     Character *defender,
