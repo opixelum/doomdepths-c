@@ -44,7 +44,7 @@ Character *monster_selection_menu(Character *character, Monsters *head);
  * @param monster A pointer to the target monster.
  * @return 1 if weapon, 2 if spell, 0 on error.
  */
-unsigned char attack_selection_menu(Character *player, Character *monster);
+unsigned char attack_selection_menu(Character *player);
 
 /**
  * @brief Prompts user to write his user name.

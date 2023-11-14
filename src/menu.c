@@ -111,7 +111,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     return choice == 'B' || choice == 'b' ? NULL : monsters[choice - 1];
 }
 
-unsigned char attack_selection_menu(Character *player, Character *monster)
+unsigned char attack_selection_menu(Character *player)
 {
     if (!player) return 0;
 
@@ -121,8 +121,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
         "    B. Back\n"
-        "\nPress the key of your choice on your keyboard.",
-        monster->name
+        "\nPress the key of your choice on your keyboard."
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
@@ -215,7 +214,7 @@ Item *item_selection_menu
             "ERROR: menus.c: item_selection_menu: `character` is NULL\n"
         );
         exit(EXIT_FAILURE);
-    };
+    }
 
     Inventory *inventory = is_spell(item_type) ?
         character->spells : character->inventory;

@@ -134,7 +134,7 @@ Monsters *perform_attack
     unsigned char choice;
     do
     {
-        choice = attack_selection_menu(attacker, defender);
+        choice = attack_selection_menu(attacker);
 
         if (choice == 'B' || choice == 'b') return monsters;
         else if (choice == 1) break;
