@@ -100,4 +100,12 @@ void print_attack_result
  */
 void inventory_menu(Character *player);
 
+/** Displays the inventory of the looted character and asks the looter to choose
+ * one or more items to loot.
+ * @param looter A pointer to the character that will receive the items.
+ * @param looted A pointer to the character that will give the items.
+ * @return A pointer to the updated inventory of the looter.
+ */
+Inventory *loot_character_menu(Character *looter, Character *looted);
+
 #endif // MENUS_H

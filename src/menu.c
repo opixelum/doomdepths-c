@@ -345,7 +345,23 @@ void print_attack_result
         player->weapon ? player->weapon->name : "fists"
     );
 
-    if (defender->health <= 0) printf("You killed %s!\n\n", defender->name);
+    if (defender->health <= 0)
+    {
+        printf("You killed %s!\n\n", defender->name);
+        if (defender->inventory)
+        {
+            printf
+            (
+                "%s has some items in his inventory. Want to loot them? [Y/N]",
+                defender->name
+            );
+            if (yes_no_input())
+            {
+                clear_lines(25);
+                loot_character_menu(player, defender);
+            }
+        }
+    }
     else printf
     (
         "%s dealt %d damage to you.\n\n",
@@ -427,4 +443,9 @@ void inventory_menu(Character *player)
 
     clear_screen();
     inventory_menu(player);
+}
+
+Inventory *loot_character_menu(Character *looter, Character *looted)
+{
+
 }
