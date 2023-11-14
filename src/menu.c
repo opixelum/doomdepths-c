@@ -477,8 +477,11 @@ void loot_character_menu(Character *looter, Character *looted)
     do
     {
         if (!number_of_items_by_type(looted->inventory, ITEM)) return;
+
         printf("%s's inventory. ", looted->name);
         selected_item = item_selection_menu(looted, ITEM, 0);
+        if (!selected_item) return;
+
         looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
         looter->inventory = add_item_to_inventory(looter->inventory, selected_item);
     }
