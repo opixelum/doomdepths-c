@@ -160,6 +160,11 @@ void new_game(void)
     spells = add_item_to_inventory(spells, abrasparadra);
     spells = add_item_to_inventory(spells, jouvence);
 
+    Item *stuff = create_item(ITEM, "Stuff", "Stuff", 0, 0);
+    Inventory *inventory = NULL;
+    for (unsigned char i = 0; i < 25; ++i)
+        inventory = add_item_to_inventory(inventory, stuff);
+
     // Create a new character
     Character *player = create_character
     (
@@ -175,7 +180,7 @@ void new_game(void)
         NULL,
         NULL,
         spells,
-        NULL
+        inventory
     );
 
     initialize_map();
@@ -222,7 +227,7 @@ Item *item_selection_menu
 
     unsigned char items_count = number_of_items_by_type(inventory, item_type);
 
-    const char *item_type_string = item_type_to_string(item_type);
+    const char *item_type_string = item_type_to_string(item_type, 0);
     if (!item_type_string)
     {
         fprintf
@@ -486,7 +491,7 @@ void loot_character_menu(Character *looter, Character *looted)
         if (!number_of_items_by_type(looted->inventory, ITEM)) return;
 
         printf("%s's inventory. ", looted->name);
-        selected_item = item_selection_menu(looted, ITEM, 0);
+        selected_item = item_selection_menu(looted, ITEM, 1);
         if (!selected_item) return;
 
         looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);

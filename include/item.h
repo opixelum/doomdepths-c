@@ -102,9 +102,10 @@ void free_inventory(Inventory *head);
 /**
  * @brief Get the item type but in string format.
  * @param item_type The item type.
+ * @param capitalize 1 if the first letter must be capitalized, 0 otherwise.
  * @return A string literal containing the item type.
  */
-char *item_type_to_string(ItemType item_type);
+char *item_type_to_string(ItemType item_type, unsigned char capitalize);
 
 /**
  * @brief Get the number of given item type in an inventory (normal one or

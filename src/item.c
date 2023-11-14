@@ -101,46 +101,46 @@ void free_inventory(Inventory *head)
     }
 }
 
-char *item_type_to_string(ItemType item_type)
+char *item_type_to_string(ItemType item_type, unsigned char capitalize)
 {
     char *item_type_string;
 
     switch (item_type)
     {
         case ARMOR:
-            item_type_string = "armor";
+            item_type_string = capitalize ? "Armor" : "armor";
             break;
 
         case ATTACK_SPELL:
-            item_type_string = "attack spell";
+            item_type_string = capitalize ? "Attack spell" : "attack spell";
             break;
 
         case HEAL_SPELL:
-            item_type_string = "heal spell";
+            item_type_string = capitalize ? "Heal spell" : "heal spell";
             break;
 
         case HEALTH_POTION:
-            item_type_string = "health potion";
+            item_type_string = capitalize ? "Health potion" : "health potion";
             break;
 
         case ITEM:
-            item_type_string = "item";
+            item_type_string = capitalize ? "Item" : "item";
             break;
 
         case MANA_POTION:
-            item_type_string = "mana potion";
+            item_type_string = capitalize ? "Mana potion" : "mana potion";
             break;
 
         case POTION:
-            item_type_string = "potion";
+            item_type_string = capitalize ? "Potion" : "potion";
             break;
 
         case SPELL:
-            item_type_string = "spell";
+            item_type_string = capitalize ? "Spell" : "spell";
             break;
 
         case WEAPON:
-            item_type_string = "weapon";
+            item_type_string = capitalize ? "Weapon" : "weapon";
             break;
 
         default:
