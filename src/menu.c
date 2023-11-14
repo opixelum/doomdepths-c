@@ -181,6 +181,15 @@ void new_game(void)
 
     initialize_map();
     MapContext *map_context = malloc(sizeof *map_context);
+    if (!map_context)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menus.c: new_game(): malloc() failed\n"
+        );
+        exit(EXIT_FAILURE);
+    }
     map_context->player = player;
     get_map(map_context);
 
@@ -358,7 +367,7 @@ void print_attack_result
             if (yes_no_input())
             {
                 clear_lines(25);
-                loot_character_menu(player, defender);
+                player->inventory = loot_character_menu(player, defender);
             }
         }
     }
@@ -447,5 +456,36 @@ void inventory_menu(Character *player)
 
 Inventory *loot_character_menu(Character *looter, Character *looted)
 {
+    if (!looter)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menu.c: loot_character_menu(): `looter` is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    }
 
+    if (!looted)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menu.c: loot_character_menu(): `looted` is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    Item *selected_item = NULL;
+    do
+    {
+        if (!number_of_items_by_type(looted->inventory, ITEM)) return looter->inventory;
+        printf("%s's inventory. ", looted->name);
+        selected_item = item_selection_menu(looted, ITEM, 0);
+        looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
+        looter->inventory = add_item_to_inventory(looter->inventory, selected_item);
+    }
+    while (selected_item);
+
+    return looter->inventory;
 }
