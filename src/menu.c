@@ -367,7 +367,7 @@ void print_attack_result
             if (yes_no_input())
             {
                 clear_lines(25);
-                player->inventory = loot_character_menu(player, defender);
+                loot_character_menu(player, defender);
             }
         }
     }
@@ -454,7 +454,7 @@ void inventory_menu(Character *player)
     inventory_menu(player);
 }
 
-Inventory *loot_character_menu(Character *looter, Character *looted)
+void loot_character_menu(Character *looter, Character *looted)
 {
     if (!looter)
     {
@@ -479,13 +479,11 @@ Inventory *loot_character_menu(Character *looter, Character *looted)
     Item *selected_item = NULL;
     do
     {
-        if (!number_of_items_by_type(looted->inventory, ITEM)) return looter->inventory;
+        if (!number_of_items_by_type(looted->inventory, ITEM)) return;
         printf("%s's inventory. ", looted->name);
         selected_item = item_selection_menu(looted, ITEM, 0);
         looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
         looter->inventory = add_item_to_inventory(looter->inventory, selected_item);
     }
     while (selected_item);
-
-    return looter->inventory;
 }

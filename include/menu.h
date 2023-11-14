@@ -106,6 +106,6 @@ void inventory_menu(Character *player);
  * @param looted A pointer to the character that will give the items.
  * @return A pointer to the updated inventory of the looter.
  */
-Inventory *loot_character_menu(Character *looter, Character *looted);
+void loot_character_menu(Character *looter, Character *looted);
 
 #endif // MENUS_H
