@@ -150,14 +150,13 @@ void new_game(void)
     // Ask user for his name
     char *user_name = get_user_name_menu();
 
-    Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
-    Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
+    Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 41, 41);
+    Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 34);
     Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 100 HP", 50, 20);
     Inventory *spells = NULL;
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
     spells = add_item_to_inventory(spells, jouvence);
-
 
     // Create a new character
     Character *player = create_character
