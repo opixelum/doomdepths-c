@@ -159,7 +159,6 @@ void new_game(void)
     spells = add_item_to_inventory(spells, freeze);
     spells = add_item_to_inventory(spells, jouvence);
 
-    Inventory *inventory = generate_random_inventory();
 
     // Create a new character
     Character *player = create_character
@@ -176,7 +175,7 @@ void new_game(void)
         NULL,
         NULL,
         spells,
-        inventory
+        NULL
     );
 
     initialize_map();
