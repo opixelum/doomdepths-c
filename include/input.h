@@ -41,4 +41,11 @@ unsigned char get_valid_digit_no_enter
     unsigned char is_cancelable
 );
 
+/**
+ * @Gets a yes or no answer from user input without waiting for [ENTER] key. It
+ * will keep reading input until a valid answer is entered.
+ * @return 1 if yes, 0 if no.
+ */
+unsigned char yes_no_input(void);
+
 #endif // INPUT_H

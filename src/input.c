@@ -75,3 +75,16 @@ unsigned char get_valid_digit_no_enter
     while (input < min || input > max);
     return input;
 }
+
+unsigned char yes_no_input(void)
+{
+    unsigned char input;
+    do
+    {
+        input = getchar_no_enter();
+        if (input >= 'A' && input <= 'Z') input += 32;
+    }
+    while (input != 'y' && input != 'n');
+
+    return input == 'y' ? 1 : 0;
+}
