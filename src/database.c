@@ -47,8 +47,9 @@ void create_tables(const char *db_path)
         "label VARCHAR(255) NOT NULL);",
 
         "INSERT INTO item_types (label) "
-        "VALUES ('WEAPON'), ('ARMOR'), ('HEALTH_POTION'), "
-        "('MANA_POTION'), ('ATTACK_SPELL'), ('HEAL_SPELL');",
+        "VALUES ('ARMOR'), ('WEAPON'), ('ITEM'), "
+        "('POTION'), ('HEALTH_POTION'), ('MANA_POTION'),"
+        "('SPELL'), ('ATTACK_SPELL'), ('HEAL_SPELL');",
 
         "DROP TABLE IF EXISTS inventory;",
 
@@ -1005,12 +1006,13 @@ Item* get_random_item_from_database(sqlite3 *db) {
         exit(1);
     }
 
-    if (sqlite3_step(stmt_item) == SQLITE_ROW) {
-        item = malloc(sizeof(Item));
+    if (sqlite3_step(stmt_item) == SQLITE_ROW)
+    {
+        item = malloc(sizeof item);
+
         ItemType item_type;
         int type_id = sqlite3_column_int(stmt_item, 0);
-        if (type_id >= 0 && type_id <= 8) item_type = (ItemType)(type_id - 1);
-        fprintf(stderr,strdup((const char *)sqlite3_column_text(stmt_item, 1)));
+        if (type_id >= 0 && type_id <= 9) item_type = (ItemType) (type_id - 1);
         item->type = item_type;
         item->name = strdup((const char *)sqlite3_column_text(stmt_item, 1));
         item->description = strdup((const char *)sqlite3_column_text(stmt_item, 2));
@@ -1089,4 +1091,20 @@ MapContext *get_map_context(const char *db_path) {
 
 
     return mapcontext;
+}
+
+Inventory *generate_random_inventory(void)
+{
+    Inventory *inventory = NULL;
+
+    sqlite3 *db = open_database("doomdepths.db");
+
+    unsigned char number_of_items = rand() % 5;
+    for (unsigned char i = 0; i < number_of_items; i++)
+    {
+        Item *item = get_random_item_from_database(db);
+        inventory = add_item_to_inventory(inventory, item);
+    }
+
+    return inventory;
 }
