@@ -975,9 +975,9 @@ void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, c
         exit(1);
     }
 
-    sqlite3_bind_int(stmt, 1, type + 1);
-    sqlite3_bind_text(stmt, 2, name, -1,SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 3, description, -1,SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 1, (int) type + 1);
+    sqlite3_bind_text(stmt, 2, name, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 3, description, -1, SQLITE_STATIC);
     sqlite3_bind_int(stmt, 4,value);
     sqlite3_bind_int(stmt, 5, price);
 
@@ -998,7 +998,7 @@ void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, c
 Item* get_random_item_from_database(sqlite3 *db) {
     Item* item = NULL;
     char query[256];
-    snprintf(query, sizeof(query), "SELECT id, name, description, value, price FROM items_list ORDER BY RANDOM() LIMIT 1;");
+    snprintf(query, sizeof(query), "SELECT type_id, name, description, value, price FROM items_list ORDER BY RANDOM() LIMIT 1;");
 
     sqlite3_stmt *stmt_item;
     if (sqlite3_prepare_v2(db, query, -1, &stmt_item, 0) != SQLITE_OK) {
@@ -1008,11 +1008,21 @@ Item* get_random_item_from_database(sqlite3 *db) {
 
     if (sqlite3_step(stmt_item) == SQLITE_ROW)
     {
-        item = malloc(sizeof item);
+        item = malloc(sizeof(Item));
 
-        ItemType item_type;
         int type_id = sqlite3_column_int(stmt_item, 0);
-        if (type_id >= 0 && type_id <= 9) item_type = (ItemType) (type_id - 1);
+        ItemType item_type;
+        if (type_id >= 1 && type_id <= 9) item_type = (ItemType) (type_id) - 1;
+        else
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: get_item_from_db(): Invalid item type ID: %d\n",
+                type_id
+            );
+            exit(EXIT_FAILURE);
+        }
         item->type = item_type;
         item->name = strdup((const char *)sqlite3_column_text(stmt_item, 1));
         item->description = strdup((const char *)sqlite3_column_text(stmt_item, 2));
