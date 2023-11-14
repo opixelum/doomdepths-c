@@ -485,5 +485,5 @@ void loot_character_menu(Character *looter, Character *looted)
         looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
         looter->inventory = add_item_to_inventory(looter->inventory, selected_item);
     }
-    while (selected_item);
+    while (1);
 }
