@@ -198,7 +198,7 @@ void new_game(void)
 
     printf("\nWelcome %s!\n\n", player->name);
     press_any_key_to_continue();
-    
+
     explore_map(map_context);
 }
 

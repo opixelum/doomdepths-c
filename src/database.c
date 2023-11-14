@@ -1113,6 +1113,12 @@ Inventory *generate_random_inventory(void)
     for (unsigned char i = 0; i < number_of_items; i++)
     {
         Item *item = get_random_item_from_database(db);
+        if (is_spell(item->type))
+        {
+            free(item);
+            i--;
+            continue;
+        }
         inventory = add_item_to_inventory(inventory, item);
     }
 
