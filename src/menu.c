@@ -160,7 +160,7 @@ void new_game(void)
     spells = add_item_to_inventory(spells, abrasparadra);
     spells = add_item_to_inventory(spells, jouvence);
 
-    Item *stuff = create_item(ITEM, "Stuff", "Stuff", 0, 0);
+    Item *stuff = create_item(WEAPON, "Stuff", "Stuff", 0, 0);
     Inventory *inventory = NULL;
     for (unsigned char i = 0; i < 25; ++i)
         inventory = add_item_to_inventory(inventory, stuff);
@@ -364,7 +364,11 @@ unsigned char print_attack_result
     if (defender->health <= 0)
     {
         printf("You killed %s!\n\n", defender->name);
-        if (defender->inventory)
+
+        unsigned char is_attacker_inventory_full =
+            number_of_items_by_type(player->inventory, ITEM) >= MAX_INVENTORY_SIZE;
+
+        if (defender->inventory && !is_attacker_inventory_full)
         {
             printf
             (
@@ -492,6 +496,19 @@ void loot_character_menu(Character *looter, Character *looted)
     do
     {
         if (!number_of_items_by_type(looted->inventory, ITEM)) return;
+        unsigned char is_attacker_inventory_full =
+            number_of_items_by_type(looter->inventory, ITEM) >= MAX_INVENTORY_SIZE;
+
+        if (is_attacker_inventory_full)
+        {
+            printf
+            (
+                "That was the last item you could take. Now your inventory "
+                "is full.\n\n"
+            );
+            press_any_key_to_continue();
+            return;
+        }
 
         printf("%s's inventory. ", looted->name);
         selected_item = item_selection_menu(looted, ITEM, 1, 1);
