@@ -160,11 +160,6 @@ void new_game(void)
     spells = add_item_to_inventory(spells, abrasparadra);
     spells = add_item_to_inventory(spells, jouvence);
 
-    Item *stuff = create_item(WEAPON, "Stuff", "Stuff", 0, 0);
-    Inventory *inventory = NULL;
-    for (unsigned char i = 0; i < 25; ++i)
-        inventory = add_item_to_inventory(inventory, stuff);
-
     // Create a new character
     Character *player = create_character
     (
@@ -180,7 +175,7 @@ void new_game(void)
         NULL,
         NULL,
         spells,
-        inventory
+        NULL
     );
 
     initialize_map();
