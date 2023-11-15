@@ -61,6 +61,16 @@ void create_tables(const char *db_path)
         "value INT NOT NULL, "
         "price INT NOT NULL);",
 
+        "DROP TABLE IF EXISTS spells;",
+
+        "CREATE TABLE IF NOT EXISTS spells("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "type_id INT NOT NULL, "
+        "name VARCHAR(255) NOT NULL, "
+        "description VARCHAR(255) NOT NULL, "
+        "value INT NOT NULL, "
+        "price INT NOT NULL);",
+
         "DROP TABLE IF EXISTS items_list;",
 
         "CREATE TABLE IF NOT EXISTS items_list("
@@ -275,6 +285,72 @@ void create_tables(const char *db_path)
     sqlite3_close(db);
 }
 
+Item *get_equipped_item_from_db(sqlite3 *db, int item_id)
+{
+    Item *item = NULL;
+    char query[256];
+    sqlite3_stmt *stmt_item;
+
+    snprintf
+    (
+        query,
+        sizeof(query),
+        "SELECT type_id, name, description, value, price FROM items_list "
+        "WHERE id = %d;",
+        item_id
+    );
+
+    int return_value = sqlite3_prepare_v2
+    (
+        db,
+        query,
+        -1,
+        &stmt_item,
+        0
+    );
+    if (return_value != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: get_equipped_item_from_db(): sqlite3_prepare_v2(): "
+            "%s\n",
+            sqlite3_errmsg(db)
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (sqlite3_step(stmt_item) == SQLITE_ROW)
+    {
+        item = malloc(sizeof(Item));
+
+        int type_id = sqlite3_column_int(stmt_item, 0) - 1;
+        if (type_id >= 0 && type_id <= 8) item->type = type_id;
+        else
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: get_equipped_item_from_db(): Invalid item "
+                "type ID: %d\n",
+                type_id
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        item->name =
+            strdup((const char *) sqlite3_column_text(stmt_item, 1));
+        item->description = strdup(
+            (const char *) sqlite3_column_text(stmt_item, 2));
+        item->value = sqlite3_column_int(stmt_item, 3);
+        item->price = sqlite3_column_int(stmt_item, 4);
+    }
+
+    sqlite3_finalize(stmt_item);
+
+    return item;
+}
+
 Item *get_item_from_db(sqlite3 *db, int item_id)
 {
     Item *item = NULL;
@@ -344,141 +420,154 @@ Item *get_item_from_db(sqlite3 *db, int item_id)
     return item;
 }
 
-Inventory *get_inventory_from_db(sqlite3 *db)
+Inventory* get_inventory_from_db(sqlite3 *db)
 {
-    Inventory *inventory = NULL;
-    sqlite3_stmt *stmt_inventory;
+    sqlite3_stmt *stmt;
+    const char *sql =
+        "SELECT i.id, i.type_id, i.name, i.description, i.value, i.price "
+        "FROM inventory i "
+        "LEFT JOIN characters c ON (i.id = c.weapon_id OR i.id = c.armor_id) "
+        "WHERE c.id IS NULL";
 
-    const char *sql_select_inventory =
-        "SELECT inventory.id, type_id, name, description, value, price "
-        "FROM inventory WHERE type_id NOT IN (6, 8) "
-        "AND id NOT IN (SELECT weapon_id FROM characters) "
-        "AND id NOT IN (SELECT armor_id FROM characters);";
-
-    int return_value = sqlite3_prepare_v2
-    (
-        db,
-        sql_select_inventory,
-        -1,
-        &stmt_inventory,
-        0
-    );
-    if (return_value != SQLITE_OK)
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         fprintf
         (
             stderr,
-            "ERROR: database.c: get_inventory_from_db(): "
-            "sqlite3_prepare_v2(): %s\n",
+            "ERROR: database.c: get_inventory_from_db(): sqlite3_prepare_v2(): %s\n",
             sqlite3_errmsg(db)
         );
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
-    while (sqlite3_step(stmt_inventory) == SQLITE_ROW)
-    {
-        Inventory *itemNode = malloc(sizeof(Inventory));
-        ItemType item_type;
+    Inventory *head = NULL;
+    Inventory *current = NULL;
 
-        int type_id = sqlite3_column_int(stmt_inventory, 1);
-        if (type_id >= 1 && type_id <= 9) item_type = (ItemType) type_id - 1;
-        else
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        Inventory *new_node = malloc(sizeof(Inventory));
+        if (!new_node)
         {
             fprintf
             (
                 stderr,
-                "ERROR: database.c: get_inventory_from_db(): Invalid "
-                "item type ID: %d\n",
-                type_id
+                "ERROR: database.c: get_inventory_from_db(): new_node: malloc() failed\n"
             );
-            exit(EXIT_FAILURE);
+            sqlite3_finalize(stmt);
+            // Free any already allocated nodes
+            while (head)
+            {
+                Inventory *temp = head;
+                head = head->next;
+                free(temp->item->name);
+                free(temp->item->description);
+                free(temp->item);
+                free(temp);
+            }
+            return NULL;
         }
 
-        itemNode->item = malloc(sizeof(Item));
-        itemNode->item->type = item_type;
-        itemNode->item->name = strdup(
-            (const char *) sqlite3_column_text(stmt_inventory, 2));
-        itemNode->item->description = strdup(
-            (const char *) sqlite3_column_text(stmt_inventory, 3));
-        itemNode->item->value = sqlite3_column_int(stmt_inventory, 4);
-        itemNode->item->price = sqlite3_column_int(stmt_inventory, 5);
+        new_node->item = malloc(sizeof(Item));
+        if (!new_node->item)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: get_inventory_from_db(): new_node->item: malloc() failed\n"
+            );
+            free(new_node);
+            sqlite3_finalize(stmt);
+            return NULL;
+        }
 
-        itemNode->next = inventory;
-        inventory = itemNode;
+        new_node->item->type = sqlite3_column_int(stmt, 1) - 1;
+        new_node->item->name = strdup((char *)sqlite3_column_text(stmt, 2));
+        new_node->item->description = strdup((char *)sqlite3_column_text(stmt, 3));
+        new_node->item->value = (unsigned short)sqlite3_column_int(stmt, 4);
+        new_node->item->price = (unsigned short)sqlite3_column_int(stmt, 5);
+        new_node->next = NULL;
+
+        if (!head) head = new_node;
+        else current->next = new_node;
+
+        current = new_node;
     }
 
-    sqlite3_finalize(stmt_inventory);
-
-    return inventory;
+    sqlite3_finalize(stmt);
+    return head;
 }
 
 Inventory* get_spells_from_db(sqlite3 *db)
 {
-    Inventory *inventory = NULL;
+    sqlite3_stmt *stmt;
+    const char *sql = "SELECT * FROM spells;";
 
-    const char *sql_select_inventory =
-        "SELECT id, type_id, name, description, value, price "
-        "FROM inventory WHERE type_id IN (6, 8) "
-        "AND id NOT IN (SELECT weapon_id FROM characters) "
-        "AND id NOT IN (SELECT armor_id FROM characters);";
-
-    sqlite3_stmt *stmt_inventory;
-
-    int return_value = sqlite3_prepare_v2
-    (
-        db,
-        sql_select_inventory,
-        -1,
-        &stmt_inventory,
-        0
-    );
-    if (return_value != SQLITE_OK)
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         fprintf
-        (
-            stderr,
-            "ERROR: database.c: get_spells_from_db(): sqlite3_prepare_v2(): "
-            "%s\n",
-            sqlite3_errmsg(db)
-        );
-        exit(1);
-    }
-
-    while (sqlite3_step(stmt_inventory) == SQLITE_ROW)
-    {
-        Inventory *itemNode = malloc(sizeof(Inventory));
-        ItemType item_type;
-
-        int type_id = sqlite3_column_int(stmt_inventory, 1);
-        if (type_id >= 1 && type_id <= 9) item_type = (ItemType) type_id - 1;
-        else
-        {
-            fprintf
             (
                 stderr,
-                "ERROR: database.c: get_spells_from_db(): Invalid item "
-                "type ID: %d\n",
-                type_id
+                "ERROR: database.c: get_inventory_from_db(): sqlite3_prepare_v2(): %s\n",
+                sqlite3_errmsg(db)
             );
-            exit(EXIT_FAILURE);
-        }
-
-        itemNode->item = malloc(sizeof(Item));
-        itemNode->item->type = item_type;
-        itemNode->item->name =
-            strdup((const char *)sqlite3_column_text(stmt_inventory, 2));
-        itemNode->item->description =
-            strdup((const char *)sqlite3_column_text(stmt_inventory, 3));
-        itemNode->item->value = sqlite3_column_int(stmt_inventory, 4);
-        itemNode->item->price = sqlite3_column_int(stmt_inventory, 5);
-
-        itemNode->next = inventory;
-        inventory = itemNode;
+        return NULL;
     }
 
-    sqlite3_finalize(stmt_inventory);
+    Inventory *head = NULL;
+    Inventory *current = NULL;
 
-    return inventory;
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        Inventory *new_node = malloc(sizeof(Inventory));
+        if (!new_node)
+        {
+            fprintf
+                (
+                    stderr,
+                    "ERROR: database.c: get_inventory_from_db(): new_node: malloc() failed\n"
+                );
+            sqlite3_finalize(stmt);
+            // Free any already allocated nodes
+            while (head)
+            {
+                Inventory *temp = head;
+                head = head->next;
+                free(temp->item->name);
+                free(temp->item->description);
+                free(temp->item);
+                free(temp);
+            }
+            return NULL;
+        }
+
+        new_node->item = malloc(sizeof(Item));
+        if (!new_node->item)
+        {
+            fprintf
+                (
+                    stderr,
+                    "ERROR: database.c: get_inventory_from_db(): new_node->item: malloc() failed\n"
+                );
+            free(new_node);
+            sqlite3_finalize(stmt);
+            return NULL;
+        }
+
+        new_node->item->type = sqlite3_column_int(stmt, 1) - 1;
+        new_node->item->name = strdup((char *)sqlite3_column_text(stmt, 2));
+        new_node->item->description = strdup((char *)sqlite3_column_text(stmt, 3));
+        new_node->item->value = (unsigned short)sqlite3_column_int(stmt, 4);
+        new_node->item->price = (unsigned short)sqlite3_column_int(stmt, 5);
+        new_node->next = NULL;
+
+        if (!head) head = new_node;
+        else current->next = new_node;
+
+        current = new_node;
+    }
+
+    sqlite3_finalize(stmt);
+    return head;
 }
 
 Character *get_character_from_db(sqlite3 *db)
@@ -521,12 +610,12 @@ Character *get_character_from_db(sqlite3 *db)
         character->gold = sqlite3_column_int(result, 8);
         character->xp = sqlite3_column_int(result, 9);
         character->xp_to_next_level = sqlite3_column_int(result, 10);
-        int weapon_id = sqlite3_column_int(result, 6) + 1;
 
-        character->weapon = get_item_from_db(db, weapon_id);
+        int weapon_id = sqlite3_column_int(result, 6);
+        character->weapon = get_equipped_item_from_db(db, weapon_id);
 
-        int armor_id = sqlite3_column_int(result, 7) + 1;
-        character->armor = get_item_from_db(db, armor_id);
+        int armor_id = sqlite3_column_int(result, 7);
+        character->armor = get_equipped_item_from_db(db, armor_id);
 
         character->inventory = get_inventory_from_db(db);
 
@@ -669,6 +758,7 @@ void save_game(Character *player)
 
     const char *sql_delete_player = "DELETE FROM characters;";
     const char *sql_delete_inventory = "DELETE FROM inventory;";
+    const char *sql_delete_spells = "DELETE FROM spells;";
 
     char *err_msg = 0;
 
@@ -712,15 +802,30 @@ void save_game(Character *player)
         exit(EXIT_FAILURE);
     }
 
-    int weapon_id, armor_id;
-    if (player->weapon) weapon_id = insert_weapon(db, player->weapon);
-    if (player->armor) armor_id = insert_armor(db, player->armor);
+    return_value = sqlite3_exec
+    (
+        db,
+        sql_delete_spells,
+        0,
+        0,
+        &err_msg
+    );
+    if (return_value != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: save_game(): sqlite3_exec(): %s\n",
+            err_msg
+        );
+        sqlite3_free(err_msg);
+        exit(EXIT_FAILURE);
+    }
 
     sqlite3_stmt *stmt_insert_player;
     const char *sql_insert_player =
         "INSERT INTO characters (name, health, max_health, mana, max_mana, "
-        "weapon_id, armor_id, gold, xp, xp_to_next_level ) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        "gold, xp, xp_to_next_level ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
     return_value = sqlite3_prepare_v2
     (
@@ -746,11 +851,9 @@ void save_game(Character *player)
     sqlite3_bind_int(stmt_insert_player, 3, player->max_health);
     sqlite3_bind_int(stmt_insert_player, 4, player->mana);
     sqlite3_bind_int(stmt_insert_player, 5, player->max_mana);
-    sqlite3_bind_int(stmt_insert_player, 6, weapon_id);
-    sqlite3_bind_int(stmt_insert_player, 7, armor_id);
-    sqlite3_bind_int(stmt_insert_player, 8, (int) player->gold);
-    sqlite3_bind_int(stmt_insert_player, 9, (int) player->xp);
-    sqlite3_bind_int(stmt_insert_player, 10, (int) player->xp_to_next_level);
+    sqlite3_bind_int(stmt_insert_player, 6, (int) player->gold);
+    sqlite3_bind_int(stmt_insert_player, 7, (int) player->xp);
+    sqlite3_bind_int(stmt_insert_player, 8, (int) player->xp_to_next_level);
 
     if (sqlite3_step(stmt_insert_player) != SQLITE_DONE)
     {
@@ -764,6 +867,88 @@ void save_game(Character *player)
     }
 
     sqlite3_finalize(stmt_insert_player);
+
+    if (player->weapon)
+    {
+        int weapon_id = get_item_id(db, player->weapon->name);
+        sqlite3_stmt *stmt_update_weapon;
+        const char *sql_update_weapon =
+            "UPDATE characters SET weapon_id = ? WHERE id = 1;";
+        return_value = sqlite3_prepare_v2
+        (
+            db,
+            sql_update_weapon,
+            -1,
+            &stmt_update_weapon,
+            0
+        );
+        if (return_value != SQLITE_OK)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_bind_int(stmt_update_weapon, 1, weapon_id);
+
+        if (sqlite3_step(stmt_update_weapon) != SQLITE_DONE)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_finalize(stmt_update_weapon);
+    }
+    if (player->armor)
+    {
+        int armor_id = get_item_id(db, player->armor->name);
+
+        sqlite3_stmt *stmt_update_armor;
+        const char *sql_update_armor =
+            "UPDATE characters SET armor_id = ? WHERE id = 1;";
+        return_value = sqlite3_prepare_v2
+        (
+            db,
+            sql_update_armor,
+            -1,
+            &stmt_update_armor,
+            0
+        );
+        if (return_value != SQLITE_OK)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_bind_int(stmt_update_armor, 1, armor_id);
+
+        if (sqlite3_step(stmt_update_armor) != SQLITE_DONE)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_finalize(stmt_update_armor);
+    }
 
     Inventory *inventory = player->inventory;
     while (inventory)
@@ -838,7 +1023,7 @@ void save_game(Character *player)
     {
         sqlite3_stmt *stmt_insert_spells;
         const char *sql_insert_spells =
-            "INSERT INTO inventory (type_id, name, description, value, price)"
+            "INSERT INTO spells(type_id, name, description, value, price)"
             "VALUES (?, ?, ?, ?, ?);";
 
         return_value = sqlite3_prepare_v2
@@ -1124,3 +1309,31 @@ Inventory *generate_random_inventory(void)
 
     return inventory;
 }
+
+int get_item_id(sqlite3 *db, const char *item_name)
+{
+    if (!item_name) return -1;
+
+    sqlite3_stmt *stmt;
+    const char *sql = "SELECT id FROM items_list WHERE name = ?";
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: get_item_id(): sqlite3_prepare_v2(): %s\n",
+            sqlite3_errmsg(db)
+        );
+
+        return -1;
+    }
+
+    sqlite3_bind_text(stmt, 1, item_name, -1, SQLITE_TRANSIENT);
+
+    int id = -1;
+    if (sqlite3_step(stmt) == SQLITE_ROW) id = sqlite3_column_int(stmt, 0);
+
+    sqlite3_finalize(stmt);
+
+    return id;
+};
