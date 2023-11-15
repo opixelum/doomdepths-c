@@ -203,23 +203,24 @@ void new_game(void)
 
 Item *item_selection_menu
 (
-    Character *character,
+    Character *owner,
+    Character *receiver,
     ItemType item_type,
     unsigned char inventory_menu,
     unsigned char loot_menu
 ) {
-    if (!character)
+    if (!owner)
     {
         fprintf
         (
             stderr,
-            "ERROR: menus.c: item_selection_menu: `character` is NULL\n"
+            "ERROR: menus.c: item_selection_menu: `owner` is NULL\n"
         );
         exit(EXIT_FAILURE);
     }
 
     Inventory *inventory = is_spell(item_type) ?
-        character->spells : character->inventory;
+                           owner->spells : owner->inventory;
 
     unsigned char items_count = number_of_items_by_type(inventory, item_type);
 
@@ -297,7 +298,7 @@ Item *item_selection_menu
 
         print_item_details
         (
-            character,
+            receiver,
             temp_items[j].item,
             is_potion(temp_items[j].item->type) ? 1 : inventory_menu,
             0,
@@ -319,7 +320,7 @@ Item *item_selection_menu
             return NULL;
         }
     }
-    while (is_spell(item_type) && temp_items[choice - 1].item->price > character->mana);
+    while (is_spell(item_type) && temp_items[choice - 1].item->price > owner->mana);
 
     clear_lines(j + 3);
 
@@ -444,7 +445,7 @@ void inventory_menu(Character *player)
         printf("\n");
     }
 
-    Item *selected_item = item_selection_menu(player, ITEM, 1, 0);
+    Item *selected_item = item_selection_menu(player, player, ITEM, 1, 0);
     if (!selected_item) return;
 
     printf("What do you want to do with this %s?\n\n", selected_item->name);
@@ -491,6 +492,7 @@ void loot_character_menu(Character *looter, Character *looted)
     do
     {
         if (!number_of_items_by_type(looted->inventory, ITEM)) return;
+
         unsigned char is_attacker_inventory_full =
             number_of_items_by_type(looter->inventory, ITEM) >= MAX_INVENTORY_SIZE;
 
@@ -506,7 +508,7 @@ void loot_character_menu(Character *looter, Character *looted)
         }
 
         printf("%s's inventory. ", looted->name);
-        selected_item = item_selection_menu(looted, ITEM, 1, 1);
+        selected_item = item_selection_menu(looted, looter, ITEM, 1, 1);
         if (!selected_item) return;
 
         looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
