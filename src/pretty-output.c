@@ -145,7 +145,8 @@ void *print_item_details
     if (show_type)
     {
         printf(" | ");
-        color_printf(0x888888, "%s", item_type_to_string(item->type));
+        char *item_type_string = item_type_to_string(item->type, 1);
+        color_printf(0x888888, "%s", item_type_string);
     }
 
     if (show_description)
@@ -205,7 +206,8 @@ void *print_item_details
             fprintf
             (
                 stderr,
-                "ERROR: pretty-output.c: item_details_string(): wrong item type\n"
+                "ERROR: pretty-output.c: item_details_string(): wrong item type: %d\n",
+                item->type
             );
             exit(EXIT_FAILURE);
         }

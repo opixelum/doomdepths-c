@@ -50,4 +50,12 @@ void insert_item_into_items_list(sqlite3 *db, ItemType type, const char *name, c
 
 Item* get_random_item_from_database(sqlite3 *db);
 
+/**
+ * @brief Fills an inventory with random items. Useful for monsters and chests.
+ * @return A pointer to the head of the inventory.
+ * @warning The inventory must be freed with free_inventory() when it's no
+ * longer needed.
+ */
+Inventory *generate_random_inventory(void);
+
 #endif // SAVE_H

@@ -80,13 +80,13 @@ void battle(Character *player)
             break;
 
         case 2:
-            item = item_selection_menu(player, HEAL_SPELL, 0);
+            item = item_selection_menu(player, HEAL_SPELL, 0, 0);
             if (!item) continue; // Case when user goes back
             cast_spell(player, player, item);
             break;
 
         case 3:
-            item = item_selection_menu(player, POTION, 0);
+            item = item_selection_menu(player, POTION, 0, 0);
             if (!item) continue; // Case when user goes back
             drink_potion(player, item);
             break;
@@ -134,7 +134,7 @@ Monsters *perform_attack
     unsigned char choice;
     do
     {
-        choice = attack_selection_menu(attacker, defender);
+        choice = attack_selection_menu(attacker);
 
         if (choice == 'B' || choice == 'b') return monsters;
         else if (choice == 1) break;
@@ -143,6 +143,7 @@ Monsters *perform_attack
         (
             attacker,
             ATTACK_SPELL,
+            0,
             0
         );
     }
@@ -155,7 +156,7 @@ Monsters *perform_attack
     if (!is_defender_dead)
         damage_taken = attack(defender, attacker, NULL);
 
-    print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
+    unsigned char has_looted = print_attack_result(attacker, defender, monsters, damage_dealt, damage_taken, spell);
 
     if (attacker->health <= 0)
     {
@@ -165,7 +166,7 @@ Monsters *perform_attack
             "%s killed you... See you up there!\n\n",
             defender->name
         );
-        press_any_key_to_continue();
+        press_enter_to_continue();
 
         Monsters *current_monster = monsters;
         while (current_monster)
@@ -179,7 +180,7 @@ Monsters *perform_attack
         return NULL;
     }
     restore_mana(attacker, 10);
-    press_any_key_to_continue();
+    if (!has_looted) press_any_key_to_continue();
 
     return update_monsters_list(monsters);
 }

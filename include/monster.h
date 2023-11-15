@@ -5,6 +5,9 @@
 #include <time.h>
 #include "pretty-output.h"
 
+// Forward declaration
+Inventory *generate_random_inventory(void);
+
 static char *dragon[] =
 {
     " <>=======()                           ",

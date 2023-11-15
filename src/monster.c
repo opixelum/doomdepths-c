@@ -146,9 +146,8 @@ Character *generate_random_monster(unsigned int seed)
         gold,
         NULL,
         NULL,
-        // TODO: Give random item to monsters for player to loot
         NULL,
-        NULL
+        generate_random_inventory()
     );
 }
 

@@ -44,7 +44,7 @@ Character *monster_selection_menu(Character *character, Monsters *head);
  * @param monster A pointer to the target monster.
  * @return 1 if weapon, 2 if spell, 0 on error.
  */
-unsigned char attack_selection_menu(Character *player, Character *monster);
+unsigned char attack_selection_menu(Character *player);
 
 /**
  * @brief Prompts user to write his user name.
@@ -64,6 +64,7 @@ void new_game();
  * @param character A pointer to the character who has the items.
  * @param item_type The type of the item to select (see ItemType enum).
  * @param inventory_menu 1 if it is used in the inventory menu, 0 otherwise.
+ * @param loot_menu 1 if it is used in the loot menu, 0 otherwise.
  * @return A pointer to the selected item or NULL if user chooses to come back
  * or if he has no item of the given type.
  */
@@ -71,7 +72,8 @@ Item *item_selection_menu
 (
     Character *character,
     ItemType item_type,
-    unsigned char inventory_menu
+    unsigned char inventory_menu,
+    unsigned char loot_menu
 );
 
 /**
@@ -83,8 +85,9 @@ Item *item_selection_menu
  * @param damage_taken The damage taken by the attacker in return.
  * @param spell A pointer to the spell used to attack the monster, NULL if
  * weapon was used.
+ * @return 1 if player looted the monster, 0 otherwise.
  */
-void print_attack_result
+unsigned char print_attack_result
 (
     Character *attacker,
     Character *defender,
@@ -99,5 +102,12 @@ void print_attack_result
  * @param player A pointer to the character.
  */
 void inventory_menu(Character *player);
+
+/** Displays the inventory of the looted character and asks the looter to choose
+ * one or more items to loot.
+ * @param looter A pointer to the character that will receive the items.
+ * @param looted A pointer to the character that will give the items.
+ */
+void loot_character_menu(Character *looter, Character *looted);
 
 #endif // MENUS_H

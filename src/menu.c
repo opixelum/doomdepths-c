@@ -111,7 +111,7 @@ Character *monster_selection_menu(Character *character, Monsters *head)
     return choice == 'B' || choice == 'b' ? NULL : monsters[choice - 1];
 }
 
-unsigned char attack_selection_menu(Character *player, Character *monster)
+unsigned char attack_selection_menu(Character *player)
 {
     if (!player) return 0;
 
@@ -121,8 +121,7 @@ unsigned char attack_selection_menu(Character *player, Character *monster)
         "    1. Weapon attack\n"
         "    2. Spell attack\n"
         "    B. Back\n"
-        "\nPress the key of your choice on your keyboard.",
-        monster->name
+        "\nPress the key of your choice on your keyboard."
     );
 
     unsigned char choice = get_valid_digit_no_enter(1, 2, 1);
@@ -146,37 +145,25 @@ char *get_user_name_menu(void)
 
 void new_game(void)
 {
+    create_tables("doomdepths.db");
+
     // Ask user for his name
     char *user_name = get_user_name_menu();
 
-    Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 34, 41);
-    Item *freeze = create_item(ATTACK_SPELL, "Freeze", "Ice ice baby", 34, 38);
-    Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 100 HP", 50, 20);
+    Item *fireball = create_item(ATTACK_SPELL, "Fireball", "Man's not hot", 41, 41);
+    Item *freeze = create_item(ATTACK_SPELL, "Freeze breeze", "Ice ice baby", 34, 34);
+    Item *abrasparadra = create_item(HEAL_SPELL, "Abrasparadra", "Heals 25 HP", 25, 10);
+    Item *jouvence = create_item(HEAL_SPELL, "Jouvence", "Heals 50 HP", 50, 20);
     Inventory *spells = NULL;
     spells = add_item_to_inventory(spells, fireball);
     spells = add_item_to_inventory(spells, freeze);
+    spells = add_item_to_inventory(spells, abrasparadra);
     spells = add_item_to_inventory(spells, jouvence);
 
-    Item *weapon1 = create_item(WEAPON, "Sword", "A sword", 100, 100);
-    Item *weapon2 = create_item(WEAPON, "Axe", "An axe", 120, 120);
-    Item *weapon3 = create_item(WEAPON, "Axe", "An axe", 120, 120);
-    Item *armor = create_item(ARMOR, "Draconic suit", "An armor", 100, 100);
-    Item *clothes = create_item(ARMOR, "Clothes", "Clothes", 5, 5);
-    Item *health_potion = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
-    Item *health_potion1 = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
-    Item *health_potion2 = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
-    Item *health_potion3 = create_item(HEALTH_POTION, "Chug Jug", "Heals 50 HP", 50, 50);
-    Item *mana_potion = create_item(MANA_POTION, "Blue elixir", "Restores 50 MP", 50, 50);
+    Item *stuff = create_item(WEAPON, "Stuff", "Stuff", 0, 0);
     Inventory *inventory = NULL;
-    inventory = add_item_to_inventory(inventory, health_potion);
-    inventory = add_item_to_inventory(inventory, health_potion1);
-    inventory = add_item_to_inventory(inventory, health_potion2);
-    inventory = add_item_to_inventory(inventory, health_potion3);
-    inventory = add_item_to_inventory(inventory, mana_potion);
-    inventory = add_item_to_inventory(inventory, weapon2);
-    inventory = add_item_to_inventory(inventory, weapon3);
-    inventory = add_item_to_inventory(inventory, clothes);
-    inventory = add_item_to_inventory(inventory, armor);
+    for (unsigned char i = 0; i < 25; ++i)
+        inventory = add_item_to_inventory(inventory, stuff);
 
     // Create a new character
     Character *player = create_character
@@ -190,16 +177,23 @@ void new_game(void)
         100,
         100,
         0,
-        weapon1,
+        NULL,
         NULL,
         spells,
         inventory
     );
 
-    create_tables("doomdepths.db");
-
     initialize_map();
     MapContext *map_context = malloc(sizeof *map_context);
+    if (!map_context)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menus.c: new_game(): malloc() failed\n"
+        );
+        exit(EXIT_FAILURE);
+    }
     map_context->player = player;
     get_map(map_context);
 
@@ -208,7 +202,7 @@ void new_game(void)
 
     printf("\nWelcome %s!\n\n", player->name);
     press_any_key_to_continue();
-    
+
     explore_map(map_context);
 }
 
@@ -216,7 +210,8 @@ Item *item_selection_menu
 (
     Character *character,
     ItemType item_type,
-    unsigned char inventory_menu
+    unsigned char inventory_menu,
+    unsigned char loot_menu
 ) {
     if (!character)
     {
@@ -226,14 +221,14 @@ Item *item_selection_menu
             "ERROR: menus.c: item_selection_menu: `character` is NULL\n"
         );
         exit(EXIT_FAILURE);
-    };
+    }
 
     Inventory *inventory = is_spell(item_type) ?
         character->spells : character->inventory;
 
     unsigned char items_count = number_of_items_by_type(inventory, item_type);
 
-    const char *item_type_string = item_type_to_string(item_type);
+    const char *item_type_string = item_type_to_string(item_type, 0);
     if (!item_type_string)
     {
         fprintf
@@ -256,6 +251,8 @@ Item *item_selection_menu
         printf("Which %s do you want to cast?\n\n", item_type_string);
     else if (is_potion(item_type))
         printf("Which %s do you want to drink?\n\n", item_type_string);
+    else if (loot_menu)
+        printf("Which item do you want to loot?\n\n");
     else printf("Select an item to use, equip or drop.\n\n");
 
     // Temporary array to hold the count for each item
@@ -335,7 +332,7 @@ Item *item_selection_menu
     return temp_items[choice - 1].item;
 }
 
-void print_attack_result
+unsigned char print_attack_result
 (
     Character *player,
     Character *defender,
@@ -364,13 +361,38 @@ void print_attack_result
         player->weapon ? player->weapon->name : "fists"
     );
 
-    if (defender->health <= 0) printf("You killed %s!\n\n", defender->name);
+    if (defender->health <= 0)
+    {
+        printf("You killed %s!\n\n", defender->name);
+
+        unsigned char is_attacker_inventory_full =
+            number_of_items_by_type(player->inventory, ITEM) >= MAX_INVENTORY_SIZE;
+
+        if (defender->inventory && !is_attacker_inventory_full)
+        {
+            printf
+            (
+                "%s has some items in his inventory. Want to loot them? [Y/N]",
+                defender->name
+            );
+
+            if (yes_no_input())
+            {
+                clear_lines(25);
+                loot_character_menu(player, defender);
+            }
+
+            return 1;
+        }
+    }
     else printf
     (
         "%s dealt %d damage to you.\n\n",
         defender->name,
         damage_taken
     );
+
+    return 0;
 }
 
 void inventory_menu(Character *player)
@@ -390,8 +412,8 @@ void inventory_menu(Character *player)
     unsigned char item_count = number_of_items_by_type(player->inventory, ITEM);
 
     unsigned int hex_color;
-    if (item_count >= 20) hex_color = 0xffff00;
-    else if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
+    if (item_count == MAX_INVENTORY_SIZE) hex_color = 0xff0000;
+    else if (item_count < 25 && item_count >= 20) hex_color = 0xffff00;
     else hex_color = 0xffffff;
 
     print_character_stats(player);
@@ -427,7 +449,7 @@ void inventory_menu(Character *player)
         printf("\n");
     }
 
-    Item *selected_item = item_selection_menu(player, ITEM, 1);
+    Item *selected_item = item_selection_menu(player, ITEM, 1, 0);
     if (!selected_item) return;
 
     printf("What do you want to do with this %s?\n\n", selected_item->name);
@@ -446,4 +468,54 @@ void inventory_menu(Character *player)
 
     clear_screen();
     inventory_menu(player);
+}
+
+void loot_character_menu(Character *looter, Character *looted)
+{
+    if (!looter)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menu.c: loot_character_menu(): `looter` is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!looted)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: menu.c: loot_character_menu(): `looted` is NULL\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    Item *selected_item = NULL;
+    do
+    {
+        if (!number_of_items_by_type(looted->inventory, ITEM)) return;
+        unsigned char is_attacker_inventory_full =
+            number_of_items_by_type(looter->inventory, ITEM) >= MAX_INVENTORY_SIZE;
+
+        if (is_attacker_inventory_full)
+        {
+            printf
+            (
+                "That was the last item you could take. Now your inventory "
+                "is full.\n\n"
+            );
+            press_any_key_to_continue();
+            return;
+        }
+
+        printf("%s's inventory. ", looted->name);
+        selected_item = item_selection_menu(looted, ITEM, 1, 1);
+        if (!selected_item) return;
+
+        looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
+        looter->inventory = add_item_to_inventory(looter->inventory, selected_item);
+    }
+    while (1);
 }
