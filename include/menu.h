@@ -61,7 +61,9 @@ void new_game();
 /**
  * @brief Prints a menu for selecting a player's item (either a spell or a
  * potion).
- * @param character A pointer to the character who has the items.
+ * @param owner A pointer to the character who has the items.
+ * @prarm receiver A pointer to the character who will receive the items. It is
+ * used to know if the item is better than the equipped one.
  * @param item_type The type of the item to select (see ItemType enum).
  * @param inventory_menu 1 if it is used in the inventory menu, 0 otherwise.
  * @param loot_menu 1 if it is used in the loot menu, 0 otherwise.
@@ -70,7 +72,8 @@ void new_game();
  */
 Item *item_selection_menu
 (
-    Character *character,
+    Character *owner,
+    Character *receiver,
     ItemType item_type,
     unsigned char inventory_menu,
     unsigned char loot_menu
