@@ -285,6 +285,72 @@ void create_tables(const char *db_path)
     sqlite3_close(db);
 }
 
+Item *get_equipped_item_from_db(sqlite3 *db, int item_id)
+{
+    Item *item = NULL;
+    char query[256];
+    sqlite3_stmt *stmt_item;
+
+    snprintf
+    (
+        query,
+        sizeof(query),
+        "SELECT type_id, name, description, value, price FROM items_list "
+        "WHERE id = %d;",
+        item_id
+    );
+
+    int return_value = sqlite3_prepare_v2
+    (
+        db,
+        query,
+        -1,
+        &stmt_item,
+        0
+    );
+    if (return_value != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: get_equipped_item_from_db(): sqlite3_prepare_v2(): "
+            "%s\n",
+            sqlite3_errmsg(db)
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (sqlite3_step(stmt_item) == SQLITE_ROW)
+    {
+        item = malloc(sizeof(Item));
+
+        int type_id = sqlite3_column_int(stmt_item, 0) - 1;
+        if (type_id >= 0 && type_id <= 8) item->type = type_id;
+        else
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: get_equipped_item_from_db(): Invalid item "
+                "type ID: %d\n",
+                type_id
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        item->name =
+            strdup((const char *) sqlite3_column_text(stmt_item, 1));
+        item->description = strdup(
+            (const char *) sqlite3_column_text(stmt_item, 2));
+        item->value = sqlite3_column_int(stmt_item, 3);
+        item->price = sqlite3_column_int(stmt_item, 4);
+    }
+
+    sqlite3_finalize(stmt_item);
+
+    return item;
+}
+
 Item *get_item_from_db(sqlite3 *db, int item_id)
 {
     Item *item = NULL;
@@ -544,12 +610,12 @@ Character *get_character_from_db(sqlite3 *db)
         character->gold = sqlite3_column_int(result, 8);
         character->xp = sqlite3_column_int(result, 9);
         character->xp_to_next_level = sqlite3_column_int(result, 10);
-        int weapon_id = sqlite3_column_int(result, 6) + 1;
 
-        character->weapon = get_item_from_db(db, weapon_id);
+        int weapon_id = sqlite3_column_int(result, 6);
+        character->weapon = get_equipped_item_from_db(db, weapon_id);
 
-        int armor_id = sqlite3_column_int(result, 7) + 1;
-        character->armor = get_item_from_db(db, armor_id);
+        int armor_id = sqlite3_column_int(result, 7);
+        character->armor = get_equipped_item_from_db(db, armor_id);
 
         character->inventory = get_inventory_from_db(db);
 
