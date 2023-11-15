@@ -756,15 +756,10 @@ void save_game(Character *player)
         exit(EXIT_FAILURE);
     }
 
-    int weapon_id, armor_id;
-    if (player->weapon) weapon_id = insert_weapon(db, player->weapon);
-    if (player->armor) armor_id = insert_armor(db, player->armor);
-
     sqlite3_stmt *stmt_insert_player;
     const char *sql_insert_player =
         "INSERT INTO characters (name, health, max_health, mana, max_mana, "
-        "weapon_id, armor_id, gold, xp, xp_to_next_level ) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        "gold, xp, xp_to_next_level ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
     return_value = sqlite3_prepare_v2
     (
@@ -790,11 +785,9 @@ void save_game(Character *player)
     sqlite3_bind_int(stmt_insert_player, 3, player->max_health);
     sqlite3_bind_int(stmt_insert_player, 4, player->mana);
     sqlite3_bind_int(stmt_insert_player, 5, player->max_mana);
-    sqlite3_bind_int(stmt_insert_player, 6, weapon_id);
-    sqlite3_bind_int(stmt_insert_player, 7, armor_id);
-    sqlite3_bind_int(stmt_insert_player, 8, (int) player->gold);
-    sqlite3_bind_int(stmt_insert_player, 9, (int) player->xp);
-    sqlite3_bind_int(stmt_insert_player, 10, (int) player->xp_to_next_level);
+    sqlite3_bind_int(stmt_insert_player, 6, (int) player->gold);
+    sqlite3_bind_int(stmt_insert_player, 7, (int) player->xp);
+    sqlite3_bind_int(stmt_insert_player, 8, (int) player->xp_to_next_level);
 
     if (sqlite3_step(stmt_insert_player) != SQLITE_DONE)
     {
@@ -808,6 +801,88 @@ void save_game(Character *player)
     }
 
     sqlite3_finalize(stmt_insert_player);
+
+    if (player->weapon)
+    {
+        int weapon_id = get_item_id(db, player->weapon->name);
+        sqlite3_stmt *stmt_update_weapon;
+        const char *sql_update_weapon =
+            "UPDATE characters SET weapon_id = ? WHERE id = 1;";
+        return_value = sqlite3_prepare_v2
+        (
+            db,
+            sql_update_weapon,
+            -1,
+            &stmt_update_weapon,
+            0
+        );
+        if (return_value != SQLITE_OK)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_bind_int(stmt_update_weapon, 1, weapon_id);
+
+        if (sqlite3_step(stmt_update_weapon) != SQLITE_DONE)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_finalize(stmt_update_weapon);
+    }
+    if (player->armor)
+    {
+        int armor_id = get_item_id(db, player->armor->name);
+
+        sqlite3_stmt *stmt_update_armor;
+        const char *sql_update_armor =
+            "UPDATE characters SET armor_id = ? WHERE id = 1;";
+        return_value = sqlite3_prepare_v2
+        (
+            db,
+            sql_update_armor,
+            -1,
+            &stmt_update_armor,
+            0
+        );
+        if (return_value != SQLITE_OK)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_prepare_v2(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_bind_int(stmt_update_armor, 1, armor_id);
+
+        if (sqlite3_step(stmt_update_armor) != SQLITE_DONE)
+        {
+            fprintf
+            (
+                stderr,
+                "ERROR: database.c: save_game(): sqlite3_step(): %s\n",
+                sqlite3_errmsg(db)
+            );
+            exit(EXIT_FAILURE);
+        }
+
+        sqlite3_finalize(stmt_update_armor);
+    }
 
     Inventory *inventory = player->inventory;
     while (inventory)
@@ -1168,3 +1243,31 @@ Inventory *generate_random_inventory(void)
 
     return inventory;
 }
+
+int get_item_id(sqlite3 *db, const char *item_name)
+{
+    if (!item_name) return -1;
+
+    sqlite3_stmt *stmt;
+    const char *sql = "SELECT id FROM items_list WHERE name = ?";
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
+    {
+        fprintf
+        (
+            stderr,
+            "ERROR: database.c: get_item_id(): sqlite3_prepare_v2(): %s\n",
+            sqlite3_errmsg(db)
+        );
+
+        return -1;
+    }
+
+    sqlite3_bind_text(stmt, 1, item_name, -1, SQLITE_TRANSIENT);
+
+    int id = -1;
+    if (sqlite3_step(stmt) == SQLITE_ROW) id = sqlite3_column_int(stmt, 0);
+
+    sqlite3_finalize(stmt);
+
+    return id;
+};
