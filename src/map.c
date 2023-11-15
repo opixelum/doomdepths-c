@@ -263,6 +263,7 @@ unsigned char key_listener(unsigned char key, MapContext *map_context)
 
     case 'i':
         inventory_menu(map_context->player);
+        save_game(map_context->player);
         return 1;
 
     case 'b':
