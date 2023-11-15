@@ -210,7 +210,8 @@ Item *item_selection_menu
 (
     Character *character,
     ItemType item_type,
-    unsigned char inventory_menu
+    unsigned char inventory_menu,
+    unsigned char loot_menu
 ) {
     if (!character)
     {
@@ -250,6 +251,8 @@ Item *item_selection_menu
         printf("Which %s do you want to cast?\n\n", item_type_string);
     else if (is_potion(item_type))
         printf("Which %s do you want to drink?\n\n", item_type_string);
+    else if (loot_menu)
+        printf("Which item do you want to loot?\n\n");
     else printf("Select an item to use, equip or drop.\n\n");
 
     // Temporary array to hold the count for each item
@@ -442,7 +445,7 @@ void inventory_menu(Character *player)
         printf("\n");
     }
 
-    Item *selected_item = item_selection_menu(player, ITEM, 1);
+    Item *selected_item = item_selection_menu(player, ITEM, 1, 0);
     if (!selected_item) return;
 
     printf("What do you want to do with this %s?\n\n", selected_item->name);
@@ -491,7 +494,7 @@ void loot_character_menu(Character *looter, Character *looted)
         if (!number_of_items_by_type(looted->inventory, ITEM)) return;
 
         printf("%s's inventory. ", looted->name);
-        selected_item = item_selection_menu(looted, ITEM, 1);
+        selected_item = item_selection_menu(looted, ITEM, 1, 1);
         if (!selected_item) return;
 
         looted->inventory = remove_item_from_inventory(looted->inventory, selected_item);
