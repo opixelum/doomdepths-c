@@ -58,4 +58,12 @@ Item* get_random_item_from_database(sqlite3 *db);
  */
 Inventory *generate_random_inventory(void);
 
+/**
+ * @brief Gets the id of an item from its name.
+ * @param db A pointer to the database connection.
+ * @param item_name A string containing the name of the item.
+ * @return The id of the item, or -1 if the item doesn't exist.
+ */
+int get_item_id(sqlite3 *db, const char *item_name);
+
 #endif // SAVE_H
